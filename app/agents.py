@@ -3,9 +3,10 @@ feeds the same shared dashboard. Add a new one here and it appears automatically
 """
 
 AGENTS = [
-    {"id": "receptionist", "name": "AI Receptionist",
-     "desc": "Inbound calls — greets, qualifies, and books appointments.",
-     "icon": "fa-headset", "color": "#4f46e5"},
+    {"id": "receptionist", "name": "StoreRight Receptionist",
+     "business": "StoreRight Self-Storage", "vertical": "storage",
+     "desc": "Inbound storage calls — quotes units, qualifies, reserves & books tours.",
+     "icon": "fa-warehouse", "color": "#4f46e5"},
     {"id": "sales", "name": "Sales Follow-Up Agent",
      "desc": "Outbound — calls new leads, qualifies, and hands off hot ones.",
      "icon": "fa-phone-volume", "color": "#0e9488"},

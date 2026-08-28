@@ -8,7 +8,7 @@ import os
 import time
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app import db
@@ -25,7 +25,12 @@ def _valid_agent(aid: str) -> str:
     return aid if aid in AGENTS_BY_ID else "receptionist"
 
 
+_STD = {"name", "customer_name", "phone", "phone_number", "email", "intent", "reason",
+        "outcome", "appointment", "time", "slot", "summary", "notes", "transcript", "agent"}
+
+
 def _store(agent: str, args: dict) -> int:
+    meta = {k: v for k, v in args.items() if k not in _STD and v not in (None, "")}
     return db.add({
         "agent": agent,
         "name": args.get("name") or args.get("customer_name") or "",
@@ -36,6 +41,7 @@ def _store(agent: str, args: dict) -> int:
         "appointment": args.get("appointment") or args.get("time") or args.get("slot") or "",
         "summary": args.get("summary") or args.get("notes") or "",
         "transcript": args.get("transcript") or "",
+        "meta": meta,
         "created": time.time(),
     })
 
@@ -49,9 +55,20 @@ def index(request: Request):
 
 @app.get("/records")
 def records(agent: str = "all"):
-    return {"agents": AGENTS, "stats": db.stats(),
+    stats = db.stats(agent) if agent != "all" else db.stats()
+    return {"agents": AGENTS, "stats": stats,
             "records": [{**r, "agent_name": agent_name(r["agent"])}
                         for r in db.list_records(agent)]}
+
+
+@app.get("/agent/{aid}", response_class=HTMLResponse)
+def agent_view(aid: str, request: Request):
+    if aid not in AGENTS_BY_ID:
+        return RedirectResponse("/")
+    return templates.TemplateResponse(request, "agent.html", {
+        "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
+        "records": db.list_records(aid),
+    })
 
 
 @app.post("/vapi/{agent}")
