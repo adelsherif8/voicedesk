@@ -126,6 +126,12 @@ async def simulate(agent: str, request: Request):
     return {"ok": True, "id": rid}
 
 
+@app.post("/reset")
+def reset():
+    db.reset()
+    return {"ok": True, "records": db.count()}
+
+
 @app.get("/health")
 def health():
     return {"ok": True, "agents": len(AGENTS), "records": db.count()}

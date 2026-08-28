@@ -32,6 +32,12 @@ def init():
         _seed()
 
 
+def reset():
+    with _conn() as c:
+        c.execute("DELETE FROM records")
+    _seed()
+
+
 def add(rec: dict) -> int:
     with _conn() as c:
         cur = c.execute(
