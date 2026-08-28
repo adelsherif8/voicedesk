@@ -11,6 +11,7 @@ DB_PATH = os.getenv("VOICEDESK_DB", os.path.join(_HERE, "data", "voicedesk.db"))
 
 
 def _conn():
+    os.makedirs(os.path.dirname(DB_PATH) or ".", exist_ok=True)
     c = sqlite3.connect(DB_PATH)
     c.row_factory = sqlite3.Row
     return c
