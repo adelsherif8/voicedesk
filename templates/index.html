@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VoiceDesk — AI Voice Agent Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#eef1f6;--surface:#fff;--ink:#171a21;--muted:#697086;--line:#e4e7ee;--soft:#f5f7fa;--acc:#4f46e5;
+--green:#12805c;--blue:#2563eb;--amber:#c77700;--grey:#6b7280;--purple:#7c3aed;--teal:#0e9488;--red:#c0304a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+.app{max-width:1240px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.mk{width:40px;height:40px;border-radius:11px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:1.15rem}
+.brand b{font-size:1.16rem;font-weight:700;letter-spacing:-.01em}
+.brand span{display:block;font-size:.76rem;color:var(--muted)}
+.stats{margin-left:auto;display:flex;gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:9px 15px;min-width:88px}
+.stat .n{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+.stat .n.g{color:var(--green)}.stat .n.b{color:var(--blue)}
+.stat .l{font-size:.72rem;color:var(--muted)}
+.live{display:inline-flex;align-items:center;gap:7px;font-size:.74rem;color:var(--green);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+.live .d{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(18,128,92,.5);animation:p 1.6s infinite}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(18,128,92,.5)}70%{box-shadow:0 0 0 7px rgba(18,128,92,0)}100%{box-shadow:0 0 0 0 rgba(18,128,92,0)}}
+.shell{display:grid;grid-template-columns:270px 1fr;gap:14px}
+.pane{background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.pane .hd{padding:12px 15px;border-bottom:1px solid var(--line);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.agent{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:1px solid var(--line);cursor:pointer}
+.agent:hover{background:var(--soft)}
+.agent.on{background:#eef0ff;box-shadow:inset 3px 0 0 var(--acc)}
+.agent .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:#fff;flex-shrink:0;font-size:.85rem}
+.agent .nm{font-weight:600;font-size:.88rem}
+.agent .ds{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent .ct{margin-left:auto;font-size:.78rem;font-weight:700;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:2px 8px;flex-shrink:0}
+.list{padding:6px}
+.rec{border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin:8px}
+.rec .r1{display:flex;align-items:center;gap:10px}
+.rec .nm{font-weight:600}
+.rec .ph{font-size:.82rem;color:var(--muted)}
+.rec .ago{margin-left:auto;font-size:.74rem;color:#98a0b3}
+.rec .r2{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;align-items:center}
+.tag{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:6px}
+.tag.ag{background:var(--soft);border:1px solid var(--line)}
+.tag.intent{background:#eef0ff;color:var(--acc)}
+.oc{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:6px}
+.appt{font-size:.8rem;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.appt i{color:var(--amber)}
+.sm{font-size:.83rem;color:#454b5a;margin-top:8px}
+.empty{padding:50px 20px;text-align:center;color:var(--muted)}
+.simbar{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:10px}
+.simbar .t{font-weight:600;font-size:.92rem}
+.simbtn{background:var(--acc);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-weight:600;font-size:.82rem;cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+.simbtn:hover{background:#4338ca}
+.hint{font-size:.74rem;color:var(--muted)}
+@media(max-width:840px){.shell{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="mk"><i class="fa-solid fa-waveform"></i></div>
+    <div class="brand"><b>VoiceDesk</b><span>live dashboard for AI voice agents — every call, lead &amp; booking</span></div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="s-total">{{ stats.total }}</div><div class="l">Records</div></div>
+      <div class="stat"><div class="n g" id="s-booked">{{ stats.booked }}</div><div class="l">Booked</div></div>
+      <div class="stat"><div class="n b" id="s-today">{{ stats.today }}</div><div class="l">Last 24h</div></div>
+    </div>
+    <div class="live"><span class="d"></span> Live</div>
+  </div>
+
+  <div class="shell">
+    <div class="pane">
+      <div class="hd">Voice agents</div>
+      <div id="agents"></div>
+    </div>
+    <div class="pane">
+      <div class="simbar">
+        <span class="t" id="paneTitle">All agents</span>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="hint">Records appear here the moment a call ends.</span>
+          <button class="simbtn" onclick="simulate()"><i class="fa-solid fa-phone"></i> Simulate a call</button>
+        </div>
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AGENTS = {{ agents|tojson }};
+const COLORS = {booked:'#12805c',qualified:'#2563eb',transferred:'#c77700',disqualified:'#6b7280',
+  answered:'#7c3aed','order placed':'#0e9488','call logged':'#6b7280',captured:'#2563eb','cold lead re-engaged':'#12805c'};
+const $ = id => document.getElementById(id);
+let current = 'all';
+
+function agentById(id){ return AGENTS.find(a=>a.id===id) || {name:id,color:'#6b7280',icon:'fa-robot'}; }
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+
+function renderAgents(stats){
+  const per = stats.per_agent||{};
+  const all = `<div class="agent ${current==='all'?'on':''}" onclick="pick('all')">
+    <span class="ic" style="background:#171a21"><i class="fa-solid fa-layer-group"></i></span>
+    <div style="min-width:0"><div class="nm">All agents</div><div class="ds">every captured record</div></div>
+    <span class="ct">${stats.total}</span></div>`;
+  $('agents').innerHTML = all + AGENTS.map(a=>`
+    <div class="agent ${current===a.id?'on':''}" onclick="pick('${a.id}')">
+      <span class="ic" style="background:${a.color}"><i class="fa-solid ${a.icon}"></i></span>
+      <div style="min-width:0"><div class="nm">${esc(a.name)}</div><div class="ds">${esc(a.desc)}</div></div>
+      <span class="ct">${per[a.id]||0}</span>
+    </div>`).join('');
+}
+
+function renderList(records){
+  if(!records.length){ $('list').innerHTML='<div class="empty">No records yet. Click “Simulate a call” to see one land live.</div>'; return; }
+  $('list').innerHTML = records.map(r=>{
+    const a=agentById(r.agent);
+    const oc=(r.outcome||'captured').toLowerCase();
+    const col=COLORS[oc]||'#6b7280';
+    return `<div class="rec">
+      <div class="r1">
+        <span class="nm">${esc(r.name||'Unknown caller')}</span>
+        <span class="ph">${esc(r.phone||'')}</span>
+        <span class="ago">${ago(r.created)}</span>
+      </div>
+      <div class="r2">
+        <span class="tag ag" style="color:${a.color}"><i class="fa-solid ${a.icon}"></i> ${esc(a.name)}</span>
+        ${r.intent?`<span class="tag intent">${esc(r.intent)}</span>`:''}
+        <span class="oc" style="background:${col}22;color:${col}">${esc(r.outcome||'captured')}</span>
+        ${r.appointment?`<span class="appt"><i class="fa-solid fa-calendar-check"></i> ${esc(r.appointment)}</span>`:''}
+      </div>
+      ${r.summary?`<div class="sm">${esc(r.summary)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function load(){
+  const r = await fetch('/records?agent='+current); const d = await r.json();
+  $('s-total').textContent=d.stats.total; $('s-booked').textContent=d.stats.booked; $('s-today').textContent=d.stats.today;
+  renderAgents(d.stats); renderList(d.records);
+  $('paneTitle').textContent = current==='all' ? 'All agents' : agentById(current).name;
+}
+function pick(id){ current=id; load(); }
+async function simulate(){ await fetch('/simulate/'+(current==='all'?'receptionist':current),{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); load(); }
+
+load();
+setInterval(load, 4000);
+</script>
+</body>
+</html>
