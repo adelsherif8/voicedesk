@@ -1,0 +1,17 @@
+{
+ "n_hook": {
+  "text": "Every missed call at a storage facility is a tenant you just lost. This is Alex, the AI receptionist that never misses one.",
+  "file": "docs/vid2/n_hook.mp3",
+  "dur": 7.344
+ },
+ "n_save": {
+  "text": "Call over. Alex already saved the reservation, the tour, and the contact to the dashboard. No human touched it.",
+  "file": "docs/vid2/n_save.mp3",
+  "dur": 6.528
+ },
+ "n_cta": {
+  "text": "Want this answering your phone? Let's build it.",
+  "file": "docs/vid2/n_cta.mp3",
+  "dur": 2.784
+ }
+}

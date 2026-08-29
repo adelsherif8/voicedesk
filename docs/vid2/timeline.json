@@ -1,0 +1,57 @@
+{
+ "audio": [
+  [
+   "docs/vid2/n_hook.mp3",
+   0.5
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid2/ring.mp3",
+   8.7
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid2/ring.mp3",
+   10.7
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l0.mp3",
+   12.7
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l1.mp3",
+   18.28
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l2.mp3",
+   22.42
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l3.mp3",
+   26.73
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l4.mp3",
+   31.060000000000002
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l5.mp3",
+   36.64
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid/l6.mp3",
+   40.33
+  ],
+  [
+   "/Users/adel/Desktop/GHAI/voicedesk/docs/vid2/ding.mp3",
+   46.88
+  ],
+  [
+   "docs/vid2/n_save.mp3",
+   47.28
+  ],
+  [
+   "docs/vid2/n_cta.mp3",
+   57.68
+  ]
+ ],
+ "total": 61.687230825424194
+}
