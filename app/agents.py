@@ -6,7 +6,9 @@ AGENTS = [
     {"id": "receptionist", "name": "StoreRight Receptionist",
      "business": "StoreRight Self-Storage", "vertical": "storage",
      "desc": "Inbound storage calls — quotes units, qualifies, reserves & books tours.",
-     "icon": "fa-warehouse", "color": "#4f46e5"},
+     "icon": "fa-warehouse", "color": "#f97316",
+     # industry palette (see skill color-system.md): storage = orange accent, steel-blue secondary, warm charcoal
+     "bg": "#12151b", "accent": "#f97316", "accent2": "#7ea2cf"},
     {"id": "sales", "name": "Sales Follow-Up Agent",
      "desc": "Outbound — calls new leads, qualifies, and hands off hot ones.",
      "icon": "fa-phone-volume", "color": "#0e9488"},
