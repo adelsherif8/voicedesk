@@ -8,7 +8,14 @@ AGENTS = [
      "desc": "Inbound storage calls — quotes units, qualifies, reserves & books tours.",
      "icon": "fa-warehouse", "color": "#f97316",
      # industry palette (see skill color-system.md): storage = orange accent, steel-blue secondary, warm charcoal
-     "bg": "#12151b", "accent": "#f97316", "accent2": "#7ea2cf"},
+     "mode": "light", "bg": "#faf7f2", "accent": "#f97316", "accent2": "#2f5d8a",
+     # live inventory the agent quotes from (available = total - reserved records)
+     "inventory": [
+         {"size": "5x5", "total": 20, "price": 45, "label": "Small · closet"},
+         {"size": "10x10", "total": 30, "price": 110, "label": "Medium · 1-bed apt"},
+         {"size": "10x20", "total": 15, "price": 190, "label": "Large · 3-bed house"},
+         {"size": "10x10 CC", "total": 12, "price": 145, "label": "Climate-controlled"},
+     ]},
     {"id": "sales", "name": "Sales Follow-Up Agent",
      "desc": "Outbound — calls new leads, qualifies, and hands off hot ones.",
      "icon": "fa-phone-volume", "color": "#0e9488"},

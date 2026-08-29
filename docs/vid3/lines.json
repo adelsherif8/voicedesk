@@ -1,0 +1,70 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid3/n_hook.mp3",
+   "dur": 7.44,
+   "text": "Storage facilities miss forty percent of their calls \u2014 about fifty-eight thousand dollars a year. Meet Alex. Alex misses none."
+  },
+  "save": {
+   "file": "docs/vid3/n_save.mp3",
+   "dur": 3.456,
+   "text": "Reserved, tour booked, saved to your system \u2014 automatically."
+  },
+  "tenant": {
+   "file": "docs/vid3/n_tenant.mp3",
+   "dur": 4.656,
+   "text": "And it's not just new renters. Three out of four callers are existing tenants."
+  },
+  "cta": {
+   "file": "docs/vid3/n_cta.mp3",
+   "dur": 2.832,
+   "text": "Want this answering your phone? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid3/c1_0.mp3",
+   "dur": 3.264,
+   "text": "StoreRight Self-Storage, this is Alex \u2014 how can I help?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid3/c1_1.mp3",
+   "dur": 4.272,
+   "text": "I need to store a couch, a bed, and about fifteen boxes from next Monday."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid3/c1_2.mp3",
+   "dur": 6.264,
+   "text": "A ten-by-ten is perfect for that \u2014 a hundred and ten a month. Want me to reserve it and book you a tour?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid3/c1_3.mp3",
+   "dur": 1.848,
+   "text": "Yes please. Monday at two works."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid3/c1_4.mp3",
+   "dur": 5.688,
+   "text": "Done \u2014 it's reserved, your tour is booked, and I've texted the confirmation. See you Monday, Jenna!"
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "caller",
+   "file": "docs/vid3/c2_0.mp3",
+   "dur": 2.568,
+   "text": "Hi, I'm at the gate and my code isn't working."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid3/c2_1.mp3",
+   "dur": 7.536,
+   "text": "No problem, Mark. I've verified the phone on your account \u2014 your new gate code is four, eight, one, nine, and the gate is open now."
+  }
+ ]
+}

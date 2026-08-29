@@ -2,13 +2,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 <style>
-:root{--blue:#7ea2cf;--teal:#9dc0e8;--orange:#f97316;--ink:#f3f1ec;--muted:#9aa3b5}
+:root{--blue:#2f5d8a;--teal:#9dc0e8;--orange:#f97316;--ink:#1a1612;--muted:#6b6560}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
-html,body{width:1920px;height:1080px;overflow:hidden;background:#12151b;color:var(--ink)}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#faf7f2;color:var(--ink)}
 .bg{position:absolute;inset:0;background:
- radial-gradient(60% 55% at 15% 10%,rgba(249,115,22,.16),transparent 60%),
- radial-gradient(45% 55% at 90% 95%,rgba(126,162,207,.14),transparent 55%),#12151b}
-.bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at 50% 40%,#000,transparent 75%)}
+ radial-gradient(60% 55% at 15% 10%,rgba(249,115,22,.14),transparent 60%),
+ radial-gradient(45% 55% at 90% 95%,rgba(47,93,138,.10),transparent 55%),#faf7f2}
+.bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.045) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at 50% 40%,#000,transparent 75%)}
 .layer{position:absolute;inset:0;opacity:0;transition:opacity .6s;pointer-events:none}
 .layer.on{opacity:1}
 /* HOOK */
@@ -16,19 +16,19 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#12151b;color:va
 #hook .kick{font-size:28px;font-weight:600;color:var(--orange);letter-spacing:.14em;text-transform:uppercase;opacity:0;transform:translateY(16px);transition:all .6s}
 #hook h1{font-size:118px;line-height:1.02;font-weight:900;letter-spacing:-.035em;margin-top:24px;opacity:0;transform:translateY(24px);transition:all .7s .15s}
 #hook h1 .o{color:var(--orange)}
-#hook .meet{margin-top:44px;font-size:44px;font-weight:600;color:#c9d3ec;opacity:0;transform:translateY(16px);transition:all .6s}
+#hook .meet{margin-top:44px;font-size:44px;font-weight:600;color:#4a443e;opacity:0;transform:translateY(16px);transition:all .6s}
 #hook .meet b{color:var(--blue);font-weight:800}
 #hook.s1 .kick,#hook.s1 h1{opacity:1;transform:none}
 #hook.s2 .meet{opacity:1;transform:none}
 /* SCENE */
 #scene{display:flex;align-items:center;justify-content:center;gap:56px;padding:60px 70px 110px;transition:transform 1.1s cubic-bezier(.3,.8,.3,1)}
-.phone{width:380px;height:790px;border-radius:52px;background:#14171d;border:10px solid #232833;box-shadow:0 40px 90px rgba(0,0,0,.6),inset 0 0 0 2px #181c24;position:relative;overflow:hidden;flex-shrink:0;transform:translateY(24px);opacity:0;transition:all .7s cubic-bezier(.2,1,.3,1)}
+.phone{width:380px;height:790px;border-radius:52px;background:#14171d;border:10px solid #232833;box-shadow:0 40px 90px rgba(40,25,10,.4),inset 0 0 0 2px #181c24;position:relative;overflow:hidden;flex-shrink:0;transform:translateY(24px);opacity:0;transition:all .7s cubic-bezier(.2,1,.3,1)}
 .phone.on{opacity:1;transform:none}
 .phone .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;border-radius:20px;background:#000}
 .ph-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:90px 26px 30px;background:linear-gradient(180deg,#1b1f28,#14171d)}
-.ph-in .lbl{font-size:14px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.ph-in .nm{font-size:30px;font-weight:800;margin-top:6px}
-.ph-in .num{font-size:15px;color:var(--muted);margin-top:4px}
+.ph-in .lbl{font-size:14px;color:#9aa3b5;letter-spacing:.06em;text-transform:uppercase}
+.ph-in .nm{font-size:30px;font-weight:800;margin-top:6px;color:#f5f1ea}
+.ph-in .num{font-size:15px;color:#9aa3b5;margin-top:4px}
 .ph-in .timer{font-size:15px;color:#34d399;margin-top:6px;font-variant-numeric:tabular-nums;display:none}
 .phone.live .timer{display:block}
 .av{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#f97316,#fbbf24);display:grid;place-items:center;font-size:40px;color:#06101f;margin:28px 0 8px;font-weight:800}
@@ -37,7 +37,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#12151b;color:va
 .phone.talking .wave{opacity:1}
 .chat{flex:1;width:100%;margin-top:14px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:9px}
 .bub{max-width:88%;padding:10px 13px;border-radius:16px;font-size:15px;line-height:1.35;animation:pop .35s cubic-bezier(.2,1,.3,1)}
-.bub.alex{align-self:flex-start;background:#262b36;border-bottom-left-radius:4px;color:#dbe6ff}
+.bub.alex{align-self:flex-start;background:#262b36;border-bottom-left-radius:4px;color:#e8eefb}
 .bub.caller{align-self:flex-end;background:linear-gradient(135deg,#4f7fb8,#7ea2cf);border-bottom-right-radius:4px;color:#fff}
 .bub small{display:block;font-size:11px;opacity:.65;margin-bottom:3px;font-weight:600;letter-spacing:.04em}
 @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
@@ -47,17 +47,17 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#12151b;color:va
 @keyframes ringshake{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(14deg)}60%{transform:rotate(-8deg)}}
 .phone.live .btns{display:none}
 .phone.live .chat{display:flex}.chat{display:none}
-.ai-tag{position:absolute;top:56px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--teal);background:rgba(126,162,207,.14);border:1px solid rgba(126,162,207,.5);padding:5px 12px;border-radius:999px;white-space:nowrap}
+.ai-tag{position:absolute;top:56px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;color:#9dc0e8;background:rgba(126,162,207,.14);border:1px solid rgba(126,162,207,.5);padding:5px 12px;border-radius:999px;white-space:nowrap}
 /* BROWSER */
-.browser{width:1300px;border-radius:18px;background:#15181f;border:1px solid #2a2f3a;box-shadow:0 40px 100px rgba(0,0,0,.6);overflow:hidden;transform:translateY(24px);opacity:0;transition:all .7s .1s cubic-bezier(.2,1,.3,1)}
+.browser{width:1300px;border-radius:18px;background:#fff;border:1px solid #e8e1d8;box-shadow:0 40px 100px rgba(40,25,10,.28);overflow:hidden;transform:translateY(24px);opacity:0;transition:all .7s .1s cubic-bezier(.2,1,.3,1)}
 .browser.on{opacity:1;transform:none}
-.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#1b1f27;border-bottom:1px solid #2a2f3a}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f3eee7;border-bottom:1px solid #e8e1d8}
 .bar i{width:12px;height:12px;border-radius:50%;background:#343a47}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
-.bar .url{margin-left:14px;flex:1;height:28px;border-radius:8px;background:#15181f;display:flex;align-items:center;padding:0 12px;font-size:13px;color:var(--muted);gap:8px}
-iframe{width:1300px;height:790px;border:0;display:block;background:#12151b}
+.bar .url{margin-left:14px;flex:1;height:28px;border-radius:8px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px;color:var(--muted);gap:8px}
+iframe{width:1300px;height:790px;border:0;display:block;background:#faf7f2}
 /* CAPTION */
 #cap{position:absolute;left:0;right:0;bottom:44px;display:flex;justify-content:center;pointer-events:none}
-#cap span{display:inline-flex;align-items:center;gap:14px;font-size:30px;font-weight:700;padding:16px 30px;border-radius:999px;background:rgba(18,21,27,.88);border:1px solid #343a47;box-shadow:0 20px 50px rgba(0,0,0,.5);opacity:0;transform:translateY(14px);transition:all .45s}
+#cap span{display:inline-flex;align-items:center;gap:14px;font-size:30px;font-weight:700;padding:16px 30px;border-radius:999px;background:#1a1612;color:#faf7f2;border:1px solid #1a1612;box-shadow:0 20px 50px rgba(40,25,10,.35);opacity:0;transform:translateY(14px);transition:all .45s}
 #cap span.on{opacity:1;transform:none}
 #cap span i{color:var(--orange);font-size:26px}
 /* CALLOUT */
@@ -68,10 +68,10 @@ iframe{width:1300px;height:790px;border:0;display:block;background:#12151b}
 #end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 #end h2{font-size:92px;font-weight:900;letter-spacing:-.03em;line-height:1.05}
 #end h2 .o{color:var(--orange)}
-#end .who{margin-top:40px;font-size:34px;color:#c9d3ec}
-#end .who b{color:#fff;font-weight:800}
+#end .who{margin-top:40px;font-size:34px;color:#4a443e}
+#end .who b{color:#1a1612;font-weight:800}
 #end .stack{display:flex;gap:14px;margin-top:34px}
-#end .stack span{font-size:22px;padding:12px 22px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid #343a47;color:#dbe3f5}
+#end .stack span{font-size:22px;padding:12px 22px;border-radius:12px;background:#fff;border:1px solid #e8e1d8;color:#1a1612;box-shadow:0 8px 24px rgba(60,40,20,.08)}
 #end .link{margin-top:40px;font-size:26px;color:var(--blue);font-weight:600}
 </style></head>
 <body>
@@ -79,8 +79,8 @@ iframe{width:1300px;height:790px;border:0;display:block;background:#12151b}
 
 <div class="layer on" id="hook">
   <div class="kick">Self-storage · front desk</div>
-  <h1>Every missed call<br/>is a <span class="o">lost tenant.</span></h1>
-  <div class="meet">Meet <b>Alex</b> — the AI receptionist that never misses one.</div>
+  <h1>40% of your calls<br/>go <span class="o">unanswered.</span></h1>
+  <div class="meet"><span class="o" style="color:var(--orange);font-weight:800">≈ $58,000 / year</span> in lost rentals &nbsp;·&nbsp; Meet <b>Alex</b>, who misses none.</div>
 </div>
 
 <div class="layer" id="scene">
@@ -89,8 +89,8 @@ iframe{width:1300px;height:790px;border:0;display:block;background:#12151b}
     <div class="ph-in">
       <div class="ai-tag"><i class="fa-solid fa-robot"></i> &nbsp;AI receptionist on the line</div>
       <div class="lbl" id="plbl">Incoming call</div>
-      <div class="nm">Jenna Marlowe</div>
-      <div class="num">+1 (555) 412-7788 · mobile</div>
+      <div class="nm" id="pname">Jenna Marlowe</div>
+      <div class="num" id="pnum">+1 (555) 412-7788 · new caller</div>
       <div class="timer" id="timer">00:00</div>
       <div class="av"><i class="fa-solid fa-phone-volume"></i></div>
       <div class="wave" id="wave"></div>
@@ -127,12 +127,13 @@ window.api={
   answer(){const p=$('phone');p.classList.add('live');$('plbl').textContent='Alex · AI receptionist';secs=0;
     tmrT=setInterval(()=>{secs++;$('timer').textContent=String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0')},1000);},
   say(sp,txt){const c=$('chat');const b=document.createElement('div');b.className='bub '+sp;
-    b.innerHTML=`<small>${sp==='alex'?'ALEX · AI':'JENNA'}</small>${txt}`;c.appendChild(b);
+    b.innerHTML=`<small>${sp==='alex'?'ALEX · AI':$('pname').textContent.split(' ')[0].toUpperCase()}</small>${txt}`;c.appendChild(b);
     while(c.children.length>3)c.removeChild(c.firstChild);
     $('phone').classList.toggle('talking',sp==='alex'); if(sp==='alex')startWave(); else stopWave();},
   caption(t,ic){const s=$('captxt'); if(!t){s.classList.remove('on');return;} s.innerHTML=`<i class="fa-solid ${ic||'fa-check'}"></i>${t}`;s.classList.add('on');},
-  endCall(){clearInterval(tmrT);stopWave();$('phone').classList.remove('talking');$('plbl').textContent='Call ended';
-    $('chat').innerHTML='<div class="bub alex"><small>ALEX · AI</small><i class="fa-solid fa-circle-check" style="color:#34d399"></i> Reserved 10×10 · tour Mon 2 PM · saved to CRM</div>';},
+  endCall(msg){clearInterval(tmrT);stopWave();$('phone').classList.remove('talking');$('plbl').textContent='Call ended';
+    $('chat').innerHTML='<div class="bub alex"><small>ALEX · AI</small><i class="fa-solid fa-circle-check" style="color:#34d399"></i> '+(msg||'Reserved 10×10 · tour Mon 2 PM · saved to CRM')+'</div>';},
+  newCall(name,num){const p=$('phone');p.classList.remove('live','talking');$('chat').innerHTML='';$('plbl').textContent='Incoming call';$('pname').textContent=name;$('pnum').textContent=num;$('timer').textContent='00:00';},
   zoom(x,y,s){const sc=$('scene');sc.style.transformOrigin=`${x}px ${y}px`;sc.style.transform=s?`scale(${s})`:'';},
   callout(t,x,y){const c=$('co'); if(!t){c.classList.remove('on');return;} $('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
   end(){$('scene').classList.remove('on');$('co').classList.remove('on');$('captxt').classList.remove('on');$('end').classList.add('on');}
