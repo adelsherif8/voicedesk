@@ -1,0 +1,82 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid6/n_hook.mp3",
+   "dur": 9.0,
+   "text": "Plumbers miss up to forty percent of their calls, and eighty-five percent of those callers never call back. That's thirteen thousand dollars a month, gone."
+  },
+  "save": {
+   "file": "docs/vid6/n_save.mp3",
+   "dur": 6.696,
+   "text": "Missed call, texted in eight seconds, called back in fifty-two, booked. Three hundred and twenty dollars recovered."
+  },
+  "est": {
+   "file": "docs/vid6/n_est.mp3",
+   "dur": 5.16,
+   "text": "And the estimates nobody chased? The agent follows up, handles the objection, and closes."
+  },
+  "cta": {
+   "file": "docs/vid6/n_cta.mp3",
+   "dur": 3.888,
+   "text": "Want your missed calls and unsold estimates recovered? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid6/c1_0.mp3",
+   "dur": 5.952,
+   "text": "Hi Maria, Sam from Blue Ridge Plumbing \u2014 sorry we missed you, the crew was under a sink. What's going on?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid6/c1_1.mp3",
+   "dur": 3.528,
+   "text": "My kitchen sink is completely backed up, nothing's draining."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid6/c1_2.mp3",
+   "dur": 5.616,
+   "text": "We can be there today, two to four \u2014 the $89 dispatch fee goes toward the repair. Book it?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid6/c1_3.mp3",
+   "dur": 0.672,
+   "text": "Yes, please."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid6/c1_4.mp3",
+   "dur": 4.176,
+   "text": "Booked. You'll get a text with the plumber's name and a tracking link."
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid6/c2_0.mp3",
+   "dur": 5.736,
+   "text": "Hi Tom, Sam from Blue Ridge \u2014 checking in on the water heater estimate we sent Monday. Any questions?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid6/c2_1.mp3",
+   "dur": 3.96,
+   "text": "Honestly it's the price. Twenty-four hundred \u2014 we were going to wait."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid6/c2_2.mp3",
+   "dur": 6.576,
+   "text": "Fair. We can do zero percent for twelve months \u2014 two hundred a month \u2014 and install Thursday morning. Hold Thursday?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid6/c2_3.mp3",
+   "dur": 1.368,
+   "text": "Yeah\u2026 let's do Thursday."
+  }
+ ]
+}

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — Revenue Recovery</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:{{ agent.bg or '#f5f4f0' }};--surface:#ffffff;--surface2:#efede7;--ink:#1c1a17;--muted:#6f6a62;--line:#e0dcd3;--soft:#3d3934;
+--copper:{{ agent.accent or '#b87333' }};--blue:{{ agent.accent2 or '#0f4c81' }};--green:#2e7d32;--amber:#c47d0e;--red:#c62828;--shadow:0 8px 24px rgba(28,26,23,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Barlow,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.app{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.logo{width:48px;height:48px;border-radius:8px;display:grid;place-items:center;font-size:1.3rem;background:var(--blue);color:#fff}
+.brand b{font-family:'Barlow Condensed';font-size:1.6rem;font-weight:800;letter-spacing:.01em;text-transform:uppercase}
+.brand span{display:block;font-size:.8rem;color:var(--muted);font-weight:600}
+.right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:var(--green);background:rgba(46,125,50,.08);border:1px solid rgba(46,125,50,.3);border-radius:6px;padding:7px 13px}
+.live .d{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pp 1.6s infinite}
+@keyframes pp{0%{box-shadow:0 0 0 0 rgba(46,125,50,.5)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.pms{display:flex;gap:6px;align-items:center;font-size:.74rem;color:var(--muted);font-weight:600}
+.pms span{border:1px solid var(--line);background:var(--surface);border-radius:5px;padding:4px 8px;font-weight:700}
+.calling{display:none;align-items:center;gap:14px;background:#fbf1e6;border:1px solid rgba(184,115,51,.5);border-radius:8px;padding:13px 18px;margin-bottom:14px}
+.calling.show{display:flex}
+.calling .ph{width:40px;height:40px;border-radius:50%;background:var(--copper);color:#fff;display:grid;place-items:center}
+.calling .live-txt{margin-left:auto;font-size:.86rem;color:var(--soft);max-width:52%;text-align:right}
+/* KPI */
+.kpis{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:13px 14px;position:relative;box-shadow:var(--shadow);border-top:4px solid var(--line)}
+.tile.hero{border-top-color:var(--copper);background:linear-gradient(180deg,#fff,#fbf5ee)}
+.tile .ic{position:absolute;right:12px;top:10px;color:var(--line);font-size:1.2rem}
+.tile .v{font-family:'Barlow Condensed';font-size:2rem;font-weight:800;letter-spacing:.01em;line-height:1}
+.tile.hero .v{font-size:2.7rem;color:var(--copper)}
+.tile .v.g{color:var(--green)}.tile .v.b{color:var(--blue)}
+.tile .l{font-size:.74rem;color:var(--muted);margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.tile .sub{font-size:.72rem;color:var(--green);font-weight:700;margin-top:4px}.tile .sub.m{color:var(--muted)}
+.tile.flash{animation:flash 1s}
+@keyframes flash{0%{background:#fbe9d6}100%{background:var(--surface)}}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tab{padding:10px 14px;font-size:.9rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:8px;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;font-family:'Barlow Condensed';font-size:1.05rem}
+.tab.on{color:var(--ink);border-bottom-color:var(--copper)}
+.tab .cnt{font-family:Barlow;font-size:.7rem;background:var(--surface2);border:1px solid var(--line);border-radius:4px;padding:1px 7px;color:var(--muted);text-transform:none}
+.panel{display:none}.panel.on{display:block}
+/* pipeline board */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.col{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:120px}
+.col h4{font-family:'Barlow Condensed';font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.col h4 .n{margin-left:auto;font-family:Barlow;font-size:.72rem;background:#fff;border:1px solid var(--line);border-radius:4px;padding:1px 7px}
+.col h4 i{color:var(--blue)}.col.booked h4 i{color:var(--green)}
+.mini{background:#fff;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:6px;padding:8px 10px;margin-bottom:7px;font-size:.8rem}
+.mini.missed{border-left-color:var(--copper)}.mini.estimate{border-left-color:var(--blue)}.mini.reactivation{border-left-color:var(--amber)}
+.mini b{display:block;font-weight:700}.mini span{color:var(--muted);font-size:.72rem}
+.mini .val{float:right;font-weight:800;color:var(--green)}
+.mini.new{animation:slidein .5s cubic-bezier(.2,1,.3,1);box-shadow:0 0 0 2px var(--copper)}
+@keyframes slidein{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;box-shadow:var(--shadow)}
+h3.sec{font-family:'Barlow Condensed';font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-weight:800;display:flex;align-items:center;gap:8px}
+h3.sec .r{margin-left:auto;font-family:Barlow;text-transform:none;letter-spacing:0;font-weight:700;color:var(--green);font-size:.8rem}
+.flows{display:flex;flex-direction:column;gap:8px}
+.flow{display:flex;align-items:center;gap:12px;font-size:.82rem}
+.flow .fi{width:34px;height:34px;border-radius:6px;display:grid;place-items:center;color:#fff}
+.flow .fi.missed{background:var(--copper)}.flow .fi.estimate{background:var(--blue)}.flow .fi.reactivation{background:var(--amber)}
+.flow .t{width:190px}.flow .t b{display:block}.flow .t span{color:var(--muted);font-size:.72rem}
+.flow .bar{flex:1;height:12px;border-radius:6px;background:var(--surface2);overflow:hidden}.flow .bar i{display:block;height:100%;background:var(--green)}
+.flow .amt{width:80px;text-align:right;font-weight:800;color:var(--green)}
+.speed{display:flex;gap:10px}
+.speed div{flex:1;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;text-align:center}
+.speed b{display:block;font-family:'Barlow Condensed';font-size:1.7rem;font-weight:800;color:var(--blue)}.speed span{font-size:.7rem;color:var(--muted);font-weight:700}
+.speed .g b{color:var(--green)}.speed .r b{color:var(--red)}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:15px;box-shadow:var(--shadow);border-top:4px solid var(--blue)}
+.card.missed{border-top-color:var(--copper)}.card.reactivation{border-top-color:var(--amber)}
+.card.new{animation:slidein .5s cubic-bezier(.2,1,.3,1)}
+.rowh{display:flex;align-items:center;gap:11px}
+.av{width:38px;height:38px;border-radius:6px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.82rem;flex-shrink:0}
+.nm{font-weight:800}.ph{font-size:.8rem;color:var(--muted)}
+.ago{margin-left:auto;font-size:.72rem;color:var(--muted);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;align-items:center}
+.tag{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:4px;background:var(--surface2);color:var(--soft);border:1px solid var(--line)}
+.oc{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:4px;background:rgba(46,125,50,.1);color:var(--green)}
+.oc.warn{background:rgba(196,125,14,.12);color:var(--amber)}.oc.mut{background:var(--surface2);color:var(--muted)}
+.sm{font-size:.85rem;color:var(--soft);margin-top:10px;line-height:1.5}
+.hl{background:rgba(184,115,51,.15);color:#8a4f1c;border-radius:4px;padding:0 5px;font-weight:800}
+.hl.g{background:rgba(46,125,50,.12);color:var(--green)}
+.kv{display:flex;gap:10px;margin-top:11px;flex-wrap:wrap}
+.kv div{background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-size:.8rem;min-width:88px}
+.kv div b{display:block;font-size:.95rem;font-weight:800}.kv div span{color:var(--muted);font-size:.7rem;font-weight:600}
+.kv div.g b{color:var(--green)}.kv div.b b{color:var(--blue)}.kv div.c b{color:var(--copper)}
+.empty{color:var(--muted);text-align:center;padding:40px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="logo"><i class="fa-solid {{ agent.icon }}"></i></div>
+    <div class="brand"><b>{{ agent.business }}</b><span>Revenue Recovery Desk · missed calls · unsold estimates · reactivation</span></div>
+    <div class="right"><div class="pms">Built on <span>GoHighLevel</span><span>Retell AI</span><span>Twilio</span></div><span class="live"><span class="d"></span> Agent on</span></div>
+  </div>
+  <div class="calling" id="calling"><div class="ph"><i class="fa-solid fa-phone-volume"></i></div><div class="who"><b id="callFrom">Calling back…</b></div><div class="live-txt" id="callTxt"></div></div>
+
+  <div class="kpis">
+    <div class="tile hero" id="t-rev"><i class="ic fa-solid fa-sack-dollar"></i><div class="v">$0</div><div class="l">Revenue recovered this month</div><div class="sub" id="k-rev">from calls a human never returned</div></div>
+    <div class="tile" id="t-miss"><i class="ic fa-solid fa-phone-slash"></i><div class="v g">0%</div><div class="l">Missed calls recovered</div><div class="sub m" id="k-miss">industry: 85% never call back</div></div>
+    <div class="tile" id="t-est"><i class="ic fa-solid fa-file-invoice-dollar"></i><div class="v b">$0</div><div class="l">Estimates closed</div><div class="sub" id="k-est">0 of 0 open</div></div>
+    <div class="tile" id="t-react"><i class="ic fa-solid fa-rotate-left"></i><div class="v">0</div><div class="l">Customers reactivated</div><div class="sub m" id="k-react">12+ months since last visit</div></div>
+    <div class="tile" id="t-speed"><i class="ic fa-solid fa-stopwatch"></i><div class="v b">0s</div><div class="l">Avg callback</div><div class="sub" id="k-speed">text-back in 7s</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="board"><i class="fa-solid fa-table-columns"></i> Pipeline</div>
+    <div class="tab" data-tab="missed"><i class="fa-solid fa-phone-slash"></i> Missed calls <span class="cnt" id="c-m">0</span></div>
+    <div class="tab" data-tab="estimates"><i class="fa-solid fa-file-invoice-dollar"></i> Estimates <span class="cnt" id="c-e">0</span></div>
+    <div class="tab" data-tab="reactivation"><i class="fa-solid fa-rotate-left"></i> Reactivation <span class="cnt" id="c-r">0</span></div>
+  </div>
+
+  <div class="panel on" id="p-board">
+    <div class="board">
+      <div class="col"><h4><i class="fa-solid fa-phone-slash"></i> Missed / open <span class="n" id="n-open">0</span></h4><div id="col-open"></div></div>
+      <div class="col"><h4><i class="fa-solid fa-comment-sms"></i> Texted <span class="n" id="n-texted">0</span></h4><div id="col-texted"></div></div>
+      <div class="col"><h4><i class="fa-solid fa-phone-volume"></i> Called by AI <span class="n" id="n-called">0</span></h4><div id="col-called"></div></div>
+      <div class="col booked"><h4><i class="fa-solid fa-calendar-check"></i> Booked <span class="n" id="n-booked">0</span></h4><div id="col-booked"></div></div>
+    </div>
+    <div class="two">
+      <div class="box"><h3 class="sec"><i class="fa-solid fa-layer-group"></i> Recovered by flow <span class="r" id="tot"></span></h3><div class="flows" id="flows"></div></div>
+      <div class="box"><h3 class="sec"><i class="fa-solid fa-stopwatch"></i> Speed to recovery</h3>
+        <div class="speed"><div class="g"><b id="s-text">7s</b><span>missed call → text-back</span></div><div class="g"><b id="s-call">52s</b><span>missed call → AI callback</span></div><div class="r"><b>85%</b><span>callers lost without it</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel" id="p-missed"><div class="grid" id="missed"></div></div>
+  <div class="panel" id="p-estimates"><div class="grid" id="estimates"></div></div>
+  <div class="panel" id="p-reactivation"><div class="grid" id="reactivation"></div></div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}";
+const AVC={missed:'#b87333',estimate:'#0f4c81',reactivation:'#c47d0e'};
+const FL={missed:['Missed-call text-back + callback','fa-phone-slash'],estimate:['Unsold-estimate follow-up','fa-file-invoice-dollar'],reactivation:['Past-customer reactivation','fa-rotate-left']};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+function initials(n){return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function money(v){return '$'+(+v||0).toLocaleString();}
+function ocClass(st){return st==='booked'?'':st==='called'||st==='texted'?' warn':' mut';}
+function highlight(sum,m){let s=esc(sum||'');s=s.replace(/\$[\d,]+/g,x=>`<span class="hl g">${x}</span>`).replace(/(\d+)s\b/g,'<span class="hl">$1s</span>');return s;}
+let lastTopId=null;
+function render(d){
+  const R=d.records; const fl=r=>(r.meta||{}).flow||'missed'; const st=r=>(r.meta||{}).stage||'open';
+  const booked=R.filter(r=>st(r)==='booked'); const rev=booked.reduce((a,r)=>a+(+r.meta.value||0),0);
+  const missed=R.filter(r=>fl(r)==='missed'), est=R.filter(r=>fl(r)==='estimate'), rea=R.filter(r=>fl(r)==='reactivation');
+  const mRec=missed.filter(r=>st(r)==='booked').length;
+  const estClosed=est.filter(r=>st(r)==='booked').reduce((a,r)=>a+(+r.meta.estimate||0),0);
+  const cbs=R.map(r=>+(r.meta||{}).callback_secs).filter(Boolean); const tbs=R.map(r=>+(r.meta||{}).text_back_secs).filter(Boolean);
+  const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;
+  set('t-rev',money(rev)); $('k-rev').textContent=booked.length+' jobs from calls a human never returned';
+  set('t-miss',Math.round(mRec/Math.max(missed.length,1)*100)+'%'); $('k-miss').textContent=`${mRec} of ${missed.length} · industry: 85% never call back`;
+  set('t-est',money(estClosed)); $('k-est').textContent=`${est.filter(r=>st(r)==='booked').length} of ${est.length} open estimates`;
+  set('t-react',rea.filter(r=>st(r)==='booked').length); set('t-speed',avg(cbs)+'s'); $('k-speed').textContent='text-back in '+avg(tbs)+'s'; $('s-text').textContent=avg(tbs)+'s'; $('s-call').textContent=avg(cbs)+'s';
+  $('c-m').textContent=missed.length;$('c-e').textContent=est.length;$('c-r').textContent=rea.length;
+  const cols={open:[],texted:[],called:[],booked:[]}; R.forEach(r=>(cols[st(r)]||cols.open).push(r));
+  Object.keys(cols).forEach(k=>{$('n-'+k).textContent=cols[k].length;$('col-'+k).innerHTML=cols[k].map(r=>`<div class="mini ${fl(r)}"><span class="val">${money(r.meta.value)}</span><b>${esc(r.name)}</b><span>${esc(r.intent)}</span></div>`).join('');});
+  const byFlow={}; booked.forEach(r=>{byFlow[fl(r)]=(byFlow[fl(r)]||0)+(+r.meta.value||0);});
+  $('tot').textContent=money(rev)+' this month';
+  $('flows').innerHTML=Object.keys(FL).map(k=>`<div class="flow"><div class="fi ${k}"><i class="fa-solid ${FL[k][1]}"></i></div><div class="t"><b>${FL[k][0]}</b><span>${R.filter(r=>fl(r)===k).length} in flow</span></div><div class="bar"><i style="width:${(byFlow[k]||0)/Math.max(rev,1)*100}%"></i></div><div class="amt">${money(byFlow[k]||0)}</div></div>`).join('');
+  $('missed').innerHTML=missed.map(card).join('')||'<div class="empty">No missed calls.</div>';
+  $('estimates').innerHTML=est.map(card).join('')||'<div class="empty">No open estimates.</div>';
+  $('reactivation').innerHTML=rea.map(card).join('')||'<div class="empty">No reactivation calls.</div>';
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){['t-rev','t-miss','t-est','t-speed'].forEach(id=>{const e=$(id);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');});const k=st(R[0]);const c=$('col-'+k).firstElementChild;if(c)c.classList.add('new');}
+  if(R.length)lastTopId=R[0].id;
+}
+function set(id,v){$(id).querySelector('.v').textContent=v;}
+function card(r){const m=r.meta||{};const f=m.flow||'missed';
+  return `<div class="card ${f}"><div class="rowh"><span class="av" style="background:${AVC[f]}">${initials(r.name)}</span><div><div class="nm">${esc(r.name)}</div><div class="ph">${esc(r.phone)}</div></div><span class="ago">${ago(r.created)}</span></div>
+    <div class="tags"><span class="tag"><i class="fa-solid ${FL[f][1]}"></i> ${FL[f][0].split(' ')[0]} ${f==='missed'?'call':''}</span><span class="tag">${esc(r.intent)}</span><span class="oc${ocClass(m.stage)}">${esc(r.outcome)}</span></div>
+    <div class="sm">${highlight(r.summary,m)}</div>
+    <div class="kv">
+      ${m.text_back_secs?`<div class="g"><b>${m.text_back_secs}s</b><span>text-back</span></div>`:''}
+      ${m.callback_secs?`<div class="b"><b>${m.callback_secs}s</b><span>AI callback</span></div>`:''}
+      ${m.estimate?`<div class="b"><b>${money(m.estimate)}</b><span>estimate · ${m.days_open} days open</span></div>`:''}
+      ${m.objection?`<div><b>${esc(m.objection)}</b><span>objection handled</span></div>`:''}
+      ${m.financing?`<div class="g"><b>${esc(m.financing)}</b><span>financing offered</span></div>`:''}
+      ${m.last_visit_months?`<div class="c"><b>${m.last_visit_months} mo</b><span>since last visit</span></div>`:''}
+      ${r.appointment?`<div class="g"><b><i class="fa-solid fa-calendar-check"></i> ${esc(r.appointment)}</b><span>booked</span></div>`:''}
+      ${m.next_attempt?`<div><b><i class="fa-solid fa-rotate"></i> ${esc(m.next_attempt)}</b><span>next attempt</span></div>`:''}
+      ${m.value&&m.stage==='booked'?`<div class="g"><b>${money(m.value)}</b><span>recovered</span></div>`:''}
+    </div></div>`;}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));t.classList.add('on');$('p-'+t.dataset.tab).classList.add('on');});
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>

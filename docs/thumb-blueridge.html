@@ -1,0 +1,55 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Barlow,system-ui,sans-serif}
+body{width:1000px;height:750px;overflow:hidden;position:relative;background:#0f4c81;color:#fff}
+.bg{position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 2px,transparent 2px 22px)}
+/* copper pipe along the top */
+.pipe{position:absolute;left:-20px;right:-20px;top:64px;height:34px;background:linear-gradient(180deg,#e0a06a,#b87333 45%,#7f4a1e);border-radius:17px;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.pipe::before,.pipe::after{content:'';position:absolute;top:-8px;width:60px;height:50px;border-radius:8px;background:linear-gradient(180deg,#f0b87f,#b87333 50%,#6d3f18)}
+.pipe::before{left:120px}.pipe::after{right:160px}
+.brand{position:absolute;left:52px;top:118px;display:flex;align-items:center;gap:14px}
+.brand .lg{width:46px;height:46px;border-radius:6px;background:#fff;color:#0f4c81;display:grid;place-items:center;font-size:22px}
+.brand b{font-family:'Barlow Condensed';font-size:34px;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.brand span{font-size:15px;opacity:.75;font-weight:600;margin-left:8px}
+h1{position:absolute;left:52px;top:190px;font-family:'Barlow Condensed';font-size:96px;line-height:.9;font-weight:800;text-transform:uppercase;letter-spacing:.005em;width:560px}
+h1 em{font-style:normal;color:#f0b87f}
+.sub{position:absolute;left:52px;top:478px;width:500px;font-size:22px;font-weight:600;color:#cfe0f0;line-height:1.35}
+.stats{position:absolute;left:52px;bottom:48px;display:flex;gap:26px}
+.stats div{border-left:3px solid #f0b87f;padding-left:14px}
+.stats b{display:block;font-family:'Barlow Condensed';font-size:40px;font-weight:800;line-height:1}
+.stats span{font-size:13px;color:#cfe0f0;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+/* invoice stack */
+.paper{position:absolute;background:#fbf8f2;color:#1c1a17;border-radius:4px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.p2{right:60px;top:230px;width:330px;height:420px;transform:rotate(6deg);opacity:.75}
+.p1{right:88px;top:200px;width:340px;height:450px;transform:rotate(-3deg);padding:26px 26px}
+.p1 .hd{font-family:'Barlow Condensed';font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#0f4c81;display:flex;justify-content:space-between;border-bottom:2px solid #0f4c81;padding-bottom:8px}
+.p1 .hd span{color:#6f6a62;font-family:Barlow;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;align-self:flex-end}
+.p1 .row{display:flex;justify-content:space-between;font-size:15px;padding:9px 0;border-bottom:1px dashed #d8d2c6}
+.p1 .row b{font-weight:700}
+.p1 .tot{display:flex;justify-content:space-between;font-family:'Barlow Condensed';font-size:26px;font-weight:800;padding-top:12px;color:#0f4c81}
+.p1 .foot{font-size:12px;color:#6f6a62;margin-top:14px;line-height:1.4}
+.stamp{position:absolute;right:120px;top:520px;transform:rotate(-12deg);border:5px solid #2e7d32;color:#2e7d32;border-radius:8px;padding:10px 18px;font-family:'Barlow Condensed';font-size:44px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:rgba(251,248,242,.85);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.stamp small{display:block;font-size:16px;letter-spacing:.1em;font-weight:700}
+.tagai{position:absolute;right:64px;top:150px;background:#f0b87f;color:#4a2a0f;font-weight:800;font-size:14px;padding:8px 14px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em}
+</style></head><body>
+<div class="bg"></div><div class="pipe"></div>
+<div class="brand"><div class="lg"><i class="fa-solid fa-wrench"></i></div><b>Blue Ridge Plumbing</b><span>· Revenue Recovery</span></div>
+<h1>Missed<br/>calls,<br/><em>recovered.</em></h1>
+<div class="sub">An AI agent on GoHighLevel + Retell that texts back in 8 s, calls back in 52 s, chases unsold estimates and reactivates old customers.</div>
+<div class="stats"><div><b>40%</b><span>calls missed</span></div><div><b>85%</b><span>never call back</span></div><div><b>$13.5K</b><span>lost / month</span></div></div>
+<div class="tagai"><i class="fa-solid fa-robot"></i> AI voice agent · live demo</div>
+<div class="paper p2"></div>
+<div class="paper p1">
+  <div class="hd">Job ticket <span>#4471 · today 2–4 PM</span></div>
+  <div class="row"><span>Customer</span><b>Maria Lopez</b></div>
+  <div class="row"><span>Issue</span><b>Kitchen sink backed up</b></div>
+  <div class="row"><span>Missed call</span><b>10:41 AM</b></div>
+  <div class="row"><span>Text-back</span><b>8 s later</b></div>
+  <div class="row"><span>AI callback</span><b>52 s later</b></div>
+  <div class="tot"><span>Recovered</span><span>$320</span></div>
+  <div class="foot">Dispatch $89 credited to repair · plumber name + tracking link texted · logged to GoHighLevel pipeline.</div>
+</div>
+<div class="stamp">Booked<small>by AI · no human</small></div>
+</body></html>

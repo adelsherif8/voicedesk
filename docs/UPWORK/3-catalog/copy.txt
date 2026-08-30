@@ -1,0 +1,48 @@
+PROJECT CATALOG — paste-ready
+
+TITLE (66 chars, after "You will get"): a 24/7 AI voice agent that answers your calls & books appointments
+CATEGORY: Development & IT → AI Apps & Integration → AI Agents (or "AI Chatbot Development" if AI Agents isn't offered)
+SEARCH TAGS (5): AI Voice Agent · AI Receptionist · Vapi · Retell AI · Twilio
+ATTRIBUTES: Language = English; Platform = Vapi, Retell AI, Twilio; Purpose = Customer service, Lead generation, Appointment booking
+
+DESCRIPTION (1134 chars):
+Your phone, answered by AI — every call, 24/7, in 1 second.
+
+I build AI voice agents on Vapi or Retell AI with a Twilio number that:
+• Answer FAQs in your brand voice
+• Qualify the caller and book straight into your calendar (Google, GoHighLevel, Calendly)
+• Text the confirmation and log every call — transcript, outcome, recording — to your CRM or a live dashboard
+• Take payments, verify customers, and warm-transfer to a human when they should
+
+Two live demos you can open now:
+– Self-storage receptionist: quotes inventory, reserves units, takes payments → voicedesk-h31g.onrender.com/agent/receptionist
+– Appliance-brand support line: warranty lookup, technician dispatch, warm transfer → voicedesk-h31g.onrender.com/agent/support
+
+How it works: tell me your business and the 3 calls you get most → I script the agent, wire calendar/CRM/SMS, test it against 20 scripted calls → you get a demo number to call before go-live. Go-live includes your number, hours and a hand-off doc.
+
+2 years building GoHighLevel lead pipelines for 30+ businesses; production LLM engineer (LangGraph, Langfuse); BSc AI. Top Rated, 100% Job Success.
+
+TIERS
+Starter — "Inbound AI receptionist"  $350 · 5 days · 1 revision
+  1 inbound agent (Vapi or Retell) on your Twilio number · answers FAQs from your info · captures name/phone/reason · call log + transcript to email or Google Sheet · demo number before go-live
+Standard — "Receptionist + booking + CRM"  $750 · 7 days · 2 revisions
+  Everything in Starter + books into your calendar (Google / GoHighLevel / Calendly) + SMS confirmation + call outcomes pushed to your CRM (GoHighLevel, HubSpot, Zoho via webhook/n8n) + live call dashboard
+Premium — "Full front desk: inbound + outbound + payments"  $1,500 · 10 days · 3 revisions
+  Everything in Standard + outbound speed-to-lead / follow-up agent + payment or identity-verification flow + warm transfer to a human + 30 days of tuning & support
+
+ADD-ONS (optional)
+  Extra language (Arabic/Spanish) +$150 · Extra call type / agent +$300 · Monthly care plan (monitoring, prompt tuning, reports) $149/mo
+
+REQUIREMENTS FROM THE CLIENT (Upwork asks you to list these)
+  1. Business name, hours, services/prices, and the 3 most common calls you get
+  2. Where bookings should land (calendar/CRM) and who to transfer to when the AI can't help
+  3. A Twilio account (I can set it up) or your existing number for forwarding
+  4. Approval on the call script before go-live
+
+FAQ
+  Q: Does it sound robotic?  A: No — natural voices (ElevenLabs / OpenAI), interruption handling, and a script written in your brand tone. You'll hear it on a demo number before go-live.
+  Q: What does it cost to run?  A: Roughly $0.10–0.20 per call-minute across telephony + AI; a typical small business runs under $100/month.
+  Q: Can it book into my existing calendar/CRM?  A: Yes — Google Calendar, GoHighLevel, HubSpot, Zoho, Calendly, ServiceTitan/Housecall Pro via webhooks or n8n.
+  Q: What happens when it can't answer?  A: It takes a message or warm-transfers to a human with the call context — you choose.
+
+GALLERY (upload order): 0-gallery-storeright.png · 1-gallery-nordfrost.png · 2-video-storeright.mp4 · 3-gallery-dashboard.png
