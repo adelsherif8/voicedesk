@@ -17,7 +17,7 @@ async def main():
     os.makedirs(FR,exist_ok=True); shutil.rmtree(OUT,ignore_errors=True)
     async with async_playwright() as p:
         b=await p.chromium.launch(); ctx=await b.new_context(viewport={"width":1920,"height":1080},record_video_dir=OUT,record_video_size={"width":1920,"height":1080})
-        pg=await ctx.new_page(); await pg.goto(f"file://{ROOT}/docs/stage5.html"); await pg.wait_for_timeout(1200)
+        pg=await ctx.new_page(); await pg.goto(f"file://{ROOT}/docs/stage5.html"); await pg.frame_locator("#frame").locator(".ticket").first.wait_for(timeout=15000); await pg.wait_for_timeout(600)
         t0=time.time(); now=lambda: time.time()-t0
         async def at(t):
             d=t-now()
@@ -41,12 +41,15 @@ async def main():
         T=t
         await at(T); await api("endCall()"); audio("docs/vid2/ding.mp3",T+0.1); await api("move('maria','booked')"); await api("rev(320)"); post(MARIA)
         audio(L["narr"]["save"]["file"],T+0.4); await api("callout('Booked · $320 recovered · logged to GHL',1000,620)")
-        await at(T+2.2); await shot("booked")
-        await at(T+3.8); await api("callout('')"); await api("cool('maria')"); await api("hide()"); audio(L["narr"]["est"]["file"],T+4.0)
+        await at(T+2.0); await shot("booked")
+        await at(T+3.2); await api("callout('')"); await api("dash()"); await api("zoom(300,120,1.25)")
+        await at(T+4.4); await api("callout('Slotted into Truck 1 · 2–4 PM · ticket stamped',560,560)")
+        await at(T+5.4); await shot("dash-trucks")
+        await at(T+6.6); await api("callout('')"); await api("back()"); await api("cool('maria')"); await api("hide()"); audio(L["narr"]["est"]["file"],T+6.7)
         # estimate flow: tom called -> booked
-        await at(T+4.8); await api("strip('Outbound · unsold-estimate follow-up','Tom Brennan','+1 (555) 771-3302 · estimate #2231 · 3 days open')"); audio("docs/vid4/ringback.mp3",T+5.0)
-        await at(T+6.8); await api("answer()")
-        t2=T+7.1
+        await at(T+7.4); await api("strip('Outbound · unsold-estimate follow-up','Tom Brennan','+1 (555) 771-3302 · estimate #2231 · 3 days open')"); audio("docs/vid4/ringback.mp3",T+7.6)
+        await at(T+9.4); await api("answer()")
+        t2=T+9.7
         for i,ln in enumerate(L["call2"]):
             await at(t2); audio(ln["file"],t2); await api(f"say({json.dumps(ln['speaker'])},{json.dumps(ln['text'])})")
             if i==2: await at(t2+2.0); await shot("estimate")
@@ -54,9 +57,12 @@ async def main():
         T2=t2
         await at(T2); await api("endCall()"); audio("docs/vid2/ding.mp3",T2+0.1); await api("move('tom','booked')"); await api("rev(2400)"); post(TOM)
         await api("callout('Estimate closed · $2,400 · 0% financing',1000,620)")
-        await at(T2+1.8); await shot("closed")
-        await at(T2+3.2); await api("end()"); audio(L["narr"]["cta"]["file"],T2+3.6)
-        await at(T2+4.6); await shot("end"); await at(T2+7.6)
+        await at(T2+1.6); await shot("closed")
+        await at(T2+2.6); await api("callout('')"); await api("dash()"); await api("zoom(900,760,1.25)")
+        await at(T2+3.8); await api("callout('$2,400 recovered · logged to GoHighLevel',1000,300)")
+        await at(T2+4.8); await shot("dash-tickets")
+        await at(T2+6.0); await api("end()"); audio(L["narr"]["cta"]["file"],T2+6.3)
+        await at(T2+7.3); await shot("end"); await at(T2+10.2)
         total=now(); await ctx.close(); await b.close()
     json.dump({"audio":AUDIO,"total":total},open(f"{ROOT}/docs/vid6/timeline.json","w"),indent=1); print("recorded",round(total,1))
 asyncio.run(main())

@@ -62,6 +62,13 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#f5f4f0;color:#1
 #end .paper .tot{display:flex;justify-content:space-between;font-family:'Barlow Condensed';font-size:34px;font-weight:800;padding-top:14px;color:#2e7d32}
 #end .paper .by{margin-top:18px;font-size:16px;color:#6f6a62;font-weight:600}
 #end .paper .by b{color:#1c1a17}
+/* DASH reveal */
+#dash{background:#e9e5dc;padding:40px 60px 0}
+.browser{width:1800px;border-radius:10px;background:#fff;border:1px solid #d8d2c6;box-shadow:0 40px 100px rgba(28,26,23,.3);overflow:hidden;transform-origin:50% 0;transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#efede7;border-bottom:1px solid #d8d2c6}
+.bar i{width:12px;height:12px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar .url{margin-left:14px;font-size:13px;color:#6f6a62;background:#fff;border-radius:6px;padding:6px 12px;flex:1;font-weight:600}
+iframe{width:1800px;height:980px;border:0;display:block}
 </style></head><body>
 <div class="layer on" id="hook"><div class="pipe"></div>
   <div class="nums"><div><b>40%</b><span>of calls missed</span></div><div><b>85%</b><span>never call back</span></div><div><b>$13.5K</b><span>lost every month</span></div></div>
@@ -78,6 +85,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#f5f4f0;color:#1
   </div>
   <div class="strip" id="strip"><div class="who"><div class="k" id="wk">Outbound · missed-call callback</div><b id="wn">Maria Lopez</b><span id="ws">+1 (555) 402-8810 · missed call 52 s ago</span><div class="tm" id="tm">Dialing…</div></div><div class="tr" id="tr"></div><div class="wave" id="wave"></div></div>
 </div>
+<div class="layer" id="dash"><div class="browser" id="browser"><div class="bar"><i></i><i></i><i></i><div class="url">voicedesk.onrender.com/agent/recovery</div></div><iframe id="frame" src="http://localhost:8099/agent/recovery"></iframe></div></div>
 <div class="callout" id="co"><i class="fa-solid fa-bolt"></i><span id="cotxt"></span></div>
 
 <div class="layer" id="end">
@@ -110,6 +118,9 @@ window.api={
   endCall(){clearInterval(tT);cw();$('tm').textContent='call ended · '+String(secs)+'s';},
   hide(){$('strip').classList.remove('on');},
   callout(t,x,y){const c=$('co');if(!t){c.classList.remove('on');return;}$('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
-  end(){$('board').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
+  dash(){$('board').classList.remove('on');$('dash').classList.add('on');},
+  back(){$('dash').classList.remove('on');$('browser').style.transform='';$('board').classList.add('on');},
+  zoom(x,y,z){const b=$('browser');b.style.transformOrigin=`${x}px ${y}px`;b.style.transform=z?`scale(${z})`:'';},
+  end(){$('board').classList.remove('on');$('dash').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
 };
 </script></body></html>
