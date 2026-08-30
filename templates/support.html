@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — Support Line</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:{{ agent.bg or '#f4f6fb' }};--surface:#ffffff;--surface2:#eef1f8;--ink:#0b1a4a;--muted:#5b6b8c;--line:#dde3ef;--soft:#334155;
+--blue:{{ agent.accent or '#1428a0' }};--steel:{{ agent.accent2 or '#5b6b8c' }};--green:#0f9d58;--amber:#c77700;--red:#d93025;--shadow:0 10px 30px rgba(20,40,160,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.app{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.logo{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;font-size:1.3rem;background:var(--blue);color:#fff}
+.brand b{font-size:1.24rem;font-weight:800;letter-spacing:-.02em;color:var(--blue)}
+.brand span{display:block;font-size:.78rem;color:var(--muted)}
+.right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;color:var(--green);background:rgba(15,157,88,.08);border:1px solid rgba(15,157,88,.3);border-radius:999px;padding:7px 13px}
+.live .d{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pp 1.6s infinite}
+@keyframes pp{0%{box-shadow:0 0 0 0 rgba(15,157,88,.5)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.pms{display:flex;gap:6px;align-items:center;font-size:.72rem;color:var(--muted)}
+.pms span{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 8px;font-weight:600}
+.calling{display:none;align-items:center;gap:14px;background:#e8ecf9;border:1px solid rgba(20,40,160,.35);border-radius:12px;padding:13px 18px;margin-bottom:14px}
+.calling.show{display:flex}
+.calling .ph{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center}
+.calling .live-txt{margin-left:auto;font-size:.86rem;color:var(--soft);max-width:52%;text-align:right}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;position:relative;box-shadow:var(--shadow)}
+.tile .ic{position:absolute;right:12px;top:12px;color:var(--line);font-size:1.2rem}
+.tile .v{font-size:1.55rem;font-weight:800;letter-spacing:-.02em;color:var(--blue)}
+.tile .v.g{color:var(--green)}.tile .v.r{color:var(--red)}.tile .v.k{color:var(--ink)}
+.tile .l{font-size:.72rem;color:var(--muted);margin-top:2px}
+.tile .sub{font-size:.7rem;color:var(--green);font-weight:600;margin-top:4px}
+.tile .sub.m{color:var(--muted)}
+.tile.flash{animation:flash 1s}
+@keyframes flash{0%{background:#e8ecf9}100%{background:var(--surface)}}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tab{padding:10px 14px;font-size:.88rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tab .cnt{font-size:.7rem;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--muted)}
+.panel{display:none}.panel.on{display:block}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-bottom:14px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+h3.sec{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-weight:700;display:flex;align-items:center;gap:8px}
+h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;color:var(--green)}
+/* outcome split */
+.split{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;margin-bottom:10px}
+.split i{display:block;height:100%}
+.leg{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:.78rem}
+.leg div{display:flex;align-items:center;gap:8px;color:var(--soft)}
+.leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.leg b{margin-left:auto}
+.cost{display:flex;gap:10px;margin-top:12px}
+.cost div{flex:1;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-align:center}
+.cost b{display:block;font-size:1.25rem;font-weight:800}.cost span{font-size:.7rem;color:var(--muted)}
+.cost .me b{color:var(--green)}.cost .them b{color:var(--red)}
+/* products */
+.prod{display:flex;flex-direction:column;gap:7px}
+.prod .p{display:flex;align-items:center;gap:10px;font-size:.8rem}
+.prod .p .pi{width:30px;height:30px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);display:grid;place-items:center;color:var(--blue)}
+.prod .p span{width:130px}
+.prod .p i.bar{display:block;height:10px;border-radius:5px;background:var(--blue);opacity:.85}
+.prod .p b{width:24px;text-align:right}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px;box-shadow:var(--shadow);position:relative}
+.card.new{animation:slidein .5s cubic-bezier(.2,1,.3,1);border-color:var(--blue)}
+.card.xfer{border-color:#f5b5b0;background:#fff7f6}
+@keyframes slidein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rowh{display:flex;align-items:center;gap:11px}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.82rem;flex-shrink:0}
+.nm{font-weight:700}.ph{font-size:.8rem;color:var(--muted)}
+.ago{margin-left:auto;font-size:.72rem;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;align-items:center}
+.tag{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:6px;background:rgba(20,40,160,.08);color:var(--blue)}
+.tag.p{background:var(--surface2);color:var(--soft);border:1px solid var(--line)}
+.oc{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:6px;background:rgba(15,157,88,.1);color:var(--green)}
+.oc.warn{background:rgba(199,119,0,.12);color:var(--amber)}
+.oc.red{background:rgba(217,48,37,.1);color:var(--red)}
+.oc.blue{background:rgba(20,40,160,.1);color:var(--blue)}
+.sm{font-size:.85rem;color:var(--soft);margin-top:10px;line-height:1.5}
+.hl{background:rgba(20,40,160,.1);color:var(--blue);border-radius:4px;padding:0 5px;font-weight:700;font-family:ui-monospace,Menlo,monospace;font-size:.8rem}
+.hl.g{background:rgba(15,157,88,.12);color:var(--green);font-family:Inter}
+.kv{display:flex;gap:10px;margin-top:11px;flex-wrap:wrap}
+.kv div{background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:.8rem;min-width:88px}
+.kv div b{display:block;font-size:.92rem}.kv div span{color:var(--muted);font-size:.7rem}
+.kv div.w b{color:var(--green)}.kv div.x b{color:var(--red)}
+.wbar{height:6px;border-radius:3px;background:var(--line);margin-top:5px;overflow:hidden}.wbar i{display:block;height:100%;background:var(--green)}
+.stamp{position:absolute;right:14px;top:14px;font-size:.66rem;font-weight:800;color:var(--red);border:1.5px solid var(--red);border-radius:5px;padding:2px 7px;letter-spacing:.05em}
+.stars{color:#f5b301;font-size:.72rem;margin-left:auto}
+.empty{color:var(--muted);text-align:center;padding:40px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="logo"><i class="fa-solid {{ agent.icon }}"></i></div>
+    <div class="brand"><b>{{ agent.business }}</b><span>Support Line · AI agent "Nora" · tier-1 calls handled end to end</span></div>
+    <div class="right">
+      <div class="pms">Connected to <span>Zendesk</span><span>ServicePower</span><span>SAP Warranty</span></div>
+      <span class="live"><span class="d"></span> Nora is on</span>
+    </div>
+  </div>
+
+  <div class="calling" id="calling">
+    <div class="ph"><i class="fa-solid fa-headset"></i></div>
+    <div class="who"><b id="callFrom">Incoming…</b><span style="display:block;font-size:.78rem;color:var(--muted)">Nora · support</span></div>
+    <div class="live-txt" id="callTxt"></div>
+  </div>
+
+  <div class="kpis">
+    <div class="tile" id="t-cont"><i class="ic fa-solid fa-robot"></i><div class="v g">0%</div><div class="l">Contained by AI</div><div class="sub" id="k-cont">industry avg 41%</div></div>
+    <div class="tile" id="t-wait"><i class="ic fa-solid fa-hourglass-half"></i><div class="v g">0s</div><div class="l">Avg hold time</div><div class="sub">industry 4+ min</div></div>
+    <div class="tile" id="t-cost"><i class="ic fa-solid fa-coins"></i><div class="v">$1.18</div><div class="l">Cost per call</div><div class="sub">vs $7.16 human-handled</div></div>
+    <div class="tile" id="t-tech"><i class="ic fa-solid fa-screwdriver-wrench"></i><div class="v k">0</div><div class="l">Technicians dispatched</div><div class="sub" id="k-tech">parts pre-ordered</div></div>
+    <div class="tile" id="t-parts"><i class="ic fa-solid fa-box"></i><div class="v k">$0</div><div class="l">Parts sold by phone</div><div class="sub" id="k-parts">0 orders</div></div>
+    <div class="tile" id="t-xfer"><i class="ic fa-solid fa-user-headset fa-people-arrows"></i><div class="v r">0</div><div class="l">Warm transfers</div><div class="sub m">frustration / repeat issue</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="overview"><i class="fa-solid fa-gauge"></i> Overview</div>
+    <div class="tab" data-tab="tickets"><i class="fa-solid fa-ticket"></i> Tickets <span class="cnt" id="c-t">0</span></div>
+    <div class="tab" data-tab="dispatch"><i class="fa-solid fa-truck"></i> Dispatch <span class="cnt" id="c-d">0</span></div>
+    <div class="tab" data-tab="parts"><i class="fa-solid fa-box"></i> Parts <span class="cnt" id="c-p">0</span></div>
+    <div class="tab" data-tab="escal"><i class="fa-solid fa-people-arrows"></i> Escalations <span class="cnt" id="c-e">0</span></div>
+  </div>
+
+  <div class="panel on" id="p-overview">
+    <div class="two">
+      <div class="box"><h3 class="sec"><i class="fa-solid fa-chart-pie"></i> Where today's calls ended <span class="r" id="csat"></span></h3>
+        <div class="split" id="split"></div><div class="leg" id="leg"></div>
+        <div class="cost"><div class="me"><b id="cost-me">$0</b><span>spent on AI-handled calls</span></div><div class="them"><b id="cost-them">$0</b><span>same calls with human agents</span></div><div><b id="cost-save" style="color:var(--blue)">$0</b><span>saved today</span></div></div>
+      </div>
+      <div class="box"><h3 class="sec"><i class="fa-solid fa-snowflake"></i> Products calling in</h3><div class="prod" id="prod"></div></div>
+    </div>
+    <h3 class="sec"><i class="fa-solid fa-clock-rotate-left"></i> Latest tickets</h3>
+    <div class="grid" id="recent"></div>
+  </div>
+  <div class="panel" id="p-tickets"><div class="grid" id="tickets"></div></div>
+  <div class="panel" id="p-dispatch"><div class="grid" id="dispatch"></div></div>
+  <div class="panel" id="p-parts"><div class="grid" id="parts"></div></div>
+  <div class="panel" id="p-escal"><div class="grid" id="escal"></div></div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}";
+const AVC=['#1428a0','#5b6b8c','#0f9d58','#7c3aed','#c77700','#0e7490','#d93025'];
+const RES={resolved:['Resolved by phone','#0f9d58'],dispatch:['Technician booked','#1428a0'],parts:['Part ordered','#5b6b8c'],transfer:['Transferred to human','#d93025']};
+const PICON={Refrigerator:'fa-snowflake',Dishwasher:'fa-sink',Washer:'fa-shirt',Range:'fa-fire-burner',Dryer:'fa-wind'};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+function initials(n){return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function ocClass(r){return r==='resolved'?'':r==='dispatch'?' blue':r==='parts'?' warn':' red';}
+function highlight(sum,m){let s=esc(sum||'');
+  if(m.serial)s=s.replace(esc(m.serial),x=>`<span class="hl">${x}</span>`);
+  s=s.replace(/in warranty[^.,]*/i,x=>`<span class="hl g">${x}</span>`);
+  return s;}
+function wpct(w){const m=(w||'').match(/(\d+) of (\d+)/);return m?Math.round((1-m[1]/m[2])*100):0;}
+let lastTopId=null;
+function render(d){
+  const R=d.records; const n=Math.max(R.length,1);
+  const by={resolved:[],dispatch:[],parts:[],transfer:[]}; R.forEach(r=>{const k=(r.meta||{}).resolution||'resolved';(by[k]||by.resolved).push(r);});
+  const contained=R.length-by.transfer.length;
+  const partsUsd=by.parts.reduce((a,r)=>a+(+r.meta.amount||0),0);
+  const csats=R.map(r=>+(r.meta||{}).csat).filter(Boolean);
+  set('t-cont',Math.round(contained/n*100)+'%'); $('k-cont').textContent=`${contained} of ${R.length} · industry avg 41%`;
+  set('t-wait','0s'); set('t-tech',by.dispatch.length); $('k-tech').textContent=by.dispatch.filter(r=>r.meta.part).length+' parts pre-ordered';
+  set('t-parts','$'+partsUsd); $('k-parts').textContent=by.parts.length+' orders'; set('t-xfer',by.transfer.length);
+  $('csat').textContent=csats.length?`CSAT ${(csats.reduce((a,b)=>a+b,0)/csats.length).toFixed(1)} / 5`:'';
+  $('split').innerHTML=Object.keys(RES).map(k=>`<i style="width:${by[k].length/n*100}%;background:${RES[k][1]}"></i>`).join('');
+  $('leg').innerHTML=Object.keys(RES).map(k=>`<div><i style="background:${RES[k][1]}"></i>${RES[k][0]}<b>${by[k].length}</b></div>`).join('');
+  $('cost-me').textContent='$'+(contained*1.18).toFixed(2); $('cost-them').textContent='$'+(contained*7.16).toFixed(2); $('cost-save').textContent='$'+(contained*(7.16-1.18)).toFixed(2);
+  const pc={}; R.forEach(r=>{const p=((r.meta||{}).product||'Other').split(' ')[0];pc[p]=(pc[p]||0)+1;});
+  $('prod').innerHTML=Object.entries(pc).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="p"><div class="pi"><i class="fa-solid ${PICON[k]||'fa-plug'}"></i></div><span>${esc(k)}</span><i class="bar" style="width:${v/n*55}%"></i><b>${v}</b></div>`).join('');
+  $('c-t').textContent=R.length;$('c-d').textContent=by.dispatch.length;$('c-p').textContent=by.parts.length;$('c-e').textContent=by.transfer.length;
+  $('recent').innerHTML=R.slice(0,3).map(card).join('');
+  $('tickets').innerHTML=R.map(card).join('')||'<div class="empty">No tickets.</div>';
+  $('dispatch').innerHTML=by.dispatch.map(card).join('')||'<div class="empty">No dispatches.</div>';
+  $('parts').innerHTML=by.parts.map(card).join('')||'<div class="empty">No parts orders.</div>';
+  $('escal').innerHTML=by.transfer.map(card).join('')||'<div class="empty">No escalations.</div>';
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){['t-cont','t-tech','t-parts','t-xfer'].forEach(id=>{const e=$(id);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');});const f=document.querySelector('#recent .card');if(f)f.classList.add('new');}
+  if(R.length)lastTopId=R[0].id;
+}
+function set(id,v){$(id).querySelector('.v').textContent=v;}
+function card(r,i){const m=r.meta||{};const res=m.resolution||'resolved';
+  return `<div class="card${res==='transfer'?' xfer':''}">${res==='transfer'?'<div class="stamp">HUMAN</div>':''}
+    <div class="rowh"><span class="av" style="background:${AVC[(i||0)%AVC.length]}">${initials(r.name)}</span>
+      <div><div class="nm">${esc(r.name)}</div><div class="ph">${esc(r.phone)}</div></div>${res==='transfer'?'':`<span class="ago">${ago(r.created)}</span>`}</div>
+    <div class="tags"><span class="tag p"><i class="fa-solid ${PICON[(m.product||'').split(' ')[0]]||'fa-plug'}"></i> ${esc(m.product||'')}</span><span class="tag">${esc(m.issue||r.intent)}</span><span class="oc${ocClass(res)}">${esc(r.outcome)}</span>${m.csat?`<span class="stars">${'★'.repeat(m.csat)}</span>`:''}</div>
+    <div class="sm">${highlight(r.summary,m)}</div>
+    <div class="kv">
+      ${m.serial?`<div><b>${esc(m.serial)}</b><span>serial · verified</span></div>`:''}
+      ${m.warranty?`<div class="${/out/i.test(m.warranty)?'x':'w'}"><b>${esc(m.warranty.split(' · ')[0])}</b><span>${esc(m.warranty.split(' · ')[1]||'warranty')}</span>${/of/.test(m.warranty)?`<div class="wbar"><i style="width:${wpct(m.warranty)}%"></i></div>`:''}</div>`:''}
+      ${r.appointment?`<div><b><i class="fa-solid fa-truck" style="color:var(--blue)"></i> ${esc(r.appointment)}</b><span>authorized tech</span></div>`:''}
+      ${m.part?`<div><b>${esc(m.part.split(' ').slice(0,2).join(' '))}</b><span>${esc(m.part.split(' ').slice(2).join(' '))}${m.amount?' · $'+m.amount:' · pre-ordered'}</span></div>`:''}
+      ${m.transfer_to?`<div class="x"><b><i class="fa-solid fa-people-arrows"></i> ${esc(m.transfer_to)}</b><span>warm transfer · ${esc(m.sentiment||'')}</span></div>`:''}
+      <div><b>0s</b><span>hold time</span></div>
+    </div></div>`;}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));t.classList.add('on');$('p-'+t.dataset.tab).classList.add('on');});
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>

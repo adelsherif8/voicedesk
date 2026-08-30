@@ -1,0 +1,70 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid5/n_hook.mp3",
+   "dur": 8.232,
+   "text": "Every support call a human handles costs about seven dollars, and callers wait four minutes to be told to check the serial number. Meet Nora."
+  },
+  "save": {
+   "file": "docs/vid5/n_save.mp3",
+   "dur": 5.808,
+   "text": "Warranty verified, technician booked, part pre-ordered. Zero hold time, one dollar eighteen a call."
+  },
+  "xfer": {
+   "file": "docs/vid5/n_xfer.mp3",
+   "dur": 5.64,
+   "text": "And when a customer is upset, Nora doesn't argue \u2014 it hands them to a human, with the full story."
+  },
+  "cta": {
+   "file": "docs/vid5/n_cta.mp3",
+   "dur": 2.856,
+   "text": "Want this on your support line? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid5/c1_0.mp3",
+   "dur": 5.232,
+   "text": "Thanks for calling NordFrost support, this is Nora. What's going on with your appliance?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid5/c1_1.mp3",
+   "dur": 5.232,
+   "text": "My fridge is warm but the freezer's fine. It's an RF28, serial four-four-seven-one."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid5/c1_2.mp3",
+   "dur": 7.08,
+   "text": "Found it \u2014 still in warranty. A warm fridge with a cold freezer is usually the evaporator fan, so this needs a technician."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid5/c1_3.mp3",
+   "dur": 5.592,
+   "text": "A tech can be there Thursday, nine to eleven, with the fan already on the truck \u2014 does that work?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid5/c1_4.mp3",
+   "dur": 1.56,
+   "text": "Thursday's fine, thank you."
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "caller",
+   "file": "docs/vid5/c2_0.mp3",
+   "dur": 5.16,
+   "text": "This is the third time I'm calling about this washer. It's still leaking and I'm done."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid5/c2_1.mp3",
+   "dur": 7.392,
+   "text": "I'm sorry, Gerald \u2014 that's not acceptable. I'm connecting you to Lena, a senior agent, right now; she already has your full history."
+  }
+ ]
+}
