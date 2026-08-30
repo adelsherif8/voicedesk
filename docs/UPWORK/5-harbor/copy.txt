@@ -1,0 +1,11 @@
+TITLE (70): AI Listing Line for Real Estate: qualifies buyers, books showings 24/7
+SKILLS: AI Agent Development · Conversational AI · Real Estate · Lead Generation · Appointment Setting
+DESCRIPTION (591):
+The median agent answers a listing inquiry 15 hours later; 78% of buyers go with whoever answers first.
+This AI concierge answers every listing call in 4 seconds:
+• Qualifies budget, pre-approval, timeline, must-haves → lead score
+• Books the showing on the listing agent's calendar, texts details
+• Hot leads routed to the agent; not-ready buyers get lender intro + alerts
+• Seller calls → CMA appointment booked
+Live listings board: inquiries pin onto each property, agent calendars, qualified pipeline. Syncs to Follow Up Boss / kvCORE.
+Live demo: voicedesk-h31g.onrender.com/agent/realty
