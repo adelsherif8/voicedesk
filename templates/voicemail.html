@@ -134,7 +134,7 @@ function detail(r){const m=r.meta||{};const p=m.priority||'low';const digits=(r.
   $('detail').innerHTML=`<span class="pri ${p}">${p}</span><h3>${esc(r.name)}</h3><div class="ph">${esc(r.phone)}${m.duration?' · '+m.duration+'s message':''}</div>
     <div class="sum"><b>AI summary</b>${esc(r.summary)}</div>
     <div class="kv"><div><b>${esc(m.matter||'—')}</b><span>matter</span></div><div><b>${esc(m.assigned||'—')}</b><span>assigned to</span></div><div><b>${esc(r.appointment||'when possible')}</b><span>callback</span></div><div><b>${esc(m.intent_type||m.intent||r.intent)}</b><span>intent</span></div></div>
-    ${m.transcript?`<div class="tr"><b>Transcript</b>${esc(m.transcript)}</div>`:'<div class="tr"><b>Transcript</b><i>No message left — caller hung up; AI text-back sent.</i></div>'}
+    ${(m.transcript||r.transcript)?`<div class="tr"><b>Transcript</b>${esc(m.transcript||r.transcript)}</div>`:'<div class="tr"><b>Transcript</b><i>No message left — caller hung up; AI text-back sent.</i></div>'}
     <div class="acts"><a class="p" href="#"><i class="fa-solid fa-phone"></i> Call back</a><a href="#"><i class="fa-solid fa-comment-sms"></i> Text</a><a href="#"><i class="fa-solid fa-user-plus"></i> Reassign</a></div>
     <div class="xml"><b>What the desk phone receives (CiscoIPPhoneText)</b>&lt;CiscoIPPhoneText&gt;&lt;Title&gt;${esc(r.name)}&lt;/Title&gt;&lt;Prompt&gt;${esc(r.phone)}&lt;/Prompt&gt;&lt;Text&gt;${p.toUpperCase()} - ${esc(r.intent)} ...&lt;/Text&gt;&lt;SoftKeyItem&gt;&lt;Name&gt;Call back&lt;/Name&gt;&lt;URL&gt;Dial:${digits}&lt;/URL&gt;&lt;/SoftKeyItem&gt;&lt;/CiscoIPPhoneText&gt;</div>`;}
 async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
