@@ -30,7 +30,7 @@ async def main():
         await at(7.6); await api(f"board({json.dumps(CARDS)})")
         await at(8.6); await shot("board")
         # missed call flow: maria open -> texted -> called
-        await at(9.0); await api("move('maria','texted')"); await api("callout('Text-back sent · 8 s after the missed call',700,300)")
+        await at(9.0); await api("move('maria','texted')"); await api("callout('Text-back sent · 8 s after the missed call',560,620)")
         await at(10.6); await api("callout('')"); await api("move('maria','called')"); await api("strip('Outbound · missed-call callback','Maria Lopez','+1 (555) 402-8810 · missed call 52 s ago')"); audio("docs/vid4/ringback.mp3",10.8)
         await at(12.6); await api("answer()")
         t=12.9
@@ -40,7 +40,7 @@ async def main():
             t+=ln["dur"]+0.05
         T=t
         await at(T); await api("endCall()"); audio("docs/vid2/ding.mp3",T+0.1); await api("move('maria','booked')"); await api("rev(320)"); post(MARIA)
-        audio(L["narr"]["save"]["file"],T+0.4); await api("callout('Booked · $320 recovered · logged to GoHighLevel',1180,300)")
+        audio(L["narr"]["save"]["file"],T+0.4); await api("callout('Booked · $320 recovered · logged to GHL',1000,620)")
         await at(T+2.2); await shot("booked")
         await at(T+3.8); await api("callout('')"); await api("cool('maria')"); await api("hide()"); audio(L["narr"]["est"]["file"],T+4.0)
         # estimate flow: tom called -> booked
@@ -53,7 +53,7 @@ async def main():
             t2+=ln["dur"]+0.05
         T2=t2
         await at(T2); await api("endCall()"); audio("docs/vid2/ding.mp3",T2+0.1); await api("move('tom','booked')"); await api("rev(2400)"); post(TOM)
-        await api("callout('Estimate closed · $2,400 · 0% financing',1180,300)")
+        await api("callout('Estimate closed · $2,400 · 0% financing',1000,620)")
         await at(T2+1.8); await shot("closed")
         await at(T2+3.2); await api("end()"); audio(L["narr"]["cta"]["file"],T2+3.6)
         await at(T2+4.6); await shot("end"); await at(T2+7.6)
