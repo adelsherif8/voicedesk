@@ -48,7 +48,7 @@ async def main():
         await at(0.4); await api("hook(1)"); audio(L["narr"]["hook"]["file"], 0.5)
         await at(5.0); await api("hook(2)"); await at(5.8); await shot("hook")
         await at(7.0); await api("scene()")
-        await at(8.0); await api("incoming()"); audio("docs/vid5/ringback.mp3", 8.1); audio("docs/vid5/ringback.mp3", 10.0)
+        await at(8.0); await api("incoming()"); audio("docs/vid2/ring.mp3", 8.1); audio("docs/vid2/ring.mp3", 10.0)
         await at(8.4); await shot("incoming")
         await at(10.9); await api("answer()"); await api("caption('Answers instantly — 0 s hold','fa-headset')")
         t = 11.2
