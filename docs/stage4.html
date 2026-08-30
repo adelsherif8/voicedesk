@@ -1,0 +1,127 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Manrope,system-ui,sans-serif}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#eef1f7;color:#0b1a4a}
+.layer{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}.layer.on{opacity:1}
+/* HOOK: left-aligned editorial on blue */
+#hook{background:#1428a0;color:#fff;padding:0 160px;display:flex;flex-direction:column;justify-content:center}
+#hook .k{font-size:26px;letter-spacing:.16em;text-transform:uppercase;opacity:0;transform:translateX(-30px);transition:all .6s;color:#9db4f0;font-weight:700}
+#hook h1{font-size:112px;line-height:1;font-weight:800;letter-spacing:-.03em;margin-top:26px;opacity:0;transform:translateX(-30px);transition:all .7s .1s;max-width:1500px}
+#hook h1 b{color:#7df2b0}
+#hook .m{margin-top:40px;font-size:40px;font-weight:700;opacity:0;transform:translateX(-30px);transition:all .6s;color:#dfe6f7}
+#hook .m b{color:#fff;background:rgba(255,255,255,.12);padding:4px 16px;border-radius:12px}
+#hook.s1 .k,#hook.s1 h1{opacity:1;transform:none}#hook.s2 .m{opacity:1;transform:none}
+/* CONSOLE */
+#con{display:flex;flex-direction:column}
+.band{height:88px;background:#1428a0;color:#fff;display:flex;align-items:center;padding:0 60px;gap:16px;flex-shrink:0}
+.band .lg{width:44px;height:44px;border-radius:10px;background:#fff;color:#1428a0;display:grid;place-items:center;font-size:22px}
+.band b{font-size:24px;font-weight:800}.band span{opacity:.75;font-size:16px}
+.band .st{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:16px;font-weight:700;border:1.5px solid rgba(255,255,255,.5);border-radius:999px;padding:9px 18px}
+.band .st i{color:#7df2b0}
+.body{flex:1;display:grid;grid-template-columns:640px 1fr;gap:28px;padding:28px 60px 0}
+/* call panel */
+.call{background:#fff;border:1px solid #d7deea;border-radius:18px;box-shadow:0 20px 50px rgba(11,26,74,.10);display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(20px);transition:all .6s}
+.call.on{opacity:1;transform:none}
+.call .hd{padding:22px 26px;border-bottom:1px solid #e6ebf4;display:flex;align-items:center;gap:16px}
+.call .hd .av{width:58px;height:58px;border-radius:50%;background:#1428a0;color:#fff;display:grid;place-items:center;font-size:22px;font-weight:800}
+.call .hd .nm{font-size:24px;font-weight:800}.call .hd .sub{font-size:15px;color:#5b6b8c;font-weight:700;margin-top:2px}
+.call .hd .tm{margin-left:auto;text-align:right}.call .hd .tm b{display:block;font-size:26px;color:#0f9d58;font-variant-numeric:tabular-nums}.call .hd .tm span{font-size:13px;color:#5b6b8c;font-weight:700}
+.call .hd .tm.ring b{color:#1428a0}
+.wave{display:flex;align-items:center;gap:4px;height:38px;padding:0 26px;margin-top:14px}
+.wave i{width:6px;border-radius:3px;background:#1428a0;height:6px;transition:height .12s;opacity:.35}
+.talking .wave i{opacity:1}
+.tr{flex:1;padding:14px 26px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;overflow:hidden}
+.ln{display:flex;gap:12px;animation:pop .35s cubic-bezier(.2,1,.3,1)}
+.ln .who{width:64px;font-size:12px;font-weight:800;letter-spacing:.06em;color:#5b6b8c;padding-top:6px;flex-shrink:0}
+.ln .who.ai{color:#1428a0}
+.ln p{font-size:19px;line-height:1.4;font-weight:500;background:#f4f6fb;border-radius:12px;padding:10px 14px;flex:1}
+.ln.ai p{background:#e8ecf9;color:#0b1a4a}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* actions timeline */
+.acts{display:flex;flex-direction:column;gap:14px;opacity:0;transform:translateY(20px);transition:all .6s .1s}
+.acts.on{opacity:1;transform:none}
+.acts h3{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#5b6b8c;font-weight:800;margin-bottom:4px}
+.act{display:flex;align-items:center;gap:18px;background:#fff;border:1px solid #d7deea;border-radius:16px;padding:18px 22px;box-shadow:0 12px 30px rgba(11,26,74,.07);opacity:0;transform:translateX(30px);transition:all .45s cubic-bezier(.2,1,.3,1)}
+.act.on{opacity:1;transform:none}
+.act .ic{width:54px;height:54px;border-radius:14px;background:#e8ecf9;color:#1428a0;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.act.ok .ic{background:#e8f7ef;color:#0f9d58}.act.red .ic{background:#fdecea;color:#d93025}
+.act b{font-size:22px;font-weight:800;display:block}.act span{font-size:16px;color:#5b6b8c;font-weight:700}
+.act .chk{margin-left:auto;font-size:26px;color:#0f9d58}
+.act .mono{font-family:ui-monospace,Menlo,monospace;background:#0b1a4a;color:#7df2b0;padding:3px 10px;border-radius:7px;font-size:16px}
+.cost{margin-top:auto;display:flex;gap:14px;opacity:0;transition:opacity .5s}
+.cost.on{opacity:1}
+.cost div{flex:1;background:#fff;border:1px solid #d7deea;border-radius:14px;padding:16px 20px;border-top:4px solid #1428a0}
+.cost b{display:block;font-size:34px;font-weight:800;letter-spacing:-.02em;color:#1428a0}.cost b.g{color:#0f9d58}.cost b.r{color:#d93025}
+.cost span{font-size:14px;color:#5b6b8c;font-weight:700}
+/* frustration banner */
+.alert{position:absolute;left:748px;right:60px;bottom:40px;background:#d93025;color:#fff;border-radius:14px;padding:18px 26px;font-size:26px;font-weight:800;display:flex;align-items:center;gap:16px;opacity:0;transform:translateY(-12px);transition:all .4s;z-index:5}
+.alert.on{opacity:1;transform:none}
+.alert span{margin-left:auto;font-size:18px;font-weight:700;opacity:.9}
+/* DASH reveal (full width) */
+#dash{padding:110px 60px 0;background:#eef1f7}
+.browser{width:1800px;border-radius:16px;background:#fff;border:1px solid #d7deea;box-shadow:0 40px 100px rgba(11,26,74,.22);overflow:hidden;transform-origin:50% 0;transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f4f6fb;border-bottom:1px solid #e3e8f2}
+.bar i{width:12px;height:12px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar .url{margin-left:14px;font-size:13px;color:#5b6b8c;background:#fff;border-radius:8px;padding:6px 12px;flex:1}
+iframe{width:1800px;height:900px;border:0;display:block}
+.callout{position:absolute;display:flex;align-items:center;gap:12px;background:#1428a0;color:#fff;font-weight:800;font-size:24px;padding:12px 20px;border-radius:12px;box-shadow:0 20px 50px rgba(20,40,160,.35);opacity:0;transform:scale(.9);transition:all .4s;z-index:6}
+.callout.on{opacity:1;transform:none}
+.callout::before{content:'';position:absolute;left:-14px;top:50%;margin-top:-10px;border:10px solid transparent;border-right-color:#1428a0}
+/* END */
+#end{background:#0b1a4a;color:#fff;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 140px}
+#end h2{font-size:84px;font-weight:800;letter-spacing:-.03em;line-height:1.02}#end h2 b{color:#7df2b0}
+#end .r{border-left:2px solid rgba(255,255,255,.18);padding-left:70px}
+#end .r .n{font-size:38px;font-weight:800}#end .r .t{font-size:22px;color:#9db4f0;font-weight:700;margin-top:6px}
+#end .r ul{list-style:none;margin-top:30px;display:flex;flex-direction:column;gap:12px;font-size:22px;color:#dfe6f7}
+#end .r ul i{color:#7df2b0;width:30px}
+#end .r .lk{margin-top:34px;font-size:22px;color:#7df2b0;font-weight:800}
+</style></head><body>
+<div class="layer on" id="hook"><div class="k">Appliance brand · customer support</div><h1>A human answers your support line for <b>$7.16</b> a call — after a 4-minute hold.</h1><div class="m">Meet the AI support agent: <b>$1.18</b> a call, <b>0 s</b> hold.</div></div>
+
+<div class="layer" id="con">
+  <div class="band"><div class="lg"><i class="fa-solid fa-snowflake"></i></div><b>NordFrost Appliances</b><span>· Support console · agent Nora</span><div class="st"><i class="fa-solid fa-circle"></i> LIVE · line 1</div></div>
+  <div class="alert" id="alert"><i class="fa-solid fa-triangle-exclamation"></i> <span id="altxt" style="margin:0;font-size:26px;opacity:1"></span><span id="alsub"></span></div>
+  <div class="body">
+    <div class="call" id="call">
+      <div class="hd"><div class="av" id="av">HB</div><div><div class="nm" id="nm">Hannah Brooks</div><div class="sub" id="sub">+1 (555) 204-1180 · incoming</div></div><div class="tm ring" id="tm"><b id="tmv">RINGING</b><span id="tml">0 s hold</span></div></div>
+      <div class="wave" id="wave"></div>
+      <div class="tr" id="tr"></div>
+    </div>
+    <div class="acts" id="acts"><h3>What Nora did on this call</h3><div id="actlist"></div>
+      <div class="cost" id="cost"><div><b class="g">$1.18</b><span>this call cost</span></div><div><b class="r">$7.16</b><span>same call, human agent</span></div><div><b id="hold">0 s</b><span>hold time</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="layer" id="dash"><div class="browser" id="browser"><div class="bar"><i></i><i></i><i></i><div class="url"><i class="fa-solid fa-lock" style="width:auto;height:auto;background:none;font-size:11px"></i> voicedesk.onrender.com/agent/support</div></div><iframe id="frame" src="http://localhost:8099/agent/support"></iframe></div></div>
+<div class="callout" id="co"><i class="fa-solid fa-bolt"></i><span id="cotxt"></span></div>
+
+<div class="layer" id="end">
+  <h2>Put this on<br/>your <b>support line.</b></h2>
+  <div class="r"><div class="n">Adel Atya</div><div class="t">AI Voice Agent Engineer</div>
+    <ul><li><i class="fa-solid fa-check"></i>Warranty lookup · troubleshooting · dispatch · parts</li><li><i class="fa-solid fa-check"></i>Warm transfer to humans with full history</li><li><i class="fa-solid fa-check"></i>Vapi / Retell · Twilio · Zendesk · your warranty API</li></ul>
+    <div class="lk"><i class="fa-solid fa-play"></i> &nbsp;Live demo · voicedesk-h31g.onrender.com</div></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);const wave=$('wave');for(let i=0;i<40;i++)wave.appendChild(document.createElement('i'));
+let wT=null,tT=null,secs=0;function sw(){cw();wT=setInterval(()=>{[...wave.children].forEach(b=>b.style.height=(6+Math.random()*30)+'px')},110)}function cw(){clearInterval(wT);[...wave.children].forEach(b=>b.style.height='6px')}
+window.api={
+  hook(s){$('hook').className='layer on s'+s;if(s==2)$('hook').classList.add('s1');},
+  console(){$('hook').classList.remove('on');$('con').classList.add('on');setTimeout(()=>{$('call').classList.add('on');$('acts').classList.add('on')},150);},
+  answer(){$('tm').classList.remove('ring');secs=0;$('tmv').textContent='00:00';$('tml').textContent='0 s hold · Nora';tT=setInterval(()=>{secs++;$('tmv').textContent='00:'+String(secs).padStart(2,'0')},1000);},
+  say(sp,t){const d=document.createElement('div');d.className='ln '+(sp==='alex'?'ai':'');d.innerHTML=`<div class="who ${sp==='alex'?'ai':''}">${sp==='alex'?'NORA':$('nm').textContent.split(' ')[0].toUpperCase()}</div><p>${t}</p>`;const tr=$('tr');tr.appendChild(d);while(tr.children.length>3)tr.removeChild(tr.firstChild);$('call').classList.toggle('talking',sp==='alex');sp==='alex'?sw():cw();},
+  act(ic,title,sub,cls){const a=document.createElement('div');a.className='act '+(cls||'');a.innerHTML=`<div class="ic"><i class="fa-solid ${ic}"></i></div><div><b>${title}</b><span>${sub}</span></div><i class="fa-solid fa-circle-check chk"></i>`;$('actlist').appendChild(a);requestAnimationFrame(()=>requestAnimationFrame(()=>a.classList.add('on')));},
+  cost(){$('cost').classList.add('on');},
+  endCall(){clearInterval(tT);cw();$('call').classList.remove('talking');$('tml').textContent='call ended';},
+  newCall(n,num,init){$('actlist').innerHTML='';$('cost').classList.remove('on');$('tr').innerHTML='';$('nm').textContent=n;$('sub').textContent=num;$('av').textContent=init;$('tm').classList.add('ring');$('tmv').textContent='RINGING';$('tml').textContent='0 s hold';},
+  alert(t,s){if(!t){$('alert').classList.remove('on');return;}$('altxt').textContent=t;$('alsub').textContent=s||'';$('alert').classList.add('on');},
+  dash(){$('con').classList.remove('on');$('alert').classList.remove('on');$('dash').classList.add('on');},
+  back(){$('dash').classList.remove('on');$('browser').style.transform='';$('con').classList.add('on');},
+  zoom(x,y,s){const b=$('browser');b.style.transformOrigin=`${x}px ${y}px`;b.style.transform=s?`scale(${s})`:'';},
+  callout(t,x,y){const c=$('co');if(!t){c.classList.remove('on');return;}$('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
+  end(){$('dash').classList.remove('on');$('con').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
+};
+</script></body></html>

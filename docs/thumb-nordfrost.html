@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Manrope,system-ui,sans-serif}
+body{width:1000px;height:750px;overflow:hidden;position:relative;background:#eef1f7;color:#0b1a4a}
+.band{position:absolute;left:0;top:0;right:0;height:92px;background:#1428a0;color:#fff;display:flex;align-items:center;padding:0 48px;gap:16px}
+.band .lg{width:44px;height:44px;border-radius:10px;background:#fff;color:#1428a0;display:grid;place-items:center;font-size:22px}
+.band b{font-size:24px;font-weight:800;letter-spacing:-.01em}
+.band span{font-size:15px;opacity:.8;margin-left:4px}
+.band .tag{margin-left:auto;font-size:14px;font-weight:700;border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:8px 16px;display:flex;align-items:center;gap:9px}
+.band .tag i{color:#7df2b0}
+.wrap{position:absolute;top:92px;left:0;right:0;bottom:0;display:flex}
+/* fridge */
+.stage{width:400px;position:relative;display:flex;align-items:center;justify-content:center}
+.fridge{width:230px;height:480px;border-radius:18px;background:linear-gradient(90deg,#c9d0dc,#f1f4f9 40%,#dfe5ee 70%,#b8c0ce);box-shadow:0 40px 70px rgba(11,26,74,.28),inset 0 0 0 3px #a9b3c4;position:relative}
+.fridge::before{content:'';position:absolute;left:14px;right:14px;top:180px;height:4px;background:#9aa4b6;border-radius:2px}
+.fridge .h1,.fridge .h2{position:absolute;left:26px;width:8px;border-radius:4px;background:linear-gradient(#f8fafc,#94a3b8)}
+.fridge .h1{top:60px;height:110px}.fridge .h2{top:210px;height:170px}
+.fridge .panel{position:absolute;right:22px;top:46px;width:70px;height:34px;border-radius:7px;background:#0b1a4a;color:#7df2b0;font-size:12px;font-weight:800;display:grid;place-items:center;letter-spacing:.04em}
+.fridge .feet{position:absolute;bottom:-14px;left:30px;right:30px;height:14px;background:#6b7688;border-radius:0 0 8px 8px}
+.pulse{position:absolute;left:300px;top:262px;width:22px;height:22px;border-radius:50%;background:#d93025;box-shadow:0 0 0 8px rgba(217,48,37,.18),0 0 0 16px rgba(217,48,37,.08)}
+.line{position:absolute;left:311px;top:272px;width:95px;height:2px;background:#d93025}
+/* right side */
+.copy{flex:1;padding:46px 48px 0 30px;position:relative}
+.kick{font-size:14px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#5b6b8c}
+h1{font-size:58px;line-height:1.02;font-weight:800;letter-spacing:-.035em;margin-top:10px}
+h1 em{font-style:normal;color:#1428a0}
+.ticket{margin-top:26px;background:#fff;border:1px solid #d7deea;border-radius:14px;padding:16px 18px;box-shadow:0 18px 40px rgba(11,26,74,.10);width:520px}
+.ticket .row{display:flex;align-items:center;gap:10px;font-size:14px;color:#5b6b8c;font-weight:700}
+.ticket .row .st{margin-left:auto;background:#e8f7ef;color:#0f9d58;padding:4px 10px;border-radius:6px;font-size:12px}
+.ticket .iss{font-size:19px;font-weight:800;margin-top:8px}
+.ticket .steps{display:flex;gap:8px;margin-top:12px}
+.ticket .steps div{flex:1;background:#f4f6fb;border:1px solid #e3e8f2;border-radius:9px;padding:9px 10px;font-size:12px;color:#5b6b8c;line-height:1.35}
+.ticket .steps b{display:block;color:#0b1a4a;font-size:13px;margin-bottom:2px}
+.ticket .steps b i{color:#1428a0;margin-right:5px}
+.facts{position:absolute;left:30px;right:48px;bottom:34px;display:flex;gap:12px}
+.facts div{flex:1;border-top:3px solid #1428a0;padding-top:10px}
+.facts b{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em;color:#1428a0}
+.facts b.g{color:#0f9d58}
+.facts span{font-size:13px;color:#5b6b8c;font-weight:700}
+.by{position:absolute;right:48px;top:106px;font-size:12px;color:#5b6b8c;font-weight:700}
+</style></head><body>
+<div class="band"><div class="lg"><i class="fa-solid fa-snowflake"></i></div><b>NordFrost Appliances</b><span>· Customer Support Line</span><div class="tag"><i class="fa-solid fa-circle"></i> AI agent live · demo</div></div>
+<div class="wrap">
+  <div class="stage"><div class="fridge"><div class="panel">14 mo</div><div class="h1"></div><div class="h2"></div><div class="feet"></div></div><div class="pulse"></div><div class="line"></div></div>
+  <div class="copy">
+    <div class="kick">Tier-1 support · handled by voice AI</div>
+    <h1>“My fridge is warm.”<br/><em>Fixed in one call.</em></h1>
+    <div class="ticket">
+      <div class="row"><i class="fa-solid fa-ticket"></i> Ticket #48211 · RF28 · serial NF-RF28-4471 <span class="st">In warranty</span></div>
+      <div class="iss">Fridge warm, freezer OK → evaporator fan</div>
+      <div class="steps">
+        <div><b><i class="fa-solid fa-shield-halved"></i>Verified</b>warranty · 14 of 24 mo</div>
+        <div><b><i class="fa-solid fa-truck"></i>Dispatched</b>tech Thu 9–11 AM</div>
+        <div><b><i class="fa-solid fa-box"></i>Part ordered</b>fan DA31-00146</div>
+        <div><b><i class="fa-solid fa-comment-sms"></i>Texted</b>confirmation sent</div>
+      </div>
+    </div>
+    <div class="facts">
+      <div><b>$1.18</b><span>per call vs $7.16 human</span></div>
+      <div><b class="g">0 s</b><span>hold time</span></div>
+      <div><b>83%</b><span>calls closed by AI</span></div>
+      <div><b>1 tap</b><span>warm transfer to a human</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

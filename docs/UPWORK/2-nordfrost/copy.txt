@@ -1,0 +1,12 @@
+TITLE (70): AI Support Voice Agent for Appliance Brands: warranty, dispatch, parts
+SKILLS: AI Agent Development · Conversational AI · Customer Service · AI Chatbot · Automation
+LINK: https://voicedesk-h31g.onrender.com/agent/support
+DESCRIPTION (592):
+A human-handled support call costs ~$7.16 and callers hold 4+ minutes. This AI support agent answers instantly and closes tier-1 calls end to end:
+• Looks up the serial, verifies warranty status
+• Troubleshoots from the product knowledge base (error codes, resets)
+• Dispatches an authorized technician, part pre-ordered
+• Sells parts by phone and takes payment
+• Detects frustration → warm-transfers to a human with full history
+Live dashboard: containment vs 41% industry avg, $1.18 per call, dispatch, parts, escalations. Zendesk / ServicePower-ready.
+Stack: Vapi, GPT-4o, Twilio, FastAPI.
