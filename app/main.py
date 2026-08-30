@@ -65,7 +65,8 @@ def records(agent: str = "all"):
 def agent_view(aid: str, request: Request):
     if aid not in AGENTS_BY_ID:
         return RedirectResponse("/")
-    return templates.TemplateResponse(request, "agent.html", {
+    tpl = AGENTS_BY_ID[aid].get("template", "agent.html")
+    return templates.TemplateResponse(request, tpl, {
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
         "records": db.list_records(aid),
     })

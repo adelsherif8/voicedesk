@@ -1,0 +1,70 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid4/n_hook.mp3",
+   "dur": 8.52,
+   "text": "The average home-service company takes forty-two minutes to call a new lead back. One in four never does. Meet Riley \u2014 Riley calls in sixty seconds."
+  },
+  "save": {
+   "file": "docs/vid4/n_save.mp3",
+   "dur": 5.184,
+   "text": "Qualified, booked, confirmed by text \u2014 fifty-eight seconds after the form was submitted."
+  },
+  "hot": {
+   "file": "docs/vid4/n_hot.mp3",
+   "dur": 4.8,
+   "text": "And when a lead is big, Riley doesn't sell \u2014 it hands the lead to your closer, warm."
+  },
+  "cta": {
+   "file": "docs/vid4/n_cta.mp3",
+   "dur": 3.408,
+   "text": "Want your leads called in sixty seconds? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid4/c1_0.mp3",
+   "dur": 5.544,
+   "text": "Hi Dana, it's Riley from Summit Heating and Air \u2014 you just asked about your AC on our website."
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid4/c1_1.mp3",
+   "dur": 3.384,
+   "text": "No, that's fine. The upstairs is blowing warm air since yesterday."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid4/c1_4.mp3",
+   "dur": 6.072,
+   "text": "Got it. I can have a technician out tomorrow at ten AM for a diagnostic and estimate \u2014 does that work?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid4/c1_5.mp3",
+   "dur": 0.288,
+   "text": "Ten works."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid4/c1_6.mp3",
+   "dur": 5.184,
+   "text": "You're booked, Dana. I've texted the confirmation and the tech's name. See you tomorrow."
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "caller",
+   "file": "docs/vid4/c2_0.mp3",
+   "dur": 3.816,
+   "text": "We're looking at replacing both systems, and we'd want financing."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid4/c2_1.mp3",
+   "dur": 8.112,
+   "text": "That's exactly what Mike, our comfort advisor, handles. I've flagged it to him and booked Thursday at two \u2014 he'll call you within the hour."
+  }
+ ]
+}

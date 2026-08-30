@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — Speed-to-Lead Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:{{ agent.bg or '#f6f8fb' }};--surface:#ffffff;--surface2:#eef2f7;--ink:#0f172a;--muted:#64748b;--line:#dfe6ee;--soft:#334155;
+--acc:{{ agent.accent or '#f59e0b' }};--acc2:{{ agent.accent2 or '#1e3a5f' }};--amber:#d97706;--green:#059669;--red:#dc2626;--shadow:0 10px 30px rgba(15,23,42,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.app{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.logo{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:1.3rem;background:var(--acc2);color:#fff}
+.brand b{font-size:1.24rem;font-weight:800;letter-spacing:-.02em}
+.brand span{display:block;font-size:.78rem;color:var(--muted)}
+.right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;color:var(--green);background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.3);border-radius:999px;padding:7px 13px}
+.live .d{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pp 1.6s infinite}
+@keyframes pp{0%{box-shadow:0 0 0 0 rgba(5,150,105,.5)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.pms{display:flex;gap:6px;align-items:center;font-size:.72rem;color:var(--muted)}
+.pms span{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 8px;font-weight:600}
+.calling{display:none;align-items:center;gap:14px;background:#fff7e6;border:1px solid rgba(245,158,11,.5);border-radius:14px;padding:13px 18px;margin-bottom:14px}
+.calling.show{display:flex}
+.calling .ph{width:40px;height:40px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center}
+.calling .live-txt{margin-left:auto;font-size:.86rem;color:var(--soft);max-width:52%;text-align:right}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px;position:relative;box-shadow:var(--shadow)}
+.tile .ic{position:absolute;right:12px;top:12px;color:var(--line);font-size:1.2rem}
+.tile .v{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}
+.tile .v.g{color:var(--green)}.tile .v.a{color:var(--amber)}.tile .v.n{color:var(--acc2)}.tile .v.r{color:var(--red)}
+.tile .l{font-size:.72rem;color:var(--muted);margin-top:2px}
+.tile .sub{font-size:.7rem;color:var(--green);font-weight:600;margin-top:4px}
+.tile .sub.m{color:var(--muted)}
+.tile.flash{animation:flash 1s}
+@keyframes flash{0%{background:#fff3d6}100%{background:var(--surface)}}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tab{padding:10px 14px;font-size:.88rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tab.on{color:var(--ink);border-bottom-color:var(--acc)}
+.tab .cnt{font-size:.7rem;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--muted)}
+.panel{display:none}.panel.on{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:14px 16px;box-shadow:var(--shadow)}
+h3.sec{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-weight:700;display:flex;align-items:center;gap:8px}
+h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;color:var(--green)}
+/* response-time gauge */
+.gauge{display:flex;align-items:flex-end;gap:18px}
+.gauge .big{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;color:var(--green);line-height:1}
+.gauge .big small{font-size:.9rem;color:var(--muted);font-weight:600;margin-left:4px}
+.gauge .vs{font-size:.8rem;color:var(--muted);line-height:1.5}
+.gauge .vs b{color:var(--red)}
+.bars{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.bars .b{display:flex;align-items:center;gap:10px;font-size:.76rem}
+.bars .b span{width:110px;color:var(--muted)}
+.bars .b i{display:block;height:10px;border-radius:5px;background:var(--line)}
+.bars .b i.me{background:var(--green)}
+.bars .b b{width:60px;text-align:right}
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:7px}
+.funnel .f{display:flex;align-items:center;gap:10px;font-size:.8rem}
+.funnel .f span{width:130px;color:var(--muted)}
+.funnel .f i{display:block;height:22px;border-radius:6px;background:var(--acc2);opacity:.9;min-width:6px;transition:width .8s}
+.funnel .f i.a{background:var(--acc)}.funnel .f i.g{background:var(--green)}
+.funnel .f b{width:30px}
+.src{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.src span{font-size:.72rem;border:1px solid var(--line);border-radius:7px;padding:4px 9px;background:var(--surface2)}
+.src span b{color:var(--acc2)}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:var(--shadow);position:relative}
+.card.new{animation:slidein .5s cubic-bezier(.2,1,.3,1);border-color:var(--acc)}
+.card.hot{border-color:#fca5a5;background:#fff8f8}
+@keyframes slidein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rowh{display:flex;align-items:center;gap:11px}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.82rem;flex-shrink:0}
+.nm{font-weight:700}.ph{font-size:.8rem;color:var(--muted)}
+.ago{margin-left:auto;font-size:.72rem;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;align-items:center}
+.tag{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:7px;background:rgba(30,58,95,.08);color:var(--acc2)}
+.tag.src{background:var(--surface2);color:var(--soft);border:1px solid var(--line)}
+.oc{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:7px;background:rgba(5,150,105,.1);color:var(--green)}
+.oc.warn{background:rgba(217,119,6,.12);color:var(--amber)}
+.oc.hot{background:rgba(220,38,38,.1);color:var(--red)}
+.oc.mut{background:var(--surface2);color:var(--muted)}
+.sm{font-size:.85rem;color:var(--soft);margin-top:10px;line-height:1.5}
+.hl{background:rgba(245,158,11,.18);color:#92400e;border-radius:5px;padding:0 5px;font-weight:700}
+.hl.g{background:rgba(5,150,105,.12);color:var(--green)}
+.kv{display:flex;gap:10px;margin-top:11px;flex-wrap:wrap}
+.kv div{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.8rem;min-width:88px}
+.kv div b{display:block;font-size:.95rem}.kv div span{color:var(--muted);font-size:.7rem}
+.kv div.spd b{color:var(--green)}
+.attempts{display:flex;gap:4px;margin-top:11px;align-items:center;font-size:.72rem;color:var(--muted)}
+.attempts i{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;border:1px solid var(--line);color:var(--muted);font-style:normal}
+.attempts i.done{background:var(--acc2);color:#fff;border-color:var(--acc2)}
+.attempts i.hit{background:var(--green);color:#fff;border-color:var(--green)}
+.attempts i.next{border-color:var(--acc);color:var(--amber)}
+.empty{color:var(--muted);text-align:center;padding:40px}
+.stamp{position:absolute;right:14px;top:14px;font-size:.68rem;font-weight:800;color:var(--red);border:1.5px solid var(--red);border-radius:6px;padding:2px 7px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="logo"><i class="fa-solid {{ agent.icon }}"></i></div>
+    <div class="brand"><b>{{ agent.business }}</b><span>Speed-to-Lead Desk · every new lead called in under 60 seconds</span></div>
+    <div class="right">
+      <div class="pms">Syncs with <span>ServiceTitan</span><span>Housecall Pro</span><span>GoHighLevel</span></div>
+      <span class="live"><span class="d"></span> Riley is on</span>
+    </div>
+  </div>
+
+  <div class="calling" id="calling">
+    <div class="ph"><i class="fa-solid fa-phone-volume"></i></div>
+    <div class="who"><b id="callFrom">Dialing…</b><span style="display:block;font-size:.78rem;color:var(--muted)">Riley · outbound</span></div>
+    <div class="live-txt" id="callTxt"></div>
+  </div>
+
+  <div class="kpis">
+    <div class="tile" id="t-speed"><i class="ic fa-solid fa-stopwatch"></i><div class="v g">0s</div><div class="l">Avg speed to lead</div><div class="sub" id="k-speed">industry avg 42 min</div></div>
+    <div class="tile" id="t-contact"><i class="ic fa-solid fa-phone"></i><div class="v">100%</div><div class="l">Leads contacted</div><div class="sub" id="k-contact">0 of 0 · industry 77%</div></div>
+    <div class="tile" id="t-booked"><i class="ic fa-solid fa-calendar-check"></i><div class="v g">0</div><div class="l">Estimates booked</div><div class="sub" id="k-booked">0% of leads</div></div>
+    <div class="tile" id="t-hot"><i class="ic fa-solid fa-fire"></i><div class="v r">0</div><div class="l">Hot → closer</div><div class="sub m">financing / replacements</div></div>
+    <div class="tile" id="t-retry"><i class="ic fa-solid fa-rotate"></i><div class="v a">0</div><div class="l">In retry cadence</div><div class="sub m">6 attempts · call + SMS</div></div>
+    <div class="tile" id="t-pipe"><i class="ic fa-solid fa-sack-dollar"></i><div class="v n">$0</div><div class="l">Pipeline booked</div><div class="sub" id="k-pipe">est. low end</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="overview"><i class="fa-solid fa-gauge"></i> Overview</div>
+    <div class="tab" data-tab="leads"><i class="fa-solid fa-bolt"></i> New leads <span class="cnt" id="c-leads">0</span></div>
+    <div class="tab" data-tab="booked"><i class="fa-solid fa-calendar-check"></i> Booked <span class="cnt" id="c-booked">0</span></div>
+    <div class="tab" data-tab="hot"><i class="fa-solid fa-fire"></i> Hot handoffs <span class="cnt" id="c-hot">0</span></div>
+    <div class="tab" data-tab="retry"><i class="fa-solid fa-rotate"></i> Retry queue <span class="cnt" id="c-retry">0</span></div>
+  </div>
+
+  <div class="panel on" id="p-overview">
+    <div class="two">
+      <div class="box"><h3 class="sec"><i class="fa-solid fa-stopwatch"></i> Speed to lead <span class="r">5-min response = 21× more likely to qualify</span></h3>
+        <div class="gauge"><div class="big" id="g-big">—<small>avg</small></div><div class="vs">Industry average: <b>42 min</b><br/>23% of leads never called back</div></div>
+        <div class="bars">
+          <div class="b"><span>Riley (today)</span><i class="me" id="g-me" style="width:4%"></i><b id="g-me-v">—</b></div>
+          <div class="b"><span>Typical office</span><i style="width:70%"></i><b>42 min</b></div>
+          <div class="b"><span>Never called</span><i style="width:23%;background:#fca5a5"></i><b>23%</b></div>
+        </div>
+      </div>
+      <div class="box"><h3 class="sec"><i class="fa-solid fa-filter"></i> Today's funnel</h3>
+        <div class="funnel" id="funnel"></div>
+        <div class="src" id="src"></div>
+      </div>
+    </div>
+    <h3 class="sec"><i class="fa-solid fa-clock-rotate-left"></i> Latest calls</h3>
+    <div class="grid" id="recent"></div>
+  </div>
+  <div class="panel" id="p-leads"><div class="grid" id="leads"></div></div>
+  <div class="panel" id="p-booked"><div class="grid" id="booked"></div></div>
+  <div class="panel" id="p-hot"><div class="grid" id="hot"></div></div>
+  <div class="panel" id="p-retry"><div class="grid" id="retry"></div></div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}";
+const AVC=['#1e3a5f','#f59e0b','#0e7490','#7c3aed','#059669','#db2777','#b45309'];
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+function initials(n){return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function ocClass(o){o=(o||'').toLowerCase();if(/hot/.test(o))return' hot';if(/book/.test(o))return'';if(/retry|nurture/.test(o))return' warn';return' mut';}
+function low(q){const m=(q||'').match(/\$([\d.,]+)(k?)/);if(!m)return 0;let v=parseFloat(m[1].replace(/,/g,''));if(m[2])v*=1000;return v;}
+function highlight(sum,m){let s=esc(sum||'');
+  if(m.response_secs)s=s.replace(/\((\d+)s\)/,(x,a)=>`<span class="hl g">${a}s</span>`);
+  if(m.issue)s=s.replace(new RegExp(esc(m.issue).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'),x=>`<span class="hl">${x}</span>`);
+  if(m.closer)s=s.replace(m.closer.split(' ')[0],x=>`<span class="hl">${x}</span>`);
+  return s;}
+let lastTopId=null;
+function render(d){
+  const R=d.records;
+  const booked=R.filter(r=>r.meta&&r.meta.booked||/book/i.test(r.outcome));
+  const hot=R.filter(r=>r.meta&&r.meta.hot);
+  const retry=R.filter(r=>r.meta&&r.meta.next_attempt);
+  const secs=R.map(r=>+(r.meta&&r.meta.response_secs)||0).filter(Boolean);
+  const avg=secs.length?Math.round(secs.reduce((a,b)=>a+b,0)/secs.length):0;
+  const pipe=booked.reduce((a,r)=>a+low(r.meta.quote_range),0)+hot.reduce((a,r)=>a+low(r.meta.quote_range),0);
+  set('t-speed',avg+'s'); $('k-speed').textContent='industry avg 42 min';
+  $('k-contact').textContent=`${R.length} of ${R.length} · industry 77%`;
+  set('t-booked',booked.length); $('k-booked').textContent=Math.round(booked.length/Math.max(R.length,1)*100)+'% of leads';
+  set('t-hot',hot.length); set('t-retry',retry.length);
+  set('t-pipe','$'+(pipe/1000).toFixed(1)+'k'); $('k-pipe').textContent='est. low end · '+(booked.length+hot.length)+' jobs';
+  $('g-big').innerHTML=avg+'s<small>avg</small>'; $('g-me').style.width=Math.max(3,Math.min(avg/2520*100,100))+'%'; $('g-me-v').textContent=avg+'s';
+  $('c-leads').textContent=R.length;$('c-booked').textContent=booked.length;$('c-hot').textContent=hot.length;$('c-retry').textContent=retry.length;
+  const n=Math.max(R.length,1);
+  $('funnel').innerHTML=[['New leads',R.length,''],['Called < 60s',secs.filter(s=>s<=60).length,''],['Qualified',R.filter(r=>r.meta&&r.meta.homeowner).length,'a'],['Booked / hot',booked.length+hot.length,'g']]
+    .map(([l,v,c])=>`<div class="f"><span>${l}</span><i class="${c}" style="width:${v/n*60}%"></i><b>${v}</b></div>`).join('');
+  const src={}; R.forEach(r=>{const s=(r.meta||{}).source||'Other';src[s]=(src[s]||0)+1;});
+  $('src').innerHTML=Object.entries(src).map(([k,v])=>`<span><b>${v}</b> ${esc(k)}</span>`).join('');
+  $('recent').innerHTML=R.slice(0,3).map(card).join('');
+  $('leads').innerHTML=R.map(card).join('')||'<div class="empty">No leads yet.</div>';
+  $('booked').innerHTML=booked.map(card).join('')||'<div class="empty">Nothing booked yet.</div>';
+  $('hot').innerHTML=hot.map(card).join('')||'<div class="empty">No hot handoffs.</div>';
+  $('retry').innerHTML=retry.map(card).join('')||'<div class="empty">Retry queue is empty.</div>';
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){['t-speed','t-booked','t-hot','t-pipe'].forEach(id=>{const e=$(id);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');});const f=document.querySelector('#recent .card');if(f)f.classList.add('new');}
+  if(R.length)lastTopId=R[0].id;
+}
+function set(id,v){$(id).querySelector('.v').textContent=v;}
+function attempts(m){const a=+m.attempts||1,hit=!m.next_attempt;let h='';
+  for(let i=1;i<=6;i++){let c='';if(i<a)c='done';else if(i===a)c=hit?'hit':'done';else if(i===a+1&&m.next_attempt)c='next';h+=`<i class="${c}">${i}</i>`;}
+  return `<div class="attempts">${h}<span style="margin-left:6px">${m.next_attempt?'next: '+esc(m.next_attempt):(a===1?'reached on 1st call':'reached on call '+a)}</span></div>`;}
+function card(r,i){const m=r.meta||{};
+  return `<div class="card${m.hot?' hot':''}">${m.hot?'<div class="stamp">HOT</div>':''}
+    <div class="rowh"><span class="av" style="background:${AVC[(i||0)%AVC.length]}">${initials(r.name)}</span>
+      <div><div class="nm">${esc(r.name)}</div><div class="ph">${esc(r.phone)}</div></div>${m.hot?'':`<span class="ago">${ago(r.created)}</span>`}</div>
+    <div class="tags"><span class="tag src"><i class="fa-solid fa-globe"></i> ${esc(m.source||'Lead')}</span><span class="tag">${esc(m.issue||r.intent)}</span><span class="oc${ocClass(r.outcome)}">${esc(r.outcome)}</span></div>
+    <div class="sm">${highlight(r.summary,m)}</div>
+    <div class="kv">${m.response_secs?`<div class="spd"><b>${m.response_secs}s</b><span>form → call</span></div>`:''}
+      ${m.urgency?`<div><b>${esc(m.urgency)}</b><span>urgency</span></div>`:''}
+      ${m.homeowner!=null?`<div><b>${m.homeowner?'Yes':'No'}</b><span>homeowner</span></div>`:''}
+      ${r.appointment?`<div><b><i class="fa-solid fa-calendar-check" style="color:var(--green)"></i> ${esc(r.appointment)}</b><span>${m.closer?'estimator visit':'booked'}</span></div>`:''}
+      ${m.quote_range?`<div><b>${esc(m.quote_range.split(' · ')[0])}</b><span>quote range</span></div>`:''}
+      ${m.closer?`<div><b><i class="fa-solid fa-user-tie"></i> ${esc(m.closer)}</b><span>handed to closer${m.financing?' · financing':''}</span></div>`:''}
+      ${m.sms_sent||m.booked?`<div><b><i class="fa-solid fa-comment-sms" style="color:var(--acc2)"></i> Sent</b><span>${m.booked?'confirmation text':'voicemail + text'}</span></div>`:''}
+    </div>
+    ${attempts(m)}</div>`;}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));t.classList.add('on');$('p-'+t.dataset.tab).classList.add('on');});
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>
