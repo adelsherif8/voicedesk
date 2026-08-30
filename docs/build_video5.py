@@ -43,7 +43,7 @@ async def main():
         audio(L["narr"]["save"]["file"],T+0.4); await api("callout('Booked · $320 recovered · logged to GHL',1000,620)")
         await at(T+2.0); await shot("booked")
         await at(T+3.2); await api("callout('')"); await api("dash()"); await api("zoom(300,120,1.25)")
-        await at(T+4.4); await api("callout('Slotted into Truck 1 · 2–4 PM · ticket stamped',560,560)")
+        await at(T+4.4); await api("callout('Slotted into Truck 1 · 2–4 PM · ticket stamped',560,640)")
         await at(T+5.4); await shot("dash-trucks")
         await at(T+6.6); await api("callout('')"); await api("back()"); await api("cool('maria')"); await api("hide()"); audio(L["narr"]["est"]["file"],T+6.7)
         # estimate flow: tom called -> booked
@@ -59,7 +59,7 @@ async def main():
         await api("callout('Estimate closed · $2,400 · 0% financing',1000,620)")
         await at(T2+1.6); await shot("closed")
         await at(T2+2.6); await api("callout('')"); await api("dash()"); await api("zoom(900,760,1.25)")
-        await at(T2+3.8); await api("callout('$2,400 recovered · logged to GoHighLevel',1000,300)")
+        await at(T2+3.8); await api("callout('$2,400 recovered · logged to GoHighLevel',900,600)")
         await at(T2+4.8); await shot("dash-tickets")
         await at(T2+6.0); await api("end()"); audio(L["narr"]["cta"]["file"],T2+6.3)
         await at(T2+7.3); await shot("end"); await at(T2+10.2)
