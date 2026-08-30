@@ -1,0 +1,76 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid8/n_hook.mp3",
+   "dur": 7.488,
+   "text": "The median agent takes fifteen hours to answer a listing inquiry. Seventy-eight percent of buyers go with whoever answers first."
+  },
+  "save": {
+   "file": "docs/vid8/n_save.mp3",
+   "dur": 7.536,
+   "text": "Qualified, pre-approval confirmed, showing booked, notes in the CRM \u2014 in the first four seconds of the call, not the fifteenth hour."
+  },
+  "seller": {
+   "file": "docs/vid8/n_seller.mp3",
+   "dur": 5.592,
+   "text": "Sellers too. A what's-my-home-worth call becomes a listing appointment on the agent's calendar."
+  },
+  "cta": {
+   "file": "docs/vid8/n_cta.mp3",
+   "dur": 4.44,
+   "text": "Want every listing call answered and every buyer qualified? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid8/c1_0.mp3",
+   "dur": 4.248,
+   "text": "Harbor and Vine Realty, this is Sloane \u2014 are you calling about a listing?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid8/c1_1.mp3",
+   "dur": 3.984,
+   "text": "Yes, the two-bedroom on Vine Street, unit five B. Is it still available?"
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid8/c1_2.mp3",
+   "dur": 6.672,
+   "text": "It is. Quick questions so I can set you up with Ben, the listing agent: what's your budget range, and are you pre-approved?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid8/c1_3.mp3",
+   "dur": 5.616,
+   "text": "Four-fifty to five hundred, and yes, pre-approved with Chase. We'd want to move within sixty days."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid8/c1_4.mp3",
+   "dur": 5.856,
+   "text": "Perfect fit. Ben has Saturday at eleven open for a showing \u2014 shall I book it and text you the details?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid8/c1_5.mp3",
+   "dur": 1.488,
+   "text": "Saturday at eleven works."
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "caller",
+   "file": "docs/vid8/c2_0.mp3",
+   "dur": 4.872,
+   "text": "Hi, I'm thinking about selling my place in Cedar Hills next spring. What's it worth?"
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid8/c2_1.mp3",
+   "dur": 8.136,
+   "text": "Happy to help. Ben can do a comparative market analysis at the house \u2014 Tuesday at five-thirty works for him. Shall I put you on his calendar?"
+  }
+ ]
+}

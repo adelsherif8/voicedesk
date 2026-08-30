@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — Listing Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#f7f5f0;--paper:#ffffff;--ink:#0b2545;--muted:#6b7385;--line:#e6e1d6;--navy:#0b2545;--gold:#cbb27a;--green:#1f7a4d;--amber:#b7791f;--red:#b3261e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Jost,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.mast{background:var(--navy);color:#fff}
+.mast .in{max-width:1340px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:20px}
+.mast .mono{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.mast .mono i{color:var(--gold)}
+.mast .tag{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-left:4px}
+.mast .kp{margin-left:auto;display:flex;gap:26px}
+.mast .kp div{text-align:right}
+.mast .kp b{display:block;font-family:'Cormorant Garamond',serif;font-size:1.7rem;line-height:1;color:var(--gold)}
+.mast .kp span{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#c7cedb}
+.wrap{max-width:1340px;margin:0 auto;padding:22px 24px 50px}
+/* listings board */
+h2.sec{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:12px;margin:6px 0 12px}
+h2.sec .r{margin-left:auto;font-family:Jost;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.lst{background:var(--paper);border:1px solid var(--line);overflow:hidden;position:relative;box-shadow:0 10px 30px rgba(11,37,69,.06)}
+.lst .ph{height:120px;position:relative;overflow:hidden}
+.lst .ph .sky{position:absolute;inset:0;background:linear-gradient(180deg,#dbe6f3,#f1ecdd)}
+.lst .ph .house{position:absolute;left:50%;bottom:16px;width:120px;height:56px;margin-left:-60px;background:#f4efe4;border:2px solid #0b2545}
+.lst .ph .roof{position:absolute;left:50%;bottom:70px;width:0;height:0;margin-left:-72px;border-left:72px solid transparent;border-right:72px solid transparent;border-bottom:30px solid #0b2545}
+.lst .ph .door{position:absolute;left:50%;bottom:16px;width:16px;height:28px;margin-left:-8px;background:#cbb27a}
+.lst .ph .win{position:absolute;bottom:34px;width:16px;height:14px;background:#7fa7d8;border:2px solid #0b2545}
+.lst .ph .w1{left:calc(50% - 46px)}.lst .ph .w2{left:calc(50% + 30px)}
+.lst .ph .ground{position:absolute;left:0;right:0;bottom:0;height:16px;background:#c9d6b8}
+.lst .st{position:absolute;left:10px;top:10px;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;background:#fff;padding:3px 8px;font-weight:600}
+.lst .st.pending{background:var(--amber);color:#fff}
+.lst .bd{padding:12px 14px}
+.lst .pr{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700}
+.lst .ad{font-weight:600;font-size:.92rem}
+.lst .sp{font-size:.74rem;color:var(--muted);margin-top:2px}
+.lst .ag{font-size:.72rem;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:6px}
+.lst .ag i{color:var(--gold)}
+.pins{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;min-height:24px}
+.pin{font-size:.66rem;font-weight:600;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:#faf8f3}
+.pin.booked{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pin.hot{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.pin.nurture{color:var(--muted)}
+.pin.new{animation:pop .5s cubic-bezier(.2,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+/* two columns: inquiries + agents/showings */
+.two{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);padding:16px 18px;box-shadow:0 10px 30px rgba(11,37,69,.06)}
+.inq{border-top:1px solid var(--line);padding:13px 0;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:start}
+.inq:first-of-type{border-top:0}
+.inq.new{animation:slide .5s cubic-bezier(.2,1,.3,1);background:#fbf7ea}
+@keyframes slide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.score{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.15rem;border:2px solid var(--gold);color:var(--navy)}
+.score.hot{background:var(--gold)}.score.low{border-color:var(--line);color:var(--muted)}
+.inq .n{font-weight:600;display:flex;gap:8px;align-items:center}
+.inq .n .k{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--line);color:var(--muted)}
+.inq .n .k.seller{border-color:var(--gold);color:var(--amber)}
+.inq .s{font-size:.86rem;color:#374151;margin-top:3px}
+.inq .q{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.inq .q span{font-size:.7rem;padding:3px 8px;background:#f2efe7;border-radius:3px;color:#374151}
+.inq .q span.ok{background:#e4f2ea;color:var(--green)}.inq .q span.no{background:#fbe9e7;color:var(--red)}
+.inq .rt{text-align:right;font-size:.72rem;color:var(--muted)}
+.inq .rt b{display:block;color:var(--navy);font-weight:600;font-size:.8rem}
+.inq .rt .oc{display:inline-block;margin-top:4px;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;background:var(--navy);color:#fff}
+.inq .rt .oc.mut{background:#e6e1d6;color:var(--muted)}.inq .rt .oc.hot{background:var(--gold);color:var(--navy)}
+/* agents */
+.agent{border-top:1px solid var(--line);padding:12px 0}
+.agent:first-of-type{border-top:0;padding-top:0}
+.agent .h{display:flex;align-items:center;gap:10px;font-weight:600}
+.agent .h .av{width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold);display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-weight:700}
+.agent .h span{margin-left:auto;font-size:.7rem;color:var(--muted)}
+.slots{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.slot{display:flex;gap:10px;font-size:.78rem;padding:6px 8px;background:#f7f5f0;border-left:3px solid var(--line)}
+.slot.ai{border-left-color:var(--gold);background:#fbf7ea}
+.slot b{width:86px;flex-shrink:0;color:var(--navy)}
+.slot .who{color:#374151}.slot .t{margin-left:auto;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.stat div{background:#f7f5f0;padding:10px;text-align:center}
+.stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--navy);line-height:1}
+.stat span{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stat b.r{color:var(--red)}
+.empty{color:var(--muted);text-align:center;padding:20px;font-style:italic}
+</style>
+</head>
+<body>
+<div class="mast"><div class="in">
+  <div><div class="mono"><i class="fa-solid fa-house"></i> {{ agent.business }}</div><div class="tag">Listing line · AI concierge "Sloane" · 24/7</div></div>
+  <div class="kp"><div><b id="k-ans">4s</b><span>avg answer · agents: 15 h</span></div><div><b id="k-q">0</b><span>qualified today</span></div><div><b id="k-show">0</b><span>showings booked</span></div><div><b id="k-sell">0</b><span>listing appts</span></div><div><b id="k-vol">$0</b><span>qualified pipeline</span></div></div>
+</div></div>
+<div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
+
+<div class="wrap">
+  <h2 class="sec"><i class="fa-solid fa-map-location-dot" style="color:var(--gold)"></i> Listings board <span class="r" id="bcount"></span></h2>
+  <div class="board" id="board"></div>
+  <div class="two">
+    <div class="card"><h2 class="sec" style="margin-top:0"><i class="fa-solid fa-phone" style="color:var(--gold)"></i> Inquiries handled by Sloane <span class="r">score = budget · pre-approval · timeline · fit</span></h2><div id="inq"></div></div>
+    <div>
+      <div class="card"><h2 class="sec" style="margin-top:0"><i class="fa-solid fa-calendar-check" style="color:var(--gold)"></i> Agents · showings</h2><div id="agents"></div></div>
+      <div class="card" style="margin-top:16px"><h2 class="sec" style="margin-top:0"><i class="fa-solid fa-stopwatch" style="color:var(--gold)"></i> Why it matters</h2>
+        <div class="stat"><div><b class="r">917 min</b><span>median agent response</span></div><div><b>4 s</b><span>Sloane</span></div><div><b class="r">78%</b><span>go with first responder</span></div><div><b id="s-contact">100%</b><span>inquiries answered</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}"; const LISTINGS={{ agent.listings | tojson }};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+function money(v){return '$'+(v>=1e6?(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':Math.round(v/1000)+'K');}
+function parseBudget(b){const m=(b||'').match(/([\d.]+)\s*(M|K)?/i);if(!m)return 0;let v=parseFloat(m[1]);const u=(m[2]||'').toUpperCase();return u==='M'?v*1e6:u==='K'?v*1e3:v;}
+let lastTopId=null;
+function render(d){
+  const R=d.records; const m=r=>r.meta||{};
+  const shows=R.filter(r=>/showing/i.test(r.outcome)); const sells=R.filter(r=>m(r).kind==='seller'&&r.appointment);
+  const qual=R.filter(r=>(m(r).score||0)>=60);
+  $('k-q').textContent=qual.length;$('k-show').textContent=shows.length;$('k-sell').textContent=sells.length;
+  const vol=qual.filter(r=>m(r).listing).reduce((a,r)=>{const l=LISTINGS.find(x=>x.id===m(r).listing);return a+(l?l.price:0)},0); $('k-vol').textContent=money(vol);
+  $('bcount').textContent=LISTINGS.length+' active listings · '+R.filter(r=>m(r).listing).length+' inquiries';
+  $('board').innerHTML=LISTINGS.map(l=>{const pins=R.filter(r=>m(r).listing===l.id);
+    return `<div class="lst"><div class="ph"><div class="sky"></div><div class="ground"></div><div class="roof"></div><div class="house"></div><div class="win w1"></div><div class="win w2"></div><div class="door"></div><span class="st ${l.status==='Pending'?'pending':''}">${l.status}</span></div>
+      <div class="bd"><div class="pr">${money(l.price)}</div><div class="ad">${esc(l.addr)}</div><div class="sp">${l.beds} bd · ${l.baths} ba · ${l.sqft.toLocaleString()} sq ft · ${esc(l.style)}</div><div class="ag"><i class="fa-solid fa-user-tie"></i> ${esc(l.agent)}</div>
+      <div class="pins">${pins.map(r=>`<span class="pin ${/showing/i.test(r.outcome)?'booked':m(r).hot?'hot':m(r).nurture?'nurture':''}"><i class="fa-solid ${/showing/i.test(r.outcome)?'fa-calendar-check':m(r).hot?'fa-fire':'fa-user'}"></i>${esc(r.name.split(' ')[0])}${/showing/i.test(r.outcome)?' · '+esc(r.appointment):''}</span>`).join('')||'<span class="pin nurture">no inquiries yet</span>'}</div></div></div>`;}).join('');
+  $('inq').innerHTML=R.map(r=>{const x=m(r);const sc=x.score||0;const l=LISTINGS.find(y=>y.id===x.listing);
+    return `<div class="inq"><div class="score ${sc>=85?'hot':sc<60?'low':''}">${sc}</div><div><div class="n">${esc(r.name)}<span class="k ${x.kind==='seller'?'seller':''}">${x.kind==='seller'?'Seller':'Buyer'}</span>${x.source?`<span class="k">${esc(x.source)}</span>`:''}</div><div class="s">${l?esc(l.addr)+' · '+money(l.price):esc(x.address||r.intent)}</div>
+      <div class="q">${x.budget?`<span>Budget ${esc(x.budget)}</span>`:''}${x.preapproved!=null?`<span class="${x.preapproved?'ok':'no'}">${x.preapproved?'Pre-approved'+(x.lender?' · '+esc(x.lender):''):'Not pre-approved'}</span>`:''}${x.timeline?`<span>${esc(x.timeline)}</span>`:''}${x.musts?`<span>${esc(x.musts)}</span>`:''}</div></div>
+      <div class="rt"><b>${x.response_secs||4}s answer</b>${ago(r.created)}<br><span class="oc ${/showing|cma/i.test(r.outcome)?'':x.hot?'hot':'mut'}">${esc(r.outcome.split(' · ')[0])}</span></div></div>`;}).join('')||'<div class="empty">No inquiries yet.</div>';
+  const agents={}; LISTINGS.forEach(l=>agents[l.agent]=agents[l.agent]||[]);
+  R.filter(r=>r.appointment&&m(r).agent).forEach(r=>{(agents[m(r).agent]=agents[m(r).agent]||[]).push(r)});
+  $('agents').innerHTML=Object.entries(agents).map(([n,rs])=>`<div class="agent"><div class="h"><span class="av">${n.split(' ').map(w=>w[0]).join('')}</span>${esc(n)}<span>${LISTINGS.filter(l=>l.agent===n).length} listings · ${rs.length} appts</span></div><div class="slots">${rs.map(r=>`<div class="slot ai"><b>${esc(r.appointment)}</b><span class="who">${esc(r.name)} · ${m(r).kind==='seller'?'CMA visit':'showing'}</span><span class="t">by AI</span></div>`).join('')||'<div class="slot"><b>—</b><span class="who">no AI-booked appointments yet</span></div>'}</div></div>`).join('');
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){const f=document.querySelector('.inq');if(f)f.classList.add('new');document.querySelectorAll('.pin').forEach(p=>{if(p.textContent.startsWith(R[0].name.split(' ')[0]))p.classList.add('new')});}
+  if(R.length)lastTopId=R[0].id;
+}
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>

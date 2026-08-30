@@ -1,0 +1,124 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Jost,system-ui,sans-serif}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#f7f5f0;color:#0b2545}
+.layer{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}.layer.on{opacity:1}
+/* HOOK: navy, gold frame, serif */
+#hook{background:#0b2545;color:#fff;display:flex;align-items:center;justify-content:center}
+#hook .frame{border:2px solid #cbb27a;padding:70px 90px;text-align:center;max-width:1500px;opacity:0;transform:scale(.96);transition:all .7s}
+#hook .k{font-size:18px;letter-spacing:.3em;text-transform:uppercase;color:#cbb27a}
+#hook h1{font-family:'Cormorant Garamond',serif;font-size:96px;line-height:1.05;font-weight:700;margin-top:24px}
+#hook h1 em{font-family:'Cormorant Garamond',serif;font-style:italic;color:#cbb27a}
+#hook p{margin-top:30px;font-size:30px;color:#c7cedb;opacity:0;transition:opacity .6s}
+#hook p b{color:#fff}
+#hook.s1 .frame{opacity:1;transform:none}#hook.s2 p{opacity:1}
+/* BOARD */
+#board{padding:0}
+.mast{height:96px;background:#0b2545;color:#fff;display:flex;align-items:center;padding:0 70px;gap:20px}
+.mast .mono{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.mast .mono i{color:#cbb27a}
+.mast .tag{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#cbb27a}
+.mast .kp{margin-left:auto;display:flex;gap:34px}
+.mast .kp div{text-align:right}.mast .kp b{display:block;font-family:'Cormorant Garamond',serif;font-size:34px;line-height:1;color:#cbb27a;transition:all .4s}.mast .kp span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#c7cedb}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;padding:30px 70px 0}
+.lst{background:#fff;border:1px solid #e6e1d6;position:relative;box-shadow:0 12px 30px rgba(11,37,69,.08);transition:all .5s}
+.lst.hot{box-shadow:0 0 0 3px #cbb27a,0 20px 50px rgba(203,178,122,.4);transform:translateY(-4px)}
+.lst .ph{height:150px;position:relative;overflow:hidden;background:linear-gradient(180deg,#dbe6f3,#f1ecdd)}
+.lst .ph .ground{position:absolute;left:0;right:0;bottom:0;height:20px;background:#c9d6b8}
+.lst .ph .roof{position:absolute;left:50%;bottom:86px;margin-left:-86px;border-left:86px solid transparent;border-right:86px solid transparent;border-bottom:36px solid #0b2545}
+.lst .ph .house{position:absolute;left:50%;bottom:20px;width:144px;height:66px;margin-left:-72px;background:#f4efe4;border:2px solid #0b2545}
+.lst .ph .door{position:absolute;left:50%;bottom:20px;width:20px;height:34px;margin-left:-10px;background:#cbb27a}
+.lst .ph .win{position:absolute;bottom:42px;width:20px;height:16px;background:#7fa7d8;border:2px solid #0b2545}
+.lst .ph .w1{left:calc(50% - 56px)}.lst .ph .w2{left:calc(50% + 36px)}
+.lst .st{position:absolute;left:12px;top:12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;background:#fff;padding:4px 9px;font-weight:600}
+.lst .st.pending{background:#b7791f;color:#fff}
+.lst .bd{padding:16px 18px}
+.lst .pr{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700}
+.lst .ad{font-weight:600;font-size:18px}.lst .sp{font-size:14px;color:#6b7385;margin-top:2px}
+.lst .ag{font-size:13px;color:#6b7385;margin-top:10px}.lst .ag i{color:#cbb27a;margin-right:5px}
+.pins{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;min-height:28px}
+.pin{font-size:13px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid #e6e1d6;background:#faf8f3;display:flex;gap:6px;align-items:center}
+.pin.booked{background:#0b2545;color:#fff;border-color:#0b2545}.pin.hot{background:#cbb27a;color:#0b2545;border-color:#cbb27a}.pin.mut{color:#6b7385}
+.pin.enter{animation:pop .5s cubic-bezier(.2,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+/* qualification card */
+.qual{position:absolute;left:70px;bottom:44px;width:1780px;height:270px;background:#fff;border:1px solid #e6e1d6;box-shadow:0 30px 60px rgba(11,37,69,.18);display:grid;grid-template-columns:520px 1fr 520px;opacity:0;transform:translateY(24px);transition:all .5s}
+.qual.on{opacity:1;transform:none}
+.qual .who{padding:26px 30px;border-right:1px solid #e6e1d6}
+.qual .who .k{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b7791f;font-weight:600}
+.qual .who b{display:block;font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;margin-top:4px}
+.qual .who span{font-size:15px;color:#6b7385}
+.qual .who .tm{margin-top:12px;font-size:20px;color:#1f7a4d;font-weight:600;font-variant-numeric:tabular-nums}
+.qual .tr{padding:22px 30px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;overflow:hidden}
+.ln{display:flex;gap:12px;font-size:20px;line-height:1.35;animation:fade .35s}
+.ln .w{font-size:11px;letter-spacing:.14em;font-weight:700;color:#b7791f;width:62px;flex-shrink:0;padding-top:5px}
+.ln.c .w{color:#6b7385}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.qual .chk{padding:22px 30px;border-left:1px solid #e6e1d6}
+.qual .chk .k{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#6b7385;font-weight:600;margin-bottom:10px}
+.qual .chk .row{display:flex;align-items:center;gap:12px;font-size:19px;padding:7px 0;border-bottom:1px dashed #e6e1d6;color:#9aa1b0}
+.qual .chk .row i{width:24px;color:#d7d2c6}
+.qual .chk .row.ok{color:#0b2545}.qual .chk .row.ok i{color:#1f7a4d}
+.qual .chk .row b{margin-left:auto;font-weight:600}
+.qual .chk .score{margin-top:10px;display:flex;align-items:center;gap:12px;font-size:15px;color:#6b7385}
+.qual .chk .score b{font-family:'Cormorant Garamond',serif;font-size:36px;color:#0b2545;transition:all .4s}
+.callout{position:absolute;display:flex;align-items:center;gap:12px;background:#0b2545;color:#fff;font-weight:600;font-size:24px;padding:12px 22px;border-left:6px solid #cbb27a;box-shadow:0 20px 50px rgba(11,37,69,.35);opacity:0;transform:scale(.9);transition:all .4s;z-index:6}
+.callout.on{opacity:1;transform:none}
+/* DASH */
+#dash{padding:40px 60px 0;background:#e9e6de}
+.browser{width:1800px;border-radius:10px;background:#fff;border:1px solid #e6e1d6;box-shadow:0 40px 100px rgba(11,37,69,.28);overflow:hidden;transform-origin:50% 0;transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f7f5f0;border-bottom:1px solid #e6e1d6}
+.bar i{width:12px;height:12px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar .url{margin-left:14px;font-size:13px;color:#6b7385;background:#fff;border-radius:6px;padding:6px 12px;flex:1}
+iframe{width:1800px;height:980px;border:0;display:block}
+/* END */
+#end{background:#0b2545;color:#fff;display:flex;align-items:center;justify-content:center}
+#end .frame{border:2px solid #cbb27a;padding:70px 100px;text-align:center}
+#end h2{font-family:'Cormorant Garamond',serif;font-size:92px;line-height:1.05;font-weight:700}
+#end h2 em{font-family:'Cormorant Garamond',serif;font-style:italic;color:#cbb27a}
+#end p{margin-top:28px;font-size:26px;color:#c7cedb}#end p b{color:#fff}
+#end .stack{margin-top:26px;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:#cbb27a}
+</style></head><body>
+<div class="layer on" id="hook"><div class="frame"><div class="k">Harbor &amp; Vine Realty · listing line</div><h1>Buyers call.<br/>Agents answer <em>15 hours later.</em></h1><p><b>78%</b> of buyers go with whoever answers first. Meet Sloane — answers in 4 seconds, qualifies, books the showing.</p></div></div>
+
+<div class="layer" id="board">
+  <div class="mast"><div><div class="mono"><i class="fa-solid fa-house"></i> Harbor &amp; Vine Realty</div><div class="tag">Listing line · AI concierge Sloane · 24/7</div></div>
+    <div class="kp"><div><b>4s</b><span>avg answer</span></div><div><b id="kq">3</b><span>qualified today</span></div><div><b id="ks">1</b><span>showings booked</span></div><div><b id="kl">1</b><span>listing appts</span></div></div></div>
+  <div class="grid" id="grid"></div>
+  <div class="qual" id="qual"><div class="who"><div class="k" id="qk">Incoming · Zillow inquiry</div><b id="qn">Omar Haddad</b><span id="qs">+1 (555) 771-4432 · 302 Vine St #5B</span><div class="tm" id="tm">00:00</div></div><div class="tr" id="tr"></div>
+    <div class="chk"><div class="k">Qualification</div><div class="row" id="r1"><i class="fa-solid fa-circle-check"></i>Budget<b id="b1">—</b></div><div class="row" id="r2"><i class="fa-solid fa-circle-check"></i>Pre-approval<b id="b2">—</b></div><div class="row" id="r3"><i class="fa-solid fa-circle-check"></i>Timeline<b id="b3">—</b></div><div class="row" id="r4"><i class="fa-solid fa-circle-check"></i>Showing<b id="b4">—</b></div><div class="score">Lead score <b id="sc">—</b><span id="sct"></span></div></div></div>
+</div>
+<div class="callout" id="co"><i class="fa-solid fa-bolt" style="color:#cbb27a"></i><span id="cotxt"></span></div>
+<div class="layer" id="dash"><div class="browser" id="browser"><div class="bar"><i></i><i></i><i></i><div class="url">voicedesk.onrender.com/agent/realty · synced to Follow Up Boss / kvCORE</div></div><iframe id="frame" src="http://localhost:8099/agent/realty"></iframe></div></div>
+<div class="layer" id="end"><div class="frame"><h2>Every listing call,<br/><em>answered and qualified.</em></h2><p>Budget · pre-approval · timeline · showing booked · CRM notes — 24/7<br/><b>Adel Atya</b> · AI Voice Agent Engineer · voicedesk-h31g.onrender.com/agent/realty</p><div class="stack">Vapi / Retell · Twilio · Follow Up Boss · kvCORE · GPT-4o</div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);let tT=null,secs=0;
+const L=[{id:'L1',addr:'14 Harbor View Dr',price:'$875K',sp:'4 bd · 3 ba · 2,860 sq ft · Coastal',ag:'Nadia Reyes',st:'Active',pins:[['mut','Daniel · nurture']]},
+ {id:'L2',addr:'302 Vine St #5B',price:'$465K',sp:'2 bd · 2 ba · 1,240 sq ft · Loft',ag:'Ben Carter',st:'Active',pins:[]},
+ {id:'L3',addr:'88 Maple Ridge Ln',price:'$1.25M',sp:'5 bd · 4 ba · 4,100 sq ft · Estate',ag:'Nadia Reyes',st:'Active',pins:[['hot','Grace · hot']]},
+ {id:'L4',addr:'19 Cedar Ct',price:'$612K',sp:'3 bd · 2 ba · 1,780 sq ft · Craftsman',ag:'Ben Carter',st:'Pending',pins:[['mut','Leo · alternatives']]}];
+function draw(){$('grid').innerHTML=L.map(l=>`<div class="lst" id="${l.id}"><div class="ph"><div class="ground"></div><div class="roof"></div><div class="house"></div><div class="win w1"></div><div class="win w2"></div><div class="door"></div><span class="st ${l.st==='Pending'?'pending':''}">${l.st}</span></div><div class="bd"><div class="pr">${l.price}</div><div class="ad">${l.addr}</div><div class="sp">${l.sp}</div><div class="ag"><i class="fa-solid fa-user-tie"></i>${l.ag}</div><div class="pins" id="p-${l.id}">${l.pins.map(p=>`<span class="pin ${p[0]}">${p[1]}</span>`).join('')}</div></div></div>`).join('');}
+draw();
+window.api={
+  hook(s){$('hook').className='layer on s'+s;if(s==2)$('hook').classList.add('s1');},
+  board(){$('hook').classList.remove('on');$('board').classList.add('on');},
+  call(k,n,s){$('qk').textContent=k;$('qn').textContent=n;$('qs').textContent=s;$('tr').innerHTML='';['r1','r2','r3','r4'].forEach(i=>$(i).classList.remove('ok'));['b1','b2','b3','b4'].forEach(i=>$(i).textContent='—');$('sc').textContent='—';$('sct').textContent='';$('tm').textContent='00:00';$('qual').classList.add('on');},
+  answer(){secs=0;tT=setInterval(()=>{secs++;$('tm').textContent='00:'+String(secs).padStart(2,'0')},1000);},
+  say(sp,t){const d=document.createElement('div');d.className='ln '+(sp==='alex'?'':'c');d.innerHTML=`<span class="w">${sp==='alex'?'SLOANE':$('qn').textContent.split(' ')[0].toUpperCase()}</span><span>${t}</span>`;const tr=$('tr');tr.appendChild(d);while(tr.children.length>3)tr.removeChild(tr.firstChild);},
+  chk(i,v){$('r'+i).classList.add('ok');$('b'+i).textContent=v;},
+  score(v,t){$('sc').textContent=v;$('sct').textContent=t||'';},
+  pin(id,cls,txt){const p=document.createElement('span');p.className='pin enter '+cls;p.textContent=txt;$('p-'+id).appendChild(p);$(id).classList.add('hot');},
+  cool(id){$(id).classList.remove('hot');},
+  kp(q,s,l){$('kq').textContent=q;$('ks').textContent=s;$('kl').textContent=l;},
+  endCall(){clearInterval(tT);$('qs').textContent=$('qs').textContent.split(' · ')[0]+' · call ended';},
+  hide(){$('qual').classList.remove('on');},
+  callout(t,x,y){const c=$('co');if(!t){c.classList.remove('on');return;}$('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
+  dash(){$('board').classList.remove('on');$('dash').classList.add('on');},
+  back(){$('dash').classList.remove('on');$('browser').style.transform='';$('board').classList.add('on');},
+  zoom(x,y,z){const b=$('browser');b.style.transformOrigin=`${x}px ${y}px`;b.style.transform=z?`scale(${z})`:'';},
+  end(){$('board').classList.remove('on');$('dash').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
+};
+</script></body></html>
