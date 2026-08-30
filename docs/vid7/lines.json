@@ -1,0 +1,58 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid7/n_hook.mp3",
+   "dur": 7.08,
+   "text": "Eighty percent of callers sent to voicemail hang up without a word. The ones who leave a message wait eight hours to be heard."
+  },
+  "save": {
+   "file": "docs/vid7/n_save.mp3",
+   "dur": 5.808,
+   "text": "Transcribed, summarized, flagged urgent, and on the attorney's desk phone \u2014 before the caller hung up."
+  },
+  "routine": {
+   "file": "docs/vid7/n_routine.mp3",
+   "dur": 5.016,
+   "text": "Routine calls get routed, not stacked. The attorney only sees what needs the attorney."
+  },
+  "cta": {
+   "file": "docs/vid7/n_cta.mp3",
+   "dur": 4.224,
+   "text": "Want your voicemail read, sorted, and on the phone screen? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid7/c1_0.mp3",
+   "dur": 7.944,
+   "text": "Lakeside Family Law, this is Quinn. Everyone's in court right now \u2014 I can take a detailed message for the right attorney. What's going on?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid7/c1_1.mp3",
+   "dur": 8.592,
+   "text": "Hi, it's Rachel Kim. My custody hearing got moved to Monday at nine and the other side filed a motion. I need Daniel to call me before three today."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid7/c1_2.mp3",
+   "dur": 9.096,
+   "text": "Got it \u2014 hearing moved to Monday nine AM, a new motion, and you need Daniel Okafor back before three. I'm marking this urgent and putting it on his phone now."
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "caller",
+   "file": "docs/vid7/c2_0.mp3",
+   "dur": 4.824,
+   "text": "Hi, Priya Desai. I have a question about a filing fee on invoice two-two-nine-one. No rush."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid7/c2_1.mp3",
+   "dur": 7.056,
+   "text": "No problem, Priya \u2014 that's a billing question, so I'm sending it straight to our billing team. They'll call you back today."
+  }
+ ]
+}

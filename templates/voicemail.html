@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — AI Visual Voicemail</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#f4f1ea;--paper:#fffdf8;--ink:#1f2933;--muted:#6b7280;--line:#e2dccf;--gold:#c9a227;--slate:#1f2933;--red:#b91c1c;--amber:#b45309;--green:#15803d;--blue:#1d4ed8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.hdr{border-bottom:3px double var(--gold);background:var(--paper)}
+.hdr .in{max-width:1320px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px}
+.hdr .lg{width:44px;height:44px;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-size:18px}
+.hdr b{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;letter-spacing:.01em}
+.hdr small{display:block;font-size:.78rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.docket{margin-left:auto;display:flex;gap:22px;font-size:.8rem;color:var(--muted)}
+.docket span b{display:block;font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink);line-height:1}
+.docket span b.r{color:var(--red)}.docket span b.g{color:var(--green)}
+.wrap{max-width:1320px;margin:0 auto;padding:18px 24px 50px;display:grid;grid-template-columns:330px 1fr 380px;gap:18px;align-items:start}
+/* desk phone */
+.phone{background:#2b2f36;border-radius:14px;padding:14px 14px 18px;box-shadow:0 20px 50px rgba(31,41,51,.35);position:sticky;top:18px}
+.phone .brandline{display:flex;justify-content:space-between;align-items:center;color:#9aa3ad;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.phone .brandline i{color:#e11d48;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.screen{background:#0f1a2b;border:3px solid #111;border-radius:6px;padding:10px;font-family:'IBM Plex Mono',monospace;color:#e6edf5;font-size:.72rem;min-height:250px}
+.screen .t{background:#1e3a5f;color:#fff;padding:4px 8px;font-weight:600;display:flex;justify-content:space-between;margin:-10px -10px 8px;font-size:.72rem}
+.screen .p{color:#9fb3c8;font-size:.66rem;margin-bottom:6px}
+.screen .it{padding:4px 6px;border-bottom:1px solid #1c2b3f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen .it.sel{background:#1e3a5f;border-radius:3px}
+.screen .it.u{color:#fca5a5}.screen .it.h{color:#fde68a}
+.screen .keys{display:flex;gap:4px;margin:10px -10px -10px;padding:6px 8px;background:#0a1220;border-top:1px solid #1c2b3f}
+.screen .keys span{flex:1;background:#1c2b3f;border-radius:3px;text-align:center;font-size:.62rem;padding:3px 0;color:#cbd5e1}
+.phone .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.phone .pad i{display:block;height:22px;background:#3a3f47;border-radius:4px;box-shadow:inset 0 -2px 0 #23272d}
+.phone .cap{color:#9aa3ad;font-size:.68rem;text-align:center;margin-top:10px}
+.phone .cap b{color:#fff}
+/* ledger */
+.ledger{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.ledger h2{font-family:'Playfair Display',serif;font-size:1.1rem;padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.ledger h2 small{margin-left:auto;font-family:'Source Sans 3';font-size:.74rem;color:var(--muted);font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.grp{padding:8px 16px 4px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);background:#faf7f0;display:flex;align-items:center;gap:8px}
+.grp i{font-size:.6rem}.grp.u{color:var(--red)}.grp.h{color:var(--amber)}.grp.r{color:var(--green)}
+.row{display:grid;grid-template-columns:8px 1fr auto;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;align-items:start}
+.row:hover{background:#faf7f0}.row.sel{background:#f6efd9}
+.row .bar{width:4px;border-radius:2px;background:var(--line);height:100%;min-height:36px}
+.row.u .bar{background:var(--red)}.row.h .bar{background:var(--amber)}.row.m .bar{background:var(--blue)}.row.l .bar{background:var(--green)}
+.row .n{font-weight:700;display:flex;gap:8px;align-items:center}
+.row .n .new{font-size:.62rem;background:var(--gold);color:#1f2933;padding:1px 6px;border-radius:3px;letter-spacing:.08em;font-weight:700}
+.row .s{font-size:.86rem;color:#374151;margin-top:2px}
+.row .meta{font-size:.72rem;color:var(--muted);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.row .meta i{margin-right:3px}
+.row .rt{text-align:right;font-size:.72rem;color:var(--muted);white-space:nowrap}
+.row .rt b{display:block;font-family:'IBM Plex Mono',monospace;color:var(--ink);font-size:.78rem}
+.row.new{animation:slide .5s cubic-bezier(.2,1,.3,1)}
+@keyframes slide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+/* detail */
+.detail{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px;position:sticky;top:18px}
+.detail .pri{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:3px;font-weight:700;color:#fff;background:var(--muted)}
+.detail .pri.urgent{background:var(--red)}.detail .pri.high{background:var(--amber)}.detail .pri.medium{background:var(--blue)}.detail .pri.low{background:var(--green)}
+.detail h3{font-family:'Playfair Display',serif;font-size:1.35rem;margin:10px 0 2px}
+.detail .ph{font-size:.82rem;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.detail .sum{margin-top:14px;padding:12px 14px;background:#f6efd9;border-left:3px solid var(--gold);font-size:.92rem;line-height:1.5}
+.detail .sum b{display:block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#8a6d0b;margin-bottom:4px}
+.detail .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.detail .kv div{border:1px solid var(--line);border-radius:4px;padding:8px 10px;font-size:.8rem}
+.detail .kv div b{display:block;font-weight:700}.detail .kv div span{color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}
+.detail .tr{margin-top:12px;font-size:.84rem;line-height:1.55;color:#374151;border-top:1px dashed var(--line);padding-top:10px}
+.detail .tr b{display:block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.detail .acts{display:flex;gap:8px;margin-top:14px}
+.detail .acts a{flex:1;text-align:center;padding:9px 0;border-radius:4px;font-weight:700;font-size:.84rem;text-decoration:none;border:1px solid var(--slate);color:var(--slate)}
+.detail .acts a.p{background:var(--slate);color:#fff}
+.detail .xml{margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:#475569;background:#f1f5f9;border-radius:4px;padding:8px 10px;white-space:pre-wrap;word-break:break-all;max-height:120px;overflow:auto}
+.detail .xml b{display:block;font-family:'Source Sans 3';font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.empty{color:var(--muted);text-align:center;padding:30px;font-style:italic}
+</style>
+</head>
+<body>
+<div class="hdr"><div class="in">
+  <div class="lg"><i class="fa-solid {{ agent.icon }}"></i></div>
+  <div><b>{{ agent.business }}</b><small>AI Visual Voicemail · attendant "Quinn" · desk phones + inbox</small></div>
+  <div class="docket"><span><b id="d-total">0</b>messages today</span><span><b class="r" id="d-urgent">0</b>urgent</span><span><b id="d-routed">0</b>routed, no attorney needed</span><span><b class="g" id="d-ttd">0s</b>avg voicemail → desk phone</span><span><b class="g">0</b>unheard &gt; 1 h</span></div>
+</div></div>
+<div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
+
+<div class="wrap">
+  <div class="phone">
+    <div class="brandline"><span>Cisco 8845 · ext. 204 · D. Okafor</span><span><i class="fa-solid fa-circle"></i> MWI</span></div>
+    <div class="screen"><div class="t"><span id="sc-title">AI Voicemail</span><span id="sc-time"></span></div><div class="p">Select a message</div><div id="sc-items"></div>
+      <div class="keys"><span>Select</span><span>Call back</span><span>Exit</span></div></div>
+    <div class="pad"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="cap">Live <b>CiscoIPPhoneMenu</b> XML · <span id="xmlurl"></span></div>
+  </div>
+
+  <div class="ledger">
+    <h2><i class="fa-solid fa-inbox" style="color:var(--gold)"></i> Message ledger <small id="lcount"></small></h2>
+    <div id="ledger"></div>
+  </div>
+
+  <div class="detail" id="detail"><div class="empty">Select a message</div></div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}";
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+const PRI={urgent:['u','Urgent — attorney callback'],high:['h','New client / needs attorney'],medium:['m','Attorney to confirm'],low:['r','Routed — no attorney action']};
+let selected=null, lastTopId=null, R=[];
+$('xmlurl').textContent=location.origin+'/xml/voicemail/'+AGENT;
+$('sc-time').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+function render(d){
+  R=d.records; const m=r=>r.meta||{};
+  const urgent=R.filter(r=>m(r).priority==='urgent').length, routed=R.filter(r=>m(r).priority==='low').length;
+  $('d-total').textContent=R.length;$('d-urgent').textContent=urgent;$('d-routed').textContent=routed;$('d-ttd').textContent='41s';
+  $('lcount').textContent=R.length+' messages';
+  // phone screen (mirrors the XML menu)
+  $('sc-title').textContent=`AI Voicemail (${R.length})`;
+  $('sc-items').innerHTML=R.slice(0,6).map((r,i)=>`<div class="it ${m(r).priority==='urgent'?'u':m(r).priority==='high'?'h':''} ${i===0?'sel':''}">${m(r).priority==='urgent'?'!! ':m(r).priority==='high'?'! ':''}${esc(r.name)} - ${esc(r.intent)}</div>`).join('');
+  // ledger grouped by priority
+  let html='';
+  for(const k of ['urgent','high','medium','low']){const g=R.filter(r=>m(r).priority===k); if(!g.length)continue;
+    html+=`<div class="grp ${PRI[k][0]}"><i class="fa-solid fa-circle"></i> ${PRI[k][1]} · ${g.length}</div>`;
+    html+=g.map(r=>`<div class="row ${PRI[k][0]} ${selected===r.id?'sel':''}" data-id="${r.id}"><div class="bar"></div><div><div class="n">${esc(r.name)}${m(r).status==='new'?'<span class="new">NEW</span>':''}</div><div class="s">${esc(r.intent)}</div><div class="meta"><span><i class="fa-solid fa-folder"></i>${esc(m(r).matter||'—')}</span><span><i class="fa-solid fa-user"></i>${esc(m(r).assigned||'—')}</span>${m(r).hangup?'<span><i class="fa-solid fa-comment-sms"></i>text sent</span>':''}</div></div><div class="rt"><b>${m(r).duration?m(r).duration+'s':'0s'}</b>${ago(r.created)}</div></div>`).join('');}
+  $('ledger').innerHTML=html||'<div class="empty">No messages.</div>';
+  document.querySelectorAll('.row').forEach(e=>e.onclick=()=>{selected=+e.dataset.id;render({records:R});});
+  if(selected==null&&R.length){selected=R[0].id;}
+  const s=R.find(r=>r.id===selected); if(s) detail(s);
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){selected=R[0].id;const f=document.querySelector('.row');if(f)f.classList.add('new');detail(R[0]);document.querySelectorAll('.row').forEach(x=>x.classList.toggle('sel',+x.dataset.id===selected));}
+  if(R.length)lastTopId=R[0].id;
+}
+function detail(r){const m=r.meta||{};const p=m.priority||'low';const digits=(r.phone||'').replace(/\D/g,'');
+  $('detail').innerHTML=`<span class="pri ${p}">${p}</span><h3>${esc(r.name)}</h3><div class="ph">${esc(r.phone)}${m.duration?' · '+m.duration+'s message':''}</div>
+    <div class="sum"><b>AI summary</b>${esc(r.summary)}</div>
+    <div class="kv"><div><b>${esc(m.matter||'—')}</b><span>matter</span></div><div><b>${esc(m.assigned||'—')}</b><span>assigned to</span></div><div><b>${esc(r.appointment||'when possible')}</b><span>callback</span></div><div><b>${esc(m.intent_type||m.intent||r.intent)}</b><span>intent</span></div></div>
+    ${m.transcript?`<div class="tr"><b>Transcript</b>${esc(m.transcript)}</div>`:'<div class="tr"><b>Transcript</b><i>No message left — caller hung up; AI text-back sent.</i></div>'}
+    <div class="acts"><a class="p" href="#"><i class="fa-solid fa-phone"></i> Call back</a><a href="#"><i class="fa-solid fa-comment-sms"></i> Text</a><a href="#"><i class="fa-solid fa-user-plus"></i> Reassign</a></div>
+    <div class="xml"><b>What the desk phone receives (CiscoIPPhoneText)</b>&lt;CiscoIPPhoneText&gt;&lt;Title&gt;${esc(r.name)}&lt;/Title&gt;&lt;Prompt&gt;${esc(r.phone)}&lt;/Prompt&gt;&lt;Text&gt;${p.toUpperCase()} - ${esc(r.intent)} ...&lt;/Text&gt;&lt;SoftKeyItem&gt;&lt;Name&gt;Call back&lt;/Name&gt;&lt;URL&gt;Dial:${digits}&lt;/URL&gt;&lt;/SoftKeyItem&gt;&lt;/CiscoIPPhoneText&gt;</div>`;}
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Source Sans 3',system-ui,sans-serif}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#f4f1ea;color:#1f2933}
+.layer{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}.layer.on{opacity:1}
+/* HOOK: parchment, serif, gold rules */
+#hook{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 200px}
+#hook .rule{width:120px;height:3px;background:#c9a227;margin:0 auto 34px;opacity:0;transition:opacity .5s}
+#hook h1{font-family:'Playfair Display',serif;font-size:84px;line-height:1.08;font-weight:700;opacity:0;transform:translateY(20px);transition:all .7s}
+#hook h1 em{font-style:italic;color:#b91c1c}
+#hook p{margin-top:36px;font-size:36px;color:#4b5563;opacity:0;transform:translateY(14px);transition:all .6s}
+#hook p b{color:#1f2933}
+#hook.s1 .rule,#hook.s1 h1{opacity:1;transform:none}#hook.s2 p{opacity:1;transform:none}
+/* SPLIT before/after */
+#split{display:grid;grid-template-columns:1fr 1fr}
+.half{position:relative;padding:60px 70px;display:flex;flex-direction:column}
+.half .k{font-size:18px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+.half h2{font-family:'Playfair Display',serif;font-size:54px;margin-top:10px;line-height:1.05}
+.before{background:#1f2933;color:#e5e7eb}
+.before .k{color:#fca5a5}
+.before .stack{margin-top:40px;display:flex;flex-direction:column;gap:14px}
+.before .vm{background:#111827;border:1px solid #374151;border-radius:8px;padding:16px 20px;display:flex;align-items:center;gap:16px;font-size:20px;color:#9ca3af}
+.before .vm i{color:#e11d48;font-size:22px;animation:blink 1.1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.before .vm b{color:#e5e7eb}.before .vm span{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:16px}
+.before .big{margin-top:auto;display:flex;gap:40px}
+.before .big div b{display:block;font-family:'Playfair Display',serif;font-size:74px;color:#fca5a5;line-height:1}
+.before .big div span{font-size:18px;color:#9ca3af}
+.after{background:#f4f1ea}
+.after .k{color:#8a6d0b}
+/* call card + desk phone */
+.callc{margin-top:30px;background:#fffdf8;border:1px solid #e2dccf;border-radius:8px;padding:18px 22px;box-shadow:0 12px 30px rgba(31,41,51,.1);opacity:0;transform:translateY(14px);transition:all .5s}
+.callc.on{opacity:1;transform:none}
+.callc .hd{display:flex;align-items:center;gap:12px}
+.callc .hd .av{width:44px;height:44px;border-radius:50%;background:#c9a227;color:#1f2933;display:grid;place-items:center;font-weight:700}
+.callc .hd b{font-size:22px;font-family:'Playfair Display',serif}.callc .hd span{font-size:14px;color:#6b7280;display:block}
+.callc .hd .tm{margin-left:auto;font-family:'IBM Plex Mono',monospace;color:#15803d;font-weight:600;font-size:18px}
+.callc .tr{margin-top:12px;display:flex;flex-direction:column;gap:8px;min-height:150px;justify-content:flex-end}
+.ln{display:flex;gap:10px;font-size:19px;line-height:1.35;animation:pop .35s}
+.ln .w{font-size:11px;letter-spacing:.1em;font-weight:700;color:#8a6d0b;width:60px;flex-shrink:0;padding-top:5px}
+.ln.c .w{color:#6b7280}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.phone{margin-top:26px;background:#2b2f36;border-radius:14px;padding:14px;box-shadow:0 20px 50px rgba(31,41,51,.35);opacity:0;transform:translateY(14px);transition:all .5s .1s;width:560px}
+.phone.on{opacity:1;transform:none}
+.phone .bl{display:flex;justify-content:space-between;color:#9aa3ad;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.phone .bl i{color:#e11d48;animation:blink 1.1s infinite}
+.screen{background:#0f1a2b;border:3px solid #111;border-radius:6px;font-family:'IBM Plex Mono',monospace;color:#e6edf5;font-size:16px;padding:0 0 8px}
+.screen .t{background:#1e3a5f;color:#fff;padding:6px 10px;font-weight:600;display:flex;justify-content:space-between}
+.screen .it{padding:6px 10px;border-bottom:1px solid #1c2b3f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen .it.u{color:#fca5a5}.screen .it.sel{background:#1e3a5f}
+.screen .it.enter{animation:slide .5s cubic-bezier(.2,1,.3,1)}
+@keyframes slide{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.screen .keys{display:flex;gap:6px;margin:8px 8px 0}
+.screen .keys span{flex:1;background:#1c2b3f;border-radius:3px;text-align:center;font-size:13px;padding:4px 0;color:#cbd5e1}
+.screen .keys span.hot{background:#c9a227;color:#1f2933;font-weight:700}
+.callout{position:absolute;display:flex;align-items:center;gap:12px;background:#1f2933;color:#fff;font-weight:700;font-size:24px;padding:12px 20px;border-radius:6px;box-shadow:0 20px 50px rgba(31,41,51,.35);opacity:0;transform:scale(.9);transition:all .4s;z-index:6;border-left:6px solid #c9a227}
+.callout.on{opacity:1;transform:none}
+/* DASH */
+#dash{padding:40px 60px 0;background:#e9e4d8}
+.browser{width:1800px;border-radius:10px;background:#fff;border:1px solid #e2dccf;box-shadow:0 40px 100px rgba(31,41,51,.28);overflow:hidden;transform-origin:50% 0;transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f4f1ea;border-bottom:1px solid #e2dccf}
+.bar i{width:12px;height:12px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar .url{margin-left:14px;font-size:13px;color:#6b7280;background:#fff;border-radius:6px;padding:6px 12px;flex:1}
+iframe{width:1800px;height:980px;border:0;display:block}
+/* END */
+#end{background:#1f2933;color:#f4f1ea;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column}
+#end .rule{width:120px;height:3px;background:#c9a227;margin-bottom:34px}
+#end h2{font-family:'Playfair Display',serif;font-size:88px;line-height:1.08}
+#end h2 em{font-style:italic;color:#c9a227}
+#end p{margin-top:34px;font-size:26px;color:#cbd5e1}
+#end p b{color:#fff}
+#end .stack{margin-top:26px;display:flex;gap:26px;font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:#c9a227}
+</style></head><body>
+<div class="layer on" id="hook"><div class="rule"></div><h1>Eighty percent of callers sent to voicemail<br/><em>hang up without a word.</em></h1><p>The rest wait <b>8 hours</b> to be heard. Meet Quinn — voicemail that <b>reads itself</b> and puts it on the attorney's desk phone.</p></div>
+
+<div class="layer" id="split">
+  <div class="half before"><div class="k">Before</div><h2>Voicemail lamp blinking.<br/>Nobody listening.</h2>
+    <div class="stack"><div class="vm"><i class="fa-solid fa-circle"></i><b>Unknown</b> · 0:48<span>8h 12m unheard</span></div><div class="vm"><i class="fa-solid fa-circle"></i><b>Unknown</b> · 1:02<span>8h 40m unheard</span></div><div class="vm"><i class="fa-solid fa-circle"></i><b>Unknown</b> · 0:31<span>9h 05m unheard</span></div><div class="vm" style="opacity:.5"><i class="fa-solid fa-phone-slash" style="animation:none;color:#6b7280"></i><b>4 callers</b> hung up at the beep<span>lost</span></div></div>
+    <div class="big"><div><b>80%</b><span>hang up without a message</span></div><div><b>8 h</b><span>before anyone listens</span></div></div></div>
+  <div class="half after"><div class="k">After · AI attendant Quinn</div><h2>Every caller heard.<br/>Every message on the desk.</h2>
+    <div class="callc" id="callc"><div class="hd"><div class="av" id="av">RK</div><div><b id="cn">Rachel Kim</b><span id="cs">+1 (555) 610-2284 · incoming · Quinn answering</span></div><div class="tm" id="tm">00:00</div></div><div class="tr" id="tr"></div></div>
+    <div class="phone" id="phone"><div class="bl"><span>Cisco 8845 · ext. 204 · D. Okafor</span><span><i class="fa-solid fa-circle"></i> MWI</span></div>
+      <div class="screen"><div class="t"><span id="sct">AI Voicemail (4)</span><span>2:14 PM</span></div><div id="sci"><div class="it">! Marcus Bell - New client - divorce</div><div class="it">Tom Alvarez - Documents ready?</div><div class="it">Elena Voss - Mediation reschedule</div><div class="it">Unknown - Hang-up, text sent</div></div><div class="keys"><span>Select</span><span id="k2">Call back</span><span>Exit</span></div></div></div>
+  </div>
+</div>
+<div class="callout" id="co"><i class="fa-solid fa-bolt" style="color:#c9a227"></i><span id="cotxt"></span></div>
+<div class="layer" id="dash"><div class="browser" id="browser"><div class="bar"><i></i><i></i><i></i><div class="url">voicedesk.onrender.com/agent/voicemail · /xml/voicemail (CiscoIPPhoneMenu)</div></div><iframe id="frame" src="http://localhost:8099/agent/voicemail"></iframe></div></div>
+<div class="layer" id="end"><div class="rule"></div><h2>Voicemail that<br/><em>reads itself.</em></h2><p>AI attendant · transcription · summary · urgency · pushed to Cisco / Yealink / Poly desk phones and a web inbox<br/><b>Adel Atya</b> · AI Voice Agent Engineer · voicedesk-h31g.onrender.com/agent/voicemail</p><div class="stack"><span>Vapi / Retell</span><span>Whisper</span><span>GPT-4o</span><span>IP Phone XML</span><span>Twilio</span></div></div>
+
+<script>
+const $=id=>document.getElementById(id);let tT=null,secs=0;
+window.api={
+  hook(s){$('hook').className='layer on s'+s;if(s==2)$('hook').classList.add('s1');},
+  split(){$('hook').classList.remove('on');$('split').classList.add('on');setTimeout(()=>{$('callc').classList.add('on');$('phone').classList.add('on')},200);},
+  answer(){secs=0;tT=setInterval(()=>{secs++;$('tm').textContent='00:'+String(secs).padStart(2,'0')},1000);},
+  say(sp,t){const d=document.createElement('div');d.className='ln '+(sp==='alex'?'':'c');d.innerHTML=`<span class="w">${sp==='alex'?'QUINN':$('cn').textContent.split(' ')[0].toUpperCase()}</span><span>${t}</span>`;const tr=$('tr');tr.appendChild(d);while(tr.children.length>3)tr.removeChild(tr.firstChild);},
+  endCall(){clearInterval(tT);$('cs').textContent='call ended · message captured';},
+  newCall(n,s,ini){$('tr').innerHTML='';$('cn').textContent=n;$('cs').textContent=s;$('av').textContent=ini;$('tm').textContent='00:00';},
+  push(txt,cls){const d=document.createElement('div');d.className='it enter sel '+(cls||'');d.textContent=txt;$('sci').prepend(d);$('sci').querySelectorAll('.it').forEach((e,i)=>{if(i>0)e.classList.remove('sel')});const n=$('sci').children.length;$('sct').textContent=`AI Voicemail (${n})`;if(n>5)$('sci').lastElementChild.remove();$('k2').classList.add('hot');},
+  callout(t,x,y){const c=$('co');if(!t){c.classList.remove('on');return;}$('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
+  dash(){$('split').classList.remove('on');$('dash').classList.add('on');},
+  back(){$('dash').classList.remove('on');$('browser').style.transform='';$('split').classList.add('on');},
+  zoom(x,y,z){const b=$('browser');b.style.transformOrigin=`${x}px ${y}px`;b.style.transform=z?`scale(${z})`:'';},
+  end(){$('split').classList.remove('on');$('dash').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
+};
+</script></body></html>

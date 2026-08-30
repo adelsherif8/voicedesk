@@ -136,3 +136,39 @@ def reset():
 @app.get("/health")
 def health():
     return {"ok": True, "agents": len(AGENTS), "records": db.count()}
+
+# ---- IP desk-phone XML services (Cisco IP Phone Services format) ----
+from fastapi.responses import Response
+
+def _xml_esc(t: str) -> str:
+    return (t or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+@app.get("/xml/voicemail/{agent}")
+def xml_voicemail_menu(agent: str, request: Request):
+    """CiscoIPPhoneMenu: list of AI-summarized voicemails for the phone screen."""
+    agent = _valid_agent(agent)
+    base = str(request.base_url).rstrip("/")
+    items = ""
+    for r in db.list_records(agent)[:8]:
+        m = r.get("meta") or {}
+        tag = {"urgent": "!! ", "high": "! ", "medium": "", "low": ""}.get(m.get("priority", ""), "")
+        items += f"<MenuItem><Name>{_xml_esc(tag + r['name'] + ' — ' + r['intent'])}</Name><URL>{base}/xml/voicemail/{agent}/{r['id']}</URL></MenuItem>"
+    body = (f"<CiscoIPPhoneMenu><Title>AI Voicemail ({db.count(agent)})</Title><Prompt>Select a message</Prompt>{items}"
+            f"<SoftKeyItem><Name>Select</Name><URL>SoftKey:Select</URL><Position>1</Position></SoftKeyItem>"
+            f"<SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem></CiscoIPPhoneMenu>")
+    return Response(content=body, media_type="text/xml")
+
+@app.get("/xml/voicemail/{agent}/{rid}")
+def xml_voicemail_item(agent: str, rid: int, request: Request):
+    """CiscoIPPhoneText: AI summary + callback softkey for one message."""
+    agent = _valid_agent(agent)
+    rec = next((r for r in db.list_records(agent) if r["id"] == rid), None)
+    if not rec:
+        return Response(content="<CiscoIPPhoneText><Title>Not found</Title></CiscoIPPhoneText>", media_type="text/xml")
+    m = rec.get("meta") or {}
+    text = f"{m.get('priority','').upper()} - {rec['intent']}\n{rec['summary']}\nMatter: {m.get('matter','')}\nCallback: {rec.get('appointment') or 'when possible'}"
+    body = (f"<CiscoIPPhoneText><Title>{_xml_esc(rec['name'])}</Title><Prompt>{_xml_esc(rec['phone'])}</Prompt><Text>{_xml_esc(text)}</Text>"
+            f"<SoftKeyItem><Name>Call back</Name><URL>Dial:{''.join(ch for ch in rec['phone'] if ch.isdigit())}</URL><Position>1</Position></SoftKeyItem>"
+            f"<SoftKeyItem><Name>Text</Name><URL>{str(request.base_url).rstrip('/')}/xml/voicemail/{agent}</URL><Position>2</Position></SoftKeyItem>"
+            f"<SoftKeyItem><Name>Back</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem></CiscoIPPhoneText>")
+    return Response(content=body, media_type="text/xml")
