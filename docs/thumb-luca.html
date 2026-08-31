@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,800;1,600&family=Karla:wght@500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Karla,system-ui,sans-serif}
+body{width:1000px;height:750px;overflow:hidden;position:relative;background:#9b1c1c;color:#fbf3e4}
+.check{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 34px,rgba(255,255,255,.07) 34px 68px),repeating-linear-gradient(90deg,transparent 0 34px,rgba(255,255,255,.07) 34px 68px)}
+.awning{position:absolute;left:0;right:0;top:0;height:22px;background:repeating-linear-gradient(90deg,#fbf3e4 0 40px,#9b1c1c 40px 80px)}
+.brand{position:absolute;left:56px;top:62px;display:flex;align-items:center;gap:12px}
+.brand .lg{width:48px;height:48px;border-radius:50%;background:#fbf3e4;color:#9b1c1c;display:grid;place-items:center;font-size:20px;border:3px solid #c8912a}
+.brand b{font-family:Fraunces,serif;font-size:26px;font-weight:800}.brand span{display:block;font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#ffd27a}
+h1{position:absolute;left:56px;top:136px;font-family:Fraunces,serif;font-size:64px;line-height:1.02;font-weight:800;width:560px}
+h1 em{font-style:italic;color:#ffd27a}
+.sub{position:absolute;left:56px;top:432px;width:430px;font-size:19px;line-height:1.45;color:#f3dfc4;font-weight:500}
+.sub b{color:#fff;font-weight:700}
+.stats{position:absolute;left:56px;bottom:52px;display:flex;gap:26px}
+.stats b{display:block;font-family:Fraunces,serif;font-size:42px;line-height:1;color:#ffd27a}
+.stats span{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#f3dfc4}
+/* ticket */
+.ticket{position:absolute;right:70px;top:120px;width:330px;background:#fff;color:#111;font-family:'Courier Prime',monospace;font-size:15px;padding:18px 22px 24px;box-shadow:0 40px 80px rgba(0,0,0,.45);transform:rotate(3deg)}
+.ticket::before{content:'';position:absolute;left:0;right:0;top:-1px;height:10px;background:radial-gradient(circle at 6px 2px,transparent 5px,#fff 5px) repeat-x;background-size:12px 10px;transform:rotate(180deg)}
+.ticket::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:10px;background:radial-gradient(circle at 6px 10px,transparent 5px,#fff 5px) repeat-x;background-size:12px 10px}
+.ticket .hd{text-align:center;font-weight:700;border-bottom:1px dashed #999;padding-bottom:8px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em}
+.ticket .hd small{display:block;font-weight:400;text-transform:none;letter-spacing:0;font-size:12px}
+.ticket .li{display:flex;justify-content:space-between;padding:3px 0}
+.ticket .mod{padding-left:28px;color:#555;font-size:13px}
+.ticket .al{margin:8px 0;padding:5px;background:#111;color:#fff;font-weight:700;text-align:center;font-size:13px}
+.ticket .up{color:#2e7d32;font-size:13px;padding-left:28px}
+.ticket .tot{border-top:1px dashed #999;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-weight:700;font-size:17px}
+.ticket .ft{text-align:center;color:#666;font-size:12px;margin-top:8px}
+.stamp{position:absolute;right:40px;bottom:60px;width:150px;height:150px;border-radius:50%;border:5px solid #ffd27a;color:#ffd27a;display:grid;place-items:center;text-align:center;font-family:Fraunces,serif;font-weight:800;font-size:22px;line-height:1.05;transform:rotate(-12deg);background:rgba(0,0,0,.18)}
+.stamp small{display:block;font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:400;margin-top:6px}
+.tag{position:absolute;right:70px;top:66px;background:#2a1a12;color:#ffd27a;font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;padding:9px 14px;border:1px solid #c8912a}
+</style></head><body>
+<div class="check"></div><div class="awning"></div>
+<div class="brand"><div class="lg"><i class="fa-solid fa-utensils"></i></div><div><b>Luca's Trattoria</b><span>AI phone host · Gia</span></div></div>
+<h1>The phone rings.<br/><em>Everyone's carrying plates.</em></h1>
+<div class="sub">An AI host that answers <b>every call in the rush</b>: takeout orders to the <b>kitchen printer</b> (allergies flagged, upsells, total read back), reservations on the <b>floor plan</b>, hours &amp; menu questions.</div>
+<div class="stats"><div><b>43%</b><span>calls missed in rush</span></div><div><b>6 in 10</b><span>were orders / tables</span></div><div><b>100%</b><span>answered by Gia</span></div></div>
+<div class="tag"><i class="fa-solid fa-robot"></i> &nbsp;AI voice agent · live demo</div>
+<div class="ticket"><div class="hd">Takeout · Sam O.<small>+1 (555) 402-1180 · pickup 7:15 PM</small></div>
+  <div class="li"><span>2× Margherita pizza</span><span>$32.00</span></div><div class="mod">↳ one no basil</div>
+  <div class="li"><span>1× Caesar salad</span><span>$9.50</span></div>
+  <div class="li"><span>1× Tiramisu</span><span>$7.00</span></div><div class="up">↳ upsold by Gia</div>
+  <div class="al">!! ALLERGY: TREE NUTS</div>
+  <div class="tot"><span>TOTAL · PAID</span><span>$48.50</span></div><div class="ft">read back to caller ✓ · receipt texted</div></div>
+<div class="stamp">Ticket<br/>printed<small>by AI · no staff</small></div>
+</body></html>

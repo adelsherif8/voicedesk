@@ -1,0 +1,129 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,800;1,600&family=Karla:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Karla,system-ui,sans-serif}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#fbf3e4;color:#2a1a12}
+.layer{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}.layer.on{opacity:1}
+/* HOOK: chalkboard */
+#hook{background:#2a1a12;color:#fbf3e4;display:flex;align-items:center;justify-content:center}
+#hook .chalk{border:10px solid #6b4a2e;padding:70px 90px;text-align:center;max-width:1500px;box-shadow:inset 0 0 60px rgba(0,0,0,.5);opacity:0;transform:scale(.97);transition:all .7s}
+#hook .k{font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.2em;text-transform:uppercase;color:#c9b39a}
+#hook h1{font-family:Fraunces,serif;font-size:96px;line-height:1.05;font-weight:800;margin-top:22px}
+#hook h1 em{font-style:italic;color:#ffd27a}
+#hook p{margin-top:28px;font-size:30px;color:#e8d9bf;opacity:0;transition:opacity .6s}
+#hook p b{color:#fff}
+#hook.s1 .chalk{opacity:1;transform:none}#hook.s2 p{opacity:1}
+/* SERVICE stage: floor + printer */
+#svc{background:#fbf3e4 repeating-linear-gradient(45deg,rgba(155,28,28,.035) 0 12px,transparent 12px 24px)}
+.awning{height:16px;background:repeating-linear-gradient(90deg,#9b1c1c 0 48px,#fff 48px 96px)}
+.top{height:96px;display:flex;align-items:center;padding:0 70px;gap:18px}
+.top .lg{width:60px;height:60px;border-radius:50%;background:#9b1c1c;color:#fff;display:grid;place-items:center;font-size:26px;border:3px solid #c8912a}
+.top b{font-family:Fraunces,serif;font-size:36px;font-weight:800}.top small{display:block;font-size:14px;color:#7a6656;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.top .kp{margin-left:auto;display:flex;gap:12px}
+.top .kp div{background:#2a1a12;color:#fbf3e4;border:4px solid #6b4a2e;border-radius:8px;padding:8px 18px;text-align:center;transition:all .4s}
+.top .kp div.flash{background:#9b1c1c}
+.top .kp b{display:block;font-family:Fraunces,serif;font-size:26px;color:#ffd27a;line-height:1}.top .kp span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.8}
+.body{display:grid;grid-template-columns:1fr 620px;gap:30px;padding:16px 70px 0;height:640px}
+.floorc{background:#fffaf0;border:2px solid #e8d9bf;border-radius:14px;padding:18px 22px}
+.floorc h2,.printc h2{font-family:Fraunces,serif;font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.floorc h2 i,.printc h2 i{color:#9b1c1c}
+.floor{position:relative;height:500px;background:#f4ead6;border:2px dashed #e8d9bf;border-radius:12px}
+.zone{position:absolute;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#7a6656;font-weight:700}
+.tbl{position:absolute;display:grid;place-items:center;background:#fff;border:3px solid #e8d9bf;color:#7a6656;font-weight:800;font-size:16px;box-shadow:0 6px 14px rgba(42,26,18,.1);transition:all .5s}
+.tbl.round{border-radius:50%}.tbl.sq{border-radius:14px}
+.tbl small{display:block;font-size:11px;font-weight:600;opacity:.75}
+.tbl.res{background:#9b1c1c;border-color:#9b1c1c;color:#fff}
+.tbl.hot{animation:pop .6s cubic-bezier(.2,1,.3,1);box-shadow:0 0 0 10px rgba(155,28,28,.25),0 20px 40px rgba(155,28,28,.35)}
+.tbl .who{position:absolute;bottom:-30px;white-space:nowrap;font-size:13px;color:#9b1c1c;font-weight:800;background:#fff;padding:3px 10px;border-radius:6px;border:1px solid #fbe3dc}
+@keyframes pop{from{transform:scale(.6)}to{transform:none}}
+.printc{background:#3b2a1e;border-radius:16px 16px 8px 8px;padding:16px 18px 6px;position:relative}
+.printc h2{color:#fbf3e4}.printc h2 i{color:#ffd27a}
+.printc .slot{height:12px;background:#1c130d;border-radius:6px;margin-bottom:12px;box-shadow:inset 0 2px 6px #000}
+.tickets{display:flex;flex-direction:column;gap:14px;padding:0 10px;max-height:520px;overflow:hidden}
+.ticket{background:#fff;font-family:'Courier Prime',monospace;font-size:16px;padding:14px 18px 18px;box-shadow:0 8px 18px rgba(0,0,0,.3);color:#111;transform-origin:top;transition:all .4s}
+.ticket .hd{text-align:center;font-weight:700;border-bottom:1px dashed #999;padding-bottom:6px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
+.ticket .hd small{display:block;font-weight:400;text-transform:none;letter-spacing:0}
+.ticket .li{display:flex;justify-content:space-between;padding:3px 0;animation:line .3s}
+.ticket .li.dim{opacity:.6}
+.ticket .mod{padding-left:34px;color:#555;font-size:14px;animation:line .3s}
+.ticket .al{margin:8px 0;padding:6px;background:#111;color:#fff;font-weight:700;text-align:center;animation:line .3s}
+.ticket .up{color:#2e7d32;font-size:14px;padding-left:34px;animation:line .3s}
+.ticket .tot{border-top:1px dashed #999;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-weight:700;animation:line .3s}
+.ticket .ft{text-align:center;color:#666;font-size:13px;margin-top:6px;animation:line .3s}
+@keyframes line{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.ticket.printing{animation:print .8s cubic-bezier(.2,1,.3,1)}
+@keyframes print{from{transform:scaleY(.1);opacity:0}to{transform:none;opacity:1}}
+/* caller strip */
+.strip{position:absolute;left:70px;right:70px;bottom:36px;height:220px;background:#2a1a12;color:#fbf3e4;border-radius:14px;display:grid;grid-template-columns:440px 1fr;overflow:hidden;opacity:0;transform:translateY(30px);transition:all .5s;box-shadow:0 30px 60px rgba(42,26,18,.4);border:4px solid #6b4a2e}
+.strip.on{opacity:1;transform:none}
+.strip .who{padding:22px 26px;border-right:1px dashed rgba(251,243,228,.25);display:flex;flex-direction:column;justify-content:center;gap:4px}
+.strip .who .k{font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#ffd27a}
+.strip .who b{font-family:Fraunces,serif;font-size:34px;font-weight:800}
+.strip .who span{font-size:14px;color:#c9b39a}
+.strip .who .tm{font-size:20px;color:#a5d6a7;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px}
+.strip .tr{padding:18px 26px;display:flex;flex-direction:column;justify-content:flex-end;gap:9px}
+.ln{display:flex;gap:12px;font-size:20px;line-height:1.35;animation:line .35s}
+.ln .w{font-size:11px;letter-spacing:.14em;font-weight:700;color:#ffd27a;width:56px;flex-shrink:0;padding-top:5px}
+.ln.c .w{color:#c9b39a}
+.callout{position:absolute;display:flex;align-items:center;gap:12px;background:#9b1c1c;color:#fff;font-weight:700;font-size:24px;padding:12px 22px;border-radius:8px;box-shadow:0 20px 50px rgba(155,28,28,.4);opacity:0;transform:scale(.9);transition:all .4s;z-index:6;font-family:Fraunces,serif}
+.callout.on{opacity:1;transform:none}
+/* DASH */
+#dash{padding:40px 60px 0;background:#efe3cc}
+.browser{width:1800px;border-radius:14px;background:#fff;border:1px solid #e8d9bf;box-shadow:0 40px 100px rgba(42,26,18,.3);overflow:hidden;transform-origin:50% 0;transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#fbf3e4;border-bottom:1px solid #e8d9bf}
+.bar i{width:12px;height:12px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar .url{margin-left:14px;font-size:13px;color:#7a6656;background:#fff;border-radius:6px;padding:6px 12px;flex:1;font-weight:600}
+iframe{width:1800px;height:980px;border:0;display:block}
+/* END: menu card */
+#end{background:#9b1c1c;display:flex;align-items:center;justify-content:center}
+#end .menu{background:#fffaf0;color:#2a1a12;width:1100px;padding:70px 80px;text-align:center;border:3px double #c8912a;box-shadow:0 40px 100px rgba(0,0,0,.4)}
+#end .k{font-family:'Courier Prime',monospace;font-size:16px;letter-spacing:.24em;text-transform:uppercase;color:#9b1c1c}
+#end h2{font-family:Fraunces,serif;font-size:84px;line-height:1.05;font-weight:800;margin-top:14px}
+#end h2 em{font-style:italic;color:#9b1c1c}
+#end p{margin-top:26px;font-size:24px;color:#7a6656}#end p b{color:#2a1a12}
+#end .stack{margin-top:22px;font-family:'Courier Prime',monospace;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#5b6b3a}
+</style></head><body>
+<div class="layer on" id="hook"><div class="chalk"><div class="k">Luca's Trattoria · Friday · 7:12 PM</div><h1>The phone rings.<br/><em>Everyone's carrying plates.</em></h1><p>Restaurants miss up to <b>43%</b> of calls in the rush — 6 in 10 were orders or tables. Meet <b>Gia</b>, the phone host.</p></div></div>
+
+<div class="layer" id="svc"><div class="awning"></div>
+  <div class="top"><div class="lg"><i class="fa-solid fa-utensils"></i></div><div><b>Luca's Trattoria</b><small>Phone host Gia · orders → kitchen printer · tables → floor plan</small></div>
+    <div class="kp"><div id="kA"><b id="kAv">100%</b><span>calls answered</span></div><div id="kB"><b id="kBv">$79.50</b><span>phone orders tonight</span></div><div id="kC"><b id="kCv">12</b><span>covers booked</span></div><div id="kD"><b id="kDv">2</b><span>allergies flagged</span></div></div></div>
+  <div class="body">
+    <div class="floorc"><h2><i class="fa-solid fa-map"></i> Tonight's floor</h2><div class="floor" id="floor"></div></div>
+    <div class="printc"><h2><i class="fa-solid fa-receipt"></i> Kitchen printer</h2><div class="slot"></div><div class="tickets" id="tickets"></div></div>
+  </div>
+  <div class="strip" id="strip"><div class="who"><div class="k" id="wk">Incoming · 7:12 PM · answered in 1 s</div><b id="wn">Sam Ortega</b><span id="ws">+1 (555) 402-1180</span><div class="tm" id="tm">00:00</div></div><div class="tr" id="tr"></div></div>
+</div>
+<div class="callout" id="co"><i class="fa-solid fa-bolt" style="color:#ffd27a"></i><span id="cotxt"></span></div>
+<div class="layer" id="dash"><div class="browser" id="browser"><div class="bar"><i></i><i></i><i></i><div class="url">voicedesk.onrender.com/agent/restaurant · Toast / Square POS · OpenTable / Resy</div></div><iframe id="frame" src="http://localhost:8099/agent/restaurant"></iframe></div></div>
+<div class="layer" id="end"><div class="menu"><div class="k">Tonight's special</div><h2>Every call answered.<br/><em>Every order on the ticket.</em></h2><p>Takeout to the POS & kitchen printer · reservations on the floor plan · allergies flagged · upsells · read-back totals<br/><b>Adel Atya</b> · AI Voice Agent Engineer · voicedesk-h31g.onrender.com/agent/restaurant</p><div class="stack">Vapi / Retell · Twilio · Toast · Square · OpenTable · Resy</div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);let tT=null,secs=0;
+const TABLES=[["T1",2],["T2",2],["T3",4],["T4",4],["T5",4],["T6",6],["T7",6],["T8",8],["B1",2],["B2",2],["P1",4],["P2",4]];
+const POS={T1:[6,8,'round',74],T2:[20,8,'round',74],T3:[36,6,'sq',96],T4:[54,6,'sq',96],T5:[74,6,'sq',96],T6:[8,44,'sq',120],T7:[32,44,'sq',120],T8:[58,40,'sq',160],B1:[6,82,'round',60],B2:[16,82,'round',60],P1:[66,80,'sq',80],P2:[82,80,'sq',80]};
+const RES={T8:'Tom · Sat 8:00',T6:'Ruiz · 6:45',B1:'Lee · 7:00'};
+function draw(){$('floor').innerHTML='<span class="zone" style="left:5%;top:2%">Dining room</span><span class="zone" style="left:5%;top:75%">Bar</span><span class="zone" style="left:66%;top:73%">Patio</span>'+TABLES.map(([id,s])=>{const p=POS[id];const r=RES[id];return `<div class="tbl ${p[2]} ${r?'res':''}" id="tb-${id}" style="left:${p[0]}%;top:${p[1]}%;width:${p[3]}px;height:${p[2]==='round'?p[3]:Math.round(p[3]*.68)}px">${id}<small>${s} seats</small>${r?`<span class="who">${r}</span>`:''}</div>`}).join('');
+  $('tickets').innerHTML=`<div class="ticket dim"><div class="hd">Takeout · Priya N.<small>pickup 6:50 PM</small></div><div class="li"><span>1× Rigatoni vodka (GF)</span><span>$22.00</span></div><div class="li"><span>1× Garlic bread</span><span>$9.00</span></div><div class="al">!! ALLERGY: GLUTEN</div><div class="tot"><span>TOTAL · PAID</span><span>$31.00</span></div></div>`;}
+draw();
+let cur=null;
+window.api={
+  hook(s){$('hook').className='layer on s'+s;if(s==2)$('hook').classList.add('s1');},
+  svc(){$('hook').classList.remove('on');$('svc').classList.add('on');},
+  call(k,n,s){$('wk').textContent=k;$('wn').textContent=n;$('ws').textContent=s;$('tr').innerHTML='';$('tm').textContent='00:00';$('strip').classList.add('on');},
+  answer(){secs=0;tT=setInterval(()=>{secs++;$('tm').textContent='00:'+String(secs).padStart(2,'0')},1000);},
+  say(sp,t){const d=document.createElement('div');d.className='ln '+(sp==='alex'?'':'c');d.innerHTML=`<span class="w">${sp==='alex'?'GIA':$('wn').textContent.split(' ')[0].toUpperCase()}</span><span>${t}</span>`;const tr=$('tr');tr.appendChild(d);while(tr.children.length>3)tr.removeChild(tr.firstChild);},
+  ticket(name,pick){const t=document.createElement('div');t.className='ticket printing';t.innerHTML=`<div class="hd">Takeout · ${name}<small>pickup ${pick}</small></div><div class="tb"></div>`;$('tickets').prepend(t);cur=t.querySelector('.tb');},
+  line(html){const d=document.createElement('div');d.innerHTML=html;cur.appendChild(d.firstChild);},
+  reserve(id,who){const t=$('tb-'+id);t.classList.add('res','hot');const w=document.createElement('span');w.className='who';w.textContent=who;t.appendChild(w);},
+  kp(id,v){$(id+'v').textContent=v;$(id).classList.add('flash');setTimeout(()=>$(id).classList.remove('flash'),900);},
+  endCall(){clearInterval(tT);$('ws').textContent=$('ws').textContent.split(' · ')[0]+' · call ended';},
+  hide(){$('strip').classList.remove('on');},
+  callout(t,x,y){const c=$('co');if(!t){c.classList.remove('on');return;}$('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
+  dash(){$('svc').classList.remove('on');$('dash').classList.add('on');},
+  back(){$('dash').classList.remove('on');$('browser').style.transform='';$('svc').classList.add('on');},
+  zoom(x,y,z){const b=$('browser');b.style.transformOrigin=`${x}px ${y}px`;b.style.transform=z?`scale(${z})`:'';},
+  end(){$('svc').classList.remove('on');$('dash').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
+};
+</script></body></html>

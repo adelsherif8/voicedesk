@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — Phone Host</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,800;1,600&family=Karla:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#fbf3e4;--paper:#fffaf0;--ink:#2a1a12;--muted:#7a6656;--line:#e8d9bf;--red:#9b1c1c;--red2:#fbe3dc;--olive:#5b6b3a;--olive2:#e9edd9;--gold:#c8912a;--green:#2e7d32}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Karla,system-ui,sans-serif;background:var(--bg) repeating-linear-gradient(45deg,rgba(155,28,28,.035) 0 12px,transparent 12px 24px);color:var(--ink);min-height:100vh}
+.awning{background:repeating-linear-gradient(90deg,var(--red) 0 40px,#fff 40px 80px);height:14px}
+.top{max-width:1340px;margin:0 auto;padding:16px 24px 8px;display:flex;align-items:center;gap:16px}
+.top .lg{width:54px;height:54px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-size:22px;border:3px solid var(--gold)}
+.top b{font-family:Fraunces,serif;font-size:1.9rem;font-weight:800;letter-spacing:-.01em}
+.top small{display:block;font-size:.8rem;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.top .r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.top .r span{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:7px 12px;font-size:.78rem;font-weight:700}
+.top .r span.on{background:var(--red);color:#fff;border-color:var(--red)}
+.top .r span.on i{color:#ffd27a}
+.wrap{max-width:1340px;margin:0 auto;padding:10px 24px 50px}
+/* chalkboard KPIs */
+.board{background:#2a1a12;color:#fbf3e4;border-radius:10px;padding:14px 20px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:16px;border:6px solid #6b4a2e;box-shadow:inset 0 0 40px rgba(0,0,0,.4)}
+.board div{text-align:center;border-right:1px dashed rgba(251,243,228,.2)}
+.board div:last-child{border-right:0}
+.board b{display:block;font-family:Fraunces,serif;font-size:2rem;font-weight:800;color:#ffd27a;line-height:1}
+.board b.g{color:#a5d6a7}.board b.r{color:#ff8a80}
+.board span{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.85}
+.board small{display:block;font-size:.66rem;opacity:.6;margin-top:3px;font-family:'Courier Prime',monospace}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.card{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px}
+h3.sec{font-family:Fraunces,serif;font-size:1.15rem;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+h3.sec i{color:var(--red)}
+h3.sec .r{margin-left:auto;font-family:Karla;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+/* floor plan */
+.floor{position:relative;height:340px;background:#f4ead6;border:2px dashed var(--line);border-radius:10px;overflow:hidden}
+.zone{position:absolute;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tbl{position:absolute;display:grid;place-items:center;background:#fff;border:2px solid var(--line);color:var(--muted);font-weight:800;font-size:.72rem;box-shadow:0 4px 10px rgba(42,26,18,.08);transition:all .5s}
+.tbl.round{border-radius:50%}.tbl.sq{border-radius:10px}
+.tbl small{display:block;font-size:.58rem;font-weight:600;opacity:.75}
+.tbl.res{background:var(--red);border-color:var(--red);color:#fff}
+.tbl.res.new{animation:pop .5s cubic-bezier(.2,1,.3,1);box-shadow:0 0 0 6px rgba(155,28,28,.25)}
+.tbl .who{position:absolute;bottom:-20px;white-space:nowrap;font-size:.6rem;color:var(--red);font-weight:800;background:#fff;padding:1px 6px;border-radius:4px;border:1px solid var(--red2)}
+.chair{position:absolute;width:10px;height:10px;border-radius:50%;background:#d9c7a7}
+@keyframes pop{from{transform:scale(.7)}to{transform:none}}
+.legend{display:flex;gap:14px;margin-top:10px;font-size:.72rem;color:var(--muted);font-weight:700}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-2px;border:2px solid var(--line);background:#fff}
+.legend i.r{background:var(--red);border-color:var(--red)}
+.reslist{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.resrow{display:flex;align-items:center;gap:10px;font-size:.82rem;padding:7px 10px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.resrow .t{font-family:'Courier Prime',monospace;font-weight:700;color:var(--red);width:90px}
+.resrow .n{font-weight:700}.resrow .p{color:var(--muted)}
+.resrow .tag{margin-left:auto;font-size:.66rem;background:var(--olive2);color:var(--olive);border-radius:4px;padding:2px 7px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.resrow .tag.gold{background:#fff1d6;color:#8a5a00}
+/* kitchen tickets */
+.printer{background:#3b2a1e;border-radius:12px 12px 6px 6px;padding:12px 14px 4px;position:relative}
+.printer .slot{height:10px;background:#1c130d;border-radius:4px;margin-bottom:10px;box-shadow:inset 0 2px 4px #000}
+.printer .lbl{position:absolute;right:16px;top:14px;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:#c9b39a;font-weight:700}
+.tickets{display:flex;flex-direction:column;gap:12px;max-height:520px;overflow:hidden;padding:0 8px 8px}
+.ticket{background:#fff;font-family:'Courier Prime',monospace;font-size:.78rem;padding:12px 14px 16px;box-shadow:0 6px 14px rgba(0,0,0,.25);position:relative;color:#111}
+.ticket::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:8px;background:radial-gradient(circle at 5px 8px,transparent 4px,#fff 4px) repeat-x;background-size:10px 8px}
+.ticket.new{animation:print .7s cubic-bezier(.2,1,.3,1);transform-origin:top}
+@keyframes print{from{transform:scaleY(0);opacity:0}to{transform:none;opacity:1}}
+.ticket .hd{text-align:center;font-weight:700;border-bottom:1px dashed #999;padding-bottom:6px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
+.ticket .hd small{display:block;font-weight:400;text-transform:none;letter-spacing:0}
+.ticket .li{display:flex;justify-content:space-between;padding:2px 0}
+.ticket .li .q{width:26px}
+.ticket .mod{padding-left:26px;color:#555;font-size:.72rem}
+.ticket .al{margin:6px 0;padding:4px 6px;background:#111;color:#fff;font-weight:700;text-align:center}
+.ticket .up{color:var(--green);font-size:.72rem;padding-left:26px}
+.ticket .tot{border-top:1px dashed #999;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between;font-weight:700}
+.ticket .ft{text-align:center;color:#666;font-size:.7rem;margin-top:6px}
+.faq{margin-top:14px;font-size:.8rem;color:var(--muted)}
+.faq b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="awning"></div>
+<div class="top"><div class="lg"><i class="fa-solid {{ agent.icon }}"></i></div><div><b>{{ agent.business }}</b><small>Phone host · AI "Gia" · orders → kitchen · tables → floor plan</small></div>
+  <div class="r"><span><i class="fa-solid fa-cash-register"></i> Toast · Square</span><span><i class="fa-solid fa-chair"></i> OpenTable · Resy</span><span class="on"><i class="fa-solid fa-circle"></i> Gia on the line</span></div></div>
+<div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
+
+<div class="wrap">
+  <div class="board">
+    <div><b class="g" id="k-ans">100%</b><span>calls answered in the rush</span><small>industry: up to 43% missed</small></div>
+    <div><b id="k-orders">$0</b><span>phone orders tonight</span><small id="k-orders-s">0 tickets to kitchen</small></div>
+    <div><b id="k-covers">0</b><span>covers booked by phone</span><small id="k-covers-s">0 reservations</small></div>
+    <div><b id="k-avg">$0</b><span>avg order · upsell</span><small id="k-avg-s">—</small></div>
+    <div><b class="r" id="k-all">0</b><span>allergies flagged</span><small>to the kitchen, every time</small></div>
+  </div>
+  <div class="two">
+    <div class="card"><h3 class="sec"><i class="fa-solid fa-map"></i> Tonight's floor <span class="r" id="fcount"></span></h3>
+      <div class="floor" id="floor"></div>
+      <div class="legend"><span><i></i>open</span><span><i class="r"></i>reserved by Gia</span></div>
+      <div class="reslist" id="reslist"></div>
+      <div class="faq" id="faq"></div></div>
+    <div class="card"><h3 class="sec"><i class="fa-solid fa-receipt"></i> Kitchen printer <span class="r">takeout · read-back confirmed</span></h3>
+      <div class="printer"><div class="lbl">Epson TM-T88 · kitchen</div><div class="slot"></div><div class="tickets" id="tickets"></div></div></div>
+  </div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}"; const TABLES={{ agent.tables | tojson }};
+const POS={T1:[6,10,'round',52],T2:[22,10,'round',52],T3:[40,8,'sq',70],T4:[60,8,'sq',70],T5:[80,8,'sq',70],T6:[8,48,'sq',90],T7:[34,48,'sq',90],T8:[62,44,'sq',120],B1:[6,84,'round',44],B2:[16,84,'round',44],P1:[68,84,'sq',60],P2:[84,84,'sq',60]};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function money(v){return '$'+(+v||0).toFixed(2);}
+let lastTopId=null;
+function render(d){
+  const R=d.records; const m=r=>r.meta||{};
+  const orders=R.filter(r=>m(r).kind==='order'), res=R.filter(r=>m(r).kind==='reservation'), faq=R.filter(r=>m(r).kind==='faq');
+  const sales=orders.reduce((a,r)=>a+(+m(r).total||0),0); const covers=res.reduce((a,r)=>a+(+m(r).party||0),0);
+  $('k-orders').textContent=money(sales); $('k-orders-s').textContent=orders.length+' tickets to kitchen';
+  $('k-covers').textContent=covers; $('k-covers-s').textContent=res.length+' reservations';
+  $('k-avg').textContent=orders.length?money(sales/orders.length):'$0'; $('k-avg-s').textContent=orders.filter(r=>m(r).upsell).length+' upsells accepted';
+  $('k-all').textContent=orders.filter(r=>m(r).allergy).length;
+  const byT={}; res.forEach(r=>byT[m(r).table]=r);
+  $('fcount').textContent=`${res.length} of ${TABLES.length} tables reserved`;
+  $('floor').innerHTML='<span class="zone" style="left:6%;top:3%">Dining room</span><span class="zone" style="left:6%;top:78%">Bar</span><span class="zone" style="left:68%;top:78%">Patio</span>'+TABLES.map(t=>{const p=POS[t.id];const r=byT[t.id];
+    return `<div class="tbl ${p[2]} ${r?'res':''}" data-t="${t.id}" style="left:${p[0]}%;top:${p[1]}%;width:${p[3]}px;height:${p[2]==='round'?p[3]:Math.round(p[3]*.7)}px">${t.id}<small>${t.seats} seats</small>${r?`<span class="who">${esc(r.name.split(' ')[0])} · ${esc(m(r).time.replace(' PM','').replace('Sat ','Sat '))}</span>`:''}</div>`;}).join('');
+  $('reslist').innerHTML=res.map(r=>`<div class="resrow"><span class="t">${esc(m(r).time)}</span><span class="n">${esc(r.name)}</span><span class="p">· party of ${m(r).party} · ${esc(m(r).table)}</span>${m(r).occasion?`<span class="tag gold">${esc(m(r).occasion)}</span>`:''}${m(r).deposit?`<span class="tag">$${m(r).deposit} deposit</span>`:''}</div>`).join('');
+  $('faq').innerHTML=faq.length?`<b>${faq.length} question call${faq.length>1?'s':''}</b> answered from the restaurant info (hours, parking, menu) — no staff needed.`:'';
+  $('tickets').innerHTML=orders.map(r=>{const x=m(r);return `<div class="ticket"><div class="hd">Takeout · ${esc(r.name)}<small>${esc(r.phone)} · pickup ${esc(x.pickup)}</small></div>
+    ${(x.items||[]).map(it=>`<div class="li"><span><span class="q">${it[1]}×</span>${esc(it[0])}</span><span>${money(it[2])}</span></div>${x.upsell&&it[0].startsWith(x.upsell)?'<div class="up">↳ upsold by Gia</div>':''}`).join('')}
+    ${x.allergy?`<div class="al">!! ALLERGY: ${esc(x.allergy.toUpperCase())}</div>`:''}
+    <div class="tot"><span>TOTAL ${x.paid?'· PAID':''}</span><span>${money(x.total)}</span></div><div class="ft">read back to caller ✓ · receipt texted</div></div>`}).join('')||'<div class="ticket"><div class="hd">No orders yet</div></div>';
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){const top=R[0];if(m(top).kind==='order'){const f=document.querySelector('.ticket');if(f)f.classList.add('new');}if(m(top).kind==='reservation'){const t=document.querySelector(`.tbl[data-t="${m(top).table}"]`);if(t)t.classList.add('new');}}
+  if(R.length)lastTopId=R[0].id;
+}
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>

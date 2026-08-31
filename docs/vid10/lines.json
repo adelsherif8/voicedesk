@@ -1,0 +1,70 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid10/n_hook.mp3",
+   "dur": 8.664,
+   "text": "Restaurants miss up to forty-three percent of their calls \u2014 right in the dinner rush. Six in ten of those callers wanted to order or book a table."
+  },
+  "save": {
+   "file": "docs/vid10/n_save.mp3",
+   "dur": 6.96,
+   "text": "Order read back, allergy flagged, dessert upsold, ticket on the kitchen printer \u2014 while the staff kept serving the room."
+  },
+  "res": {
+   "file": "docs/vid10/n_res.mp3",
+   "dur": 4.608,
+   "text": "Reservations go straight onto the floor plan \u2014 party size, time, occasion, table."
+  },
+  "cta": {
+   "file": "docs/vid10/n_cta.mp3",
+   "dur": 3.384,
+   "text": "Want your phone answered during the rush? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid10/c1_0.mp3",
+   "dur": 3.336,
+   "text": "Luca's Trattoria, this is Gia \u2014 pickup or a table tonight?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid10/c1_1.mp3",
+   "dur": 5.64,
+   "text": "Pickup. Two margherita pizzas, one with no basil, and a Caesar salad. Oh \u2014 my son has a nut allergy."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid10/c1_2.mp3",
+   "dur": 7.296,
+   "text": "Got it: two margheritas, one no basil, one Caesar, nut allergy flagged for the kitchen. Our tiramisu is nut-free tonight \u2014 add one?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid10/c1_3.mp3",
+   "dur": 0.768,
+   "text": "Sure, add one."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid10/c1_4.mp3",
+   "dur": 5.928,
+   "text": "Perfect. That's forty-eight fifty, ready at seven-fifteen. I've texted you the receipt and pickup link."
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "caller",
+   "file": "docs/vid10/c2_0.mp3",
+   "dur": 3.984,
+   "text": "Hi, table for four tonight around seven-thirty? It's our anniversary."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid10/c2_1.mp3",
+   "dur": 8.712,
+   "text": "Happy anniversary! Seven-thirty for four \u2014 I've got you at a window table, and I've noted the occasion for the team. You'll get a text confirmation now."
+  }
+ ]
+}
