@@ -1,0 +1,76 @@
+{
+ "narr": {
+  "hook": {
+   "file": "docs/vid9/n_hook.mp3",
+   "dur": 10.152,
+   "text": "One in five dental appointments is a no-show \u2014 two to four hundred dollars of empty chair each. And a third of new-patient calls go unanswered while the front desk is busy."
+  },
+  "save": {
+   "file": "docs/vid9/n_save.mp3",
+   "dur": 6.336,
+   "text": "New patient, insurance verified, right provider, right slot \u2014 on the schedule before the front desk looked up."
+  },
+  "remind": {
+   "file": "docs/vid9/n_remind.mp3",
+   "dur": 6.72,
+   "text": "The day before, Mia calls to confirm. A cancellation doesn't stay empty \u2014 the waitlist gets the slot within minutes."
+  },
+  "cta": {
+   "file": "docs/vid9/n_cta.mp3",
+   "dur": 4.536,
+   "text": "Want a front desk that never misses a call or an empty chair? Let's build it."
+  }
+ },
+ "call1": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid9/c1_0.mp3",
+   "dur": 5.376,
+   "text": "Brightside Dental, this is Mia. Are you a new patient or calling about an existing appointment?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid9/c1_1.mp3",
+   "dur": 4.176,
+   "text": "New patient. I need a cleaning and a checkup \u2014 do you take Delta Dental?"
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid9/c1_2.mp3",
+   "dur": 7.992,
+   "text": "We do, and I've verified your plan covers two cleanings a year. I have Thursday at ten with Sam, our hygienist, or Friday at two. Which works?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid9/c1_3.mp3",
+   "dur": 0.96,
+   "text": "Thursday at ten."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid9/c1_4.mp3",
+   "dur": 5.496,
+   "text": "Booked. I've texted you the new-patient forms \u2014 done in two minutes on your phone. See you Thursday!"
+  }
+ ],
+ "call2": [
+  {
+   "speaker": "alex",
+   "file": "docs/vid9/c2_0.mp3",
+   "dur": 5.784,
+   "text": "Hi Jorge, it's Mia from Brightside Dental confirming your crown appointment tomorrow at two with Dr. Nguyen."
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid9/c2_1.mp3",
+   "dur": 3.264,
+   "text": "Oh \u2014 something came up tomorrow. Can we do Friday instead?"
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid9/c2_2.mp3",
+   "dur": 6.6,
+   "text": "Of course. Friday at ten with Dr. Nguyen is open \u2014 I'll move you there and offer tomorrow's slot to our waitlist."
+  }
+ ]
+}

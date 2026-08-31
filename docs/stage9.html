@@ -1,0 +1,118 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Nunito,system-ui,sans-serif}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#f3faf9;color:#123c3d}
+.layer{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}.layer.on{opacity:1}
+/* HOOK: big empty chair grid */
+#hook{background:#0f8b8d;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#hook .chairs{display:grid;grid-template-columns:repeat(10,1fr);gap:18px;opacity:0;transform:translateY(20px);transition:all .7s}
+#hook .chairs i{width:70px;height:70px;border-radius:22px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:30px;color:#fff}
+#hook .chairs i.x{background:#ff7a59;color:#fff}
+#hook h1{font-size:74px;font-weight:900;margin-top:44px;text-align:center;line-height:1.1;opacity:0;transform:translateY(14px);transition:all .6s}
+#hook h1 b{color:#ffc857}
+#hook p{margin-top:18px;font-size:30px;font-weight:700;color:#dff5f2;opacity:0;transition:opacity .6s}
+#hook.s1 .chairs,#hook.s1 h1{opacity:1;transform:none}#hook.s2 p{opacity:1}
+/* CALENDAR STAGE */
+#cal{padding:0}
+.top{height:100px;display:flex;align-items:center;padding:0 70px;gap:16px}
+.top .lg{width:60px;height:60px;border-radius:20px;background:#0f8b8d;color:#fff;display:grid;place-items:center;font-size:28px}
+.top b{font-size:32px;font-weight:900}.top small{display:block;font-size:15px;color:#5f7a7b;font-weight:700}
+.top .kp{margin-left:auto;display:flex;gap:14px}
+.top .kp div{background:#fff;border:2px solid #d9ecea;border-radius:18px;padding:10px 18px;text-align:center;transition:all .4s}
+.top .kp div.flash{background:#ffc857}
+.top .kp b{display:block;font-size:26px;line-height:1}.top .kp span{font-size:12px;font-weight:800;color:#5f7a7b}
+.week{margin:0 70px;background:#fff;border:2px solid #d9ecea;border-radius:26px;padding:22px 26px}
+.week h2{font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.week h2 i{color:#0f8b8d}
+.grid{display:grid;grid-template-columns:150px repeat(5,1fr);gap:10px}
+.grid .h{font-size:14px;font-weight:900;color:#5f7a7b;text-align:center;text-transform:uppercase;letter-spacing:.08em;padding:4px 0}
+.grid .p{font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px;padding:8px 4px}
+.grid .p i{width:34px;height:34px;border-radius:50%;background:#dff5f2;color:#0f8b8d;display:grid;place-items:center;font-size:14px}
+.day{display:flex;flex-direction:column;gap:6px;min-height:118px;background:#f7fcfb;border-radius:16px;padding:8px}
+.ap{font-size:13px;font-weight:800;border-radius:10px;padding:6px 10px;background:#e8f1f0;color:#4f6b6c;display:flex;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap .t{opacity:.7;font-weight:700}
+.ap.ai{background:#dff5f2;color:#0f8b8d;border:2px solid #8fd9c9}
+.ap.hot{animation:pop .5s cubic-bezier(.2,1,.3,1);background:#ffc857;color:#5a3a00;border-color:#ffc857;box-shadow:0 10px 24px rgba(255,200,87,.5)}
+.ap.freed{background:#fff;border:2px dashed #ff7a59;color:#ff7a59}
+.ap.gone{opacity:.35;text-decoration:line-through}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+/* caller bubble (picture-in-picture) */
+.pip{position:absolute;right:70px;bottom:40px;width:640px;background:#123c3d;color:#fff;border-radius:26px;padding:22px 26px;box-shadow:0 30px 70px rgba(18,60,61,.35);opacity:0;transform:translateY(30px);transition:all .5s}
+.pip.on{opacity:1;transform:none}
+.pip .hd{display:flex;align-items:center;gap:14px}
+.pip .hd .av{width:50px;height:50px;border-radius:50%;background:#ffc857;color:#123c3d;display:grid;place-items:center;font-weight:900;font-size:18px}
+.pip .hd b{font-size:22px;font-weight:900;display:block}.pip .hd span{font-size:14px;color:#8fd9c9;font-weight:700}
+.pip .hd .tm{margin-left:auto;font-size:18px;font-weight:900;color:#8fd9c9;font-variant-numeric:tabular-nums}
+.pip .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffc857;font-weight:900;margin-bottom:8px}
+.pip .tr{margin-top:14px;display:flex;flex-direction:column;gap:9px;min-height:120px;justify-content:flex-end}
+.ln{display:flex;gap:10px;font-size:18px;line-height:1.35;font-weight:600;animation:fade .35s}
+.ln .w{font-size:11px;letter-spacing:.12em;font-weight:900;color:#8fd9c9;width:52px;flex-shrink:0;padding-top:5px}
+.ln.c .w{color:#ffc857}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.chips{position:absolute;left:70px;bottom:40px;display:flex;gap:12px}
+.chip{background:#fff;border:2px solid #d9ecea;border-radius:999px;padding:12px 20px;font-size:18px;font-weight:800;color:#5f7a7b;display:flex;gap:10px;align-items:center;opacity:.55;transition:all .4s}
+.chip.ok{opacity:1;border-color:#8fd9c9;color:#0f8b8d;background:#dff5f2}
+.chip i{font-size:16px}
+.callout{position:absolute;display:flex;align-items:center;gap:12px;background:#ff7a59;color:#fff;font-weight:900;font-size:24px;padding:12px 22px;border-radius:999px;box-shadow:0 20px 50px rgba(255,122,89,.4);opacity:0;transform:scale(.9);transition:all .4s;z-index:6}
+.callout.on{opacity:1;transform:none}
+/* DASH */
+#dash{padding:40px 60px 0;background:#e6f2f0}
+.browser{width:1800px;border-radius:18px;background:#fff;border:2px solid #d9ecea;box-shadow:0 40px 100px rgba(18,60,61,.25);overflow:hidden;transform-origin:50% 0;transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f3faf9;border-bottom:2px solid #d9ecea}
+.bar i{width:12px;height:12px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar .url{margin-left:14px;font-size:13px;color:#5f7a7b;background:#fff;border-radius:8px;padding:6px 12px;flex:1;font-weight:700}
+iframe{width:1800px;height:980px;border:0;display:block}
+/* END */
+#end{background:#0f8b8d;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#end .chairs{display:flex;gap:14px;margin-bottom:34px}
+#end .chairs i{width:54px;height:54px;border-radius:18px;background:#ffc857;color:#123c3d;display:grid;place-items:center;font-size:24px}
+#end h2{font-size:84px;font-weight:900;line-height:1.05}#end h2 b{color:#ffc857}
+#end p{margin-top:26px;font-size:26px;font-weight:700;color:#dff5f2}#end p b{color:#fff}
+#end .stack{margin-top:22px;font-size:15px;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#8fd9c9}
+</style></head><body>
+<div class="layer on" id="hook"><div class="chairs" id="chairs"></div><h1>1 in 5 dental appointments is a <b>no-show.</b><br/>$200–375 of empty chair, every time.</h1><p>And 1 in 3 new-patient calls goes unanswered. Meet <b>Mia</b> — books, confirms, and refills the chair.</p></div>
+
+<div class="layer" id="cal">
+  <div class="top"><div class="lg"><i class="fa-solid fa-tooth"></i></div><div><b>Brightside Dental</b><small>Front desk · AI coordinator Mia · Open Dental · insurance eligibility</small></div>
+    <div class="kp"><div id="kA"><b id="kAv">4%</b><span>no-show rate</span></div><div id="kB"><b id="kBv">2</b><span>new patients today</span></div><div id="kC"><b id="kCv">6/8</b><span>confirmed for tomorrow</span></div><div id="kD"><b id="kDv">$950</b><span>chair time refilled</span></div></div></div>
+  <div class="week"><h2><i class="fa-solid fa-calendar-week"></i> This week</h2><div class="grid" id="grid"></div></div>
+  <div class="chips" id="chips"><div class="chip" id="c1"><i class="fa-solid fa-user-plus"></i> New patient</div><div class="chip" id="c2"><i class="fa-solid fa-shield-heart"></i> Insurance verified</div><div class="chip" id="c3"><i class="fa-solid fa-user-doctor"></i> Right provider</div><div class="chip" id="c4"><i class="fa-solid fa-calendar-check"></i> Slot booked</div><div class="chip" id="c5"><i class="fa-solid fa-file-signature"></i> Forms texted</div></div>
+  <div class="pip" id="pip"><div class="k" id="pk">Incoming · new patient</div><div class="hd"><div class="av" id="pav">TB</div><div><b id="pn">Tara Boyd</b><span id="ps">+1 (555) 201-4478 · answered in 2 s</span></div><div class="tm" id="tm">00:00</div></div><div class="tr" id="tr"></div></div>
+</div>
+<div class="callout" id="co"><i class="fa-solid fa-bolt"></i><span id="cotxt"></span></div>
+<div class="layer" id="dash"><div class="browser" id="browser"><div class="bar"><i></i><i></i><i></i><div class="url">voicedesk.onrender.com/agent/dental · Open Dental / Dentrix sync</div></div><iframe id="frame" src="http://localhost:8099/agent/dental"></iframe></div></div>
+<div class="layer" id="end"><div class="chairs"><i class="fa-solid fa-tooth"></i><i class="fa-solid fa-tooth"></i><i class="fa-solid fa-tooth"></i><i class="fa-solid fa-tooth"></i><i class="fa-solid fa-tooth"></i></div><h2>No missed calls.<br/><b>No empty chairs.</b></h2><p>Books new patients · verifies insurance · reminder calls · waitlist refills · hygiene recall<br/><b>Adel Atya</b> · AI Voice Agent Engineer · voicedesk-h31g.onrender.com/agent/dental</p><div class="stack">Vapi / Retell · Twilio · Open Dental · Dentrix · GPT-4o</div></div>
+
+<script>
+const $=id=>document.getElementById(id);let tT=null,secs=0;
+const ch=$('chairs');for(let i=0;i<20;i++){const e=document.createElement('i');e.className='fa-solid fa-chair'+([3,7,12,16].includes(i)?' x':'');ch.appendChild(e);}
+const DAYS=['Mon','Tue','Wed','Thu','Fri'];
+const BASE={"Dr. Patel":{Mon:["8:30 Filling","10:00 Crown"],Tue:["9:00 Exam","1:00 Root canal"],Wed:["8:30 Implant consult"],Thu:["9:00 Filling","11:00 Exam"],Fri:["8:30 Crown"]},
+ "Dr. Nguyen":{Mon:["9:00 Veneers"],Tue:["10:00 Extraction"],Wed:["9:00 Bridge","2:00 Jorge · crown"],Thu:["8:30 Crown","1:30 Filling"],Fri:["2:00 Exam"]},
+ "Hygiene · Sam":{Mon:["8:00 Cleaning","11:00 Cleaning"],Tue:["8:00 Cleaning","9:00 Karen · confirmed"],Wed:["9:00 Cleaning","1:00 Cleaning"],Thu:["8:00 Cleaning","3:00 Ben · recall"],Fri:["9:00 Cleaning"]}};
+function draw(){let h='<div></div>'+DAYS.map(x=>`<div class="h">${x}</div>`).join('');
+  Object.keys(BASE).forEach(p=>{h+=`<div class="p"><i class="fa-solid ${p.startsWith('Hyg')?'fa-hand-sparkles':'fa-user-doctor'}"></i>${p}</div>`;DAYS.forEach(d=>{h+=`<div class="day" id="d-${p.replace(/[^a-z]/gi,'')}-${d}">${(BASE[p][d]||[]).map(b=>{const ai=/Jorge|Karen|Ben/.test(b);return `<div class="ap ${ai?'ai':''}" data-k="${b}"><span class="t">${b.split(' ')[0]}</span>${b.split(' ').slice(1).join(' ')}</div>`}).join('')}</div>`;});});
+  $('grid').innerHTML=h;}
+draw();
+window.api={
+  hook(s){$('hook').className='layer on s'+s;if(s==2)$('hook').classList.add('s1');},
+  cal(){$('hook').classList.remove('on');$('cal').classList.add('on');},
+  call(k,n,s,ini){$('pk').textContent=k;$('pn').textContent=n;$('ps').textContent=s;$('pav').textContent=ini;$('tr').innerHTML='';$('tm').textContent='00:00';['c1','c2','c3','c4','c5'].forEach(i=>$(i).classList.remove('ok'));$('pip').classList.add('on');},
+  answer(){secs=0;tT=setInterval(()=>{secs++;$('tm').textContent='00:'+String(secs).padStart(2,'0')},1000);},
+  say(sp,t){const d=document.createElement('div');d.className='ln '+(sp==='alex'?'':'c');d.innerHTML=`<span class="w">${sp==='alex'?'MIA':$('pn').textContent.split(' ')[0].toUpperCase()}</span><span>${t}</span>`;const tr=$('tr');tr.appendChild(d);while(tr.children.length>3)tr.removeChild(tr.firstChild);},
+  chip(i){$('c'+i).classList.add('ok');},
+  chips(labels){$('chips').innerHTML=labels.map((l,i)=>`<div class="chip" id="c${i+1}"><i class="fa-solid ${l[0]}"></i> ${l[1]}</div>`).join('');},
+  book(p,d,slot,txt,cls){const day=$(`d-${p.replace(/[^a-z]/gi,'')}-${d}`);const e=document.createElement('div');e.className='ap ai hot '+(cls||'');e.innerHTML=`<span class="t">${slot}</span>${txt}`;day.appendChild(e);},
+  free(p,d,key){const day=$(`d-${p.replace(/[^a-z]/gi,'')}-${d}`);[...day.children].forEach(e=>{if(e.dataset.k===key){e.classList.add('gone');}});const f=document.createElement('div');f.className='ap freed';f.innerHTML=`<span class="t">${key.split(' ')[0]}</span>offered to waitlist`;day.appendChild(f);},
+  kp(id,v){$(id+'v').textContent=v;$(id).classList.add('flash');setTimeout(()=>$(id).classList.remove('flash'),900);},
+  endCall(){clearInterval(tT);$('ps').textContent=$('ps').textContent.split(' · ')[0]+' · call ended';},
+  hide(){$('pip').classList.remove('on');},
+  callout(t,x,y){const c=$('co');if(!t){c.classList.remove('on');return;}$('cotxt').textContent=t;c.style.left=x+'px';c.style.top=y+'px';c.classList.add('on');},
+  dash(){$('cal').classList.remove('on');$('dash').classList.add('on');},
+  back(){$('dash').classList.remove('on');$('browser').style.transform='';$('cal').classList.add('on');},
+  zoom(x,y,z){const b=$('browser');b.style.transformOrigin=`${x}px ${y}px`;b.style.transform=z?`scale(${z})`:'';},
+  end(){$('cal').classList.remove('on');$('dash').classList.remove('on');$('co').classList.remove('on');$('end').classList.add('on');}
+};
+</script></body></html>

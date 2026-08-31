@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Nunito,system-ui,sans-serif}
+body{width:1000px;height:750px;overflow:hidden;position:relative;background:#dff5f2;color:#123c3d}
+.blob{position:absolute;border-radius:50%;background:#8fd9c9;opacity:.55}
+.b1{width:520px;height:520px;right:-140px;top:-160px}.b2{width:300px;height:300px;left:-120px;bottom:-120px;background:#ffc857;opacity:.5}
+.brand{position:absolute;left:56px;top:52px;display:flex;align-items:center;gap:12px}
+.brand .lg{width:46px;height:46px;border-radius:16px;background:#0f8b8d;color:#fff;display:grid;place-items:center;font-size:22px}
+.brand b{font-size:22px;font-weight:900}.brand span{font-size:13px;color:#5f7a7b;font-weight:800;display:block}
+h1{position:absolute;left:56px;top:118px;font-size:76px;line-height:.98;font-weight:900;width:520px;letter-spacing:-.02em}
+h1 b{color:#0f8b8d}
+.sub{position:absolute;left:56px;top:372px;width:430px;font-size:20px;line-height:1.45;color:#3f5f60;font-weight:700}
+.sub b{color:#123c3d;font-weight:900}
+.stats{position:absolute;left:56px;bottom:52px;display:flex;gap:14px}
+.stats div{background:#fff;border-radius:18px;padding:12px 18px;box-shadow:0 10px 30px rgba(18,60,61,.10)}
+.stats b{display:block;font-size:30px;font-weight:900;line-height:1}
+.stats b.r{color:#ff7a59}.stats b.g{color:#22a06b}
+.stats span{font-size:11px;font-weight:800;color:#5f7a7b;text-transform:uppercase;letter-spacing:.06em}
+/* calendar card */
+.cal{position:absolute;right:52px;top:150px;width:400px;background:#fff;border-radius:26px;padding:20px 20px 18px;box-shadow:0 40px 80px rgba(18,60,61,.22)}
+.cal .hd{display:flex;align-items:center;gap:8px;font-weight:900;font-size:16px;margin-bottom:12px}
+.cal .hd i{color:#0f8b8d}.cal .hd span{margin-left:auto;font-size:11px;color:#5f7a7b;font-weight:800}
+.g{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.g .h{font-size:11px;font-weight:900;color:#5f7a7b;text-align:center;text-transform:uppercase}
+.g .d{background:#f7fcfb;border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:5px;min-height:150px}
+.ap{font-size:10px;font-weight:800;border-radius:8px;padding:5px 6px;background:#e8f1f0;color:#4f6b6c;line-height:1.2}
+.ap.ai{background:#dff5f2;color:#0f8b8d;border:1.5px solid #8fd9c9}
+.ap.hot{background:#ffc857;color:#5a3a00;border:1.5px solid #ffc857;box-shadow:0 8px 18px rgba(255,200,87,.5)}
+.ap.freed{background:#fff;border:1.5px dashed #ff7a59;color:#ff7a59}
+.legend{display:flex;gap:12px;margin-top:12px;font-size:11px;font-weight:800;color:#5f7a7b}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.badge{position:absolute;right:30px;top:118px;background:#123c3d;color:#fff;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:9px 16px;border-radius:999px}
+.stamp{position:absolute;right:20px;bottom:36px;width:150px;height:150px;border-radius:50%;background:#ff7a59;color:#fff;display:grid;place-items:center;text-align:center;font-weight:900;font-size:18px;line-height:1.05;transform:rotate(8deg);box-shadow:0 20px 40px rgba(255,122,89,.45)}
+.stamp small{display:block;font-size:11px;font-weight:800;margin-top:4px;opacity:.9}
+</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div>
+<div class="brand"><div class="lg"><i class="fa-solid fa-tooth"></i></div><div><b>Brightside Dental</b><span>AI front desk · Mia</span></div></div>
+<h1>No missed calls.<br/><b>No empty chairs.</b></h1>
+<div class="sub">An AI front-desk coordinator that <b>books new patients</b> (insurance verified on the call), makes the <b>reminder calls</b>, and <b>refills cancellations</b> from the waitlist — synced to Open Dental / Dentrix.</div>
+<div class="stats"><div><b class="r">15–20%</b><span>no-shows today</span></div><div><b class="g">4%</b><span>with Mia</span></div><div><b>$375</b><span>per empty chair</span></div></div>
+<div class="badge"><i class="fa-solid fa-robot"></i> &nbsp;AI voice agent · live demo</div>
+<div class="cal"><div class="hd"><i class="fa-solid fa-calendar-week"></i> This week <span>Dr. Nguyen · Hygiene</span></div>
+  <div class="g"><div class="h">Mon</div><div class="h">Tue</div><div class="h">Wed</div><div class="h">Thu</div><div class="h">Fri</div>
+    <div class="d"><div class="ap">9:00 Veneers</div><div class="ap">11:00 Cleaning</div></div>
+    <div class="d"><div class="ap">10:00 Extraction</div><div class="ap ai">9:00 Karen · confirmed</div></div>
+    <div class="d"><div class="ap">9:00 Bridge</div><div class="ap freed">2:00 → waitlist</div><div class="ap hot">2:00 Amina · refilled</div></div>
+    <div class="d"><div class="ap">8:30 Crown</div><div class="ap hot">10:00 Tara · new patient</div><div class="ap ai">3:00 Ben · recall</div></div>
+    <div class="d"><div class="ap">2:00 Exam</div><div class="ap ai">10:00 Jorge · moved</div></div></div>
+  <div class="legend"><span><i style="background:#8fd9c9"></i>booked by Mia</span><span><i style="background:#ffc857"></i>just now</span><span><i style="border:1.5px dashed #ff7a59"></i>freed → waitlist</span></div></div>
+<div class="stamp">Chair<br/>refilled<small>in 3 minutes · by AI</small></div>
+</body></html>

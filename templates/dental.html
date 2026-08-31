@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ agent.business }} — Front Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#f3faf9;--paper:#fff;--ink:#123c3d;--muted:#5f7a7b;--line:#d9ecea;--teal:#0f8b8d;--teal2:#dff5f2;--mint:#8fd9c9;--coral:#ff7a59;--sun:#ffc857;--green:#22a06b;--red:#e5484d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.top{max-width:1360px;margin:0 auto;padding:18px 24px 6px;display:flex;align-items:center;gap:14px}
+.top .lg{width:52px;height:52px;border-radius:18px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:24px}
+.top b{font-size:1.5rem;font-weight:900}.top small{display:block;font-size:.8rem;color:var(--muted);font-weight:700}
+.top .r{margin-left:auto;display:flex;gap:10px}
+.top .r span{background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.top .r span.on{border-color:var(--mint);color:var(--teal)}
+.top .r span.on i{color:var(--green)}
+.wrap{max-width:1360px;margin:0 auto;padding:12px 24px 50px}
+/* smile-o-meter */
+.kpis{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:12px;margin-bottom:16px}
+.k{background:var(--paper);border-radius:22px;padding:16px 18px;border:2px solid var(--line);position:relative}
+.k.hero{background:var(--teal);color:#fff;border-color:var(--teal)}
+.k .v{font-size:2.2rem;font-weight:900;line-height:1}
+.k.hero .v{font-size:2.8rem}
+.k .l{font-size:.78rem;font-weight:800;margin-top:6px;opacity:.85}
+.k .sub{font-size:.72rem;font-weight:700;margin-top:4px;color:var(--green)}
+.k.hero .sub{color:#dff5f2}
+.k .ic{position:absolute;right:16px;top:14px;font-size:1.3rem;color:var(--line)}
+.k.hero .ic{color:rgba(255,255,255,.35)}
+.k .v.c{color:var(--coral)}.k .v.g{color:var(--green)}
+.k.flash{animation:flash 1s}
+@keyframes flash{0%{background:var(--sun)}100%{background:var(--paper)}}
+/* week calendar */
+.cal{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:16px 18px;margin-bottom:16px}
+.cal h2{font-size:1.05rem;font-weight:900;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cal h2 .r{margin-left:auto;font-size:.74rem;color:var(--muted);font-weight:700;display:flex;gap:12px}
+.cal h2 .r i{margin-right:4px}
+.grid{display:grid;grid-template-columns:110px repeat(5,1fr);gap:6px}
+.grid .h{font-size:.74rem;font-weight:900;color:var(--muted);text-align:center;padding:4px 0;text-transform:uppercase;letter-spacing:.06em}
+.grid .p{font-size:.78rem;font-weight:800;display:flex;align-items:center;gap:8px;padding:6px 4px}
+.grid .p i{width:26px;height:26px;border-radius:50%;background:var(--teal2);color:var(--teal);display:grid;place-items:center;font-size:.72rem}
+.day{display:flex;flex-direction:column;gap:4px;min-height:74px;background:#f7fcfb;border-radius:12px;padding:5px}
+.ap{font-size:.68rem;font-weight:800;border-radius:8px;padding:4px 7px;background:#e8f1f0;color:#4f6b6c;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap.ai{background:var(--teal2);color:var(--teal);border:1.5px solid var(--mint)}
+.ap.ai.new{animation:pop .5s cubic-bezier(.2,1,.3,1);background:var(--sun);color:#5a3a00;border-color:var(--sun)}
+.ap.emerg{background:#ffe6df;color:#b33d1f;border:1.5px solid #ffb59f}
+.ap.freed{background:#fff;border:1.5px dashed var(--coral);color:var(--coral)}
+.ap .t{opacity:.75;font-weight:700}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+/* bottom */
+.two{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:16px 18px}
+.card h3{font-size:.95rem;font-weight:900;display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.card h3 i{color:var(--teal)}
+.card h3 .n{margin-left:auto;font-size:.7rem;background:var(--teal2);color:var(--teal);border-radius:999px;padding:2px 9px}
+.row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1.5px dashed var(--line)}
+.row:first-of-type{border-top:0;padding-top:0}
+.row .av{width:34px;height:34px;border-radius:50%;background:var(--teal2);color:var(--teal);display:grid;place-items:center;font-weight:900;font-size:.72rem;flex-shrink:0}
+.row .av.c{background:#ffe6df;color:#b33d1f}
+.row b{font-size:.86rem;font-weight:800;display:block}
+.row span{font-size:.74rem;color:var(--muted);font-weight:600}
+.row .st{margin-left:auto;font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.row .st.ok{background:#e3f6ec;color:var(--green)}.row .st.warn{background:#fff3d6;color:#8a5a00}.row .st.hot{background:#ffe6df;color:#b33d1f}.row .st.mut{background:#eef2f2;color:var(--muted)}
+.row.new{animation:slide .5s cubic-bezier(.2,1,.3,1)}
+@keyframes slide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.empty{color:var(--muted);font-size:.8rem;font-weight:700;padding:10px 0}
+.ring{display:flex;align-items:center;gap:14px;margin-top:4px}
+.ring .d{width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--green) 0 calc(var(--pct)*1%),var(--line) 0);display:grid;place-items:center}
+.ring .d i{width:54px;height:54px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:1rem;color:var(--green)}
+.ring .t{font-size:.78rem;color:var(--muted);font-weight:700;line-height:1.5}
+.ring .t b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="top"><div class="lg"><i class="fa-solid {{ agent.icon }}"></i></div><div><b>{{ agent.business }}</b><small>Front desk · AI coordinator "Mia" · books · confirms · refills</small></div>
+  <div class="r"><span><i class="fa-solid fa-plug"></i> Open Dental · Dentrix</span><span><i class="fa-solid fa-shield-heart"></i> Insurance eligibility</span><span class="on"><i class="fa-solid fa-circle"></i> Mia answering</span></div></div>
+<div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
+
+<div class="wrap">
+  <div class="kpis">
+    <div class="k hero"><i class="ic fa-solid fa-chair"></i><div class="v" id="k-ns">4%</div><div class="l">No-show rate this month</div><div class="sub">industry 15–20% · $200–375 per empty chair</div></div>
+    <div class="k" id="k1"><i class="ic fa-solid fa-phone"></i><div class="v g">100%</div><div class="l">Calls answered</div><div class="sub">industry: 1 in 3 missed</div></div>
+    <div class="k" id="k2"><i class="ic fa-solid fa-user-plus"></i><div class="v" id="k-new">0</div><div class="l">New patients booked</div><div class="sub" id="k-new-s">insurance verified on call</div></div>
+    <div class="k" id="k3"><i class="ic fa-solid fa-circle-check"></i><div class="v" id="k-conf">0</div><div class="l">Confirmed by reminder call</div><div class="sub" id="k-conf-s">for tomorrow</div></div>
+    <div class="k" id="k4"><i class="ic fa-solid fa-rotate"></i><div class="v c" id="k-fill">$0</div><div class="l">Chair time refilled</div><div class="sub" id="k-fill-s">from the waitlist</div></div>
+  </div>
+
+  <div class="cal"><h2><i class="fa-solid fa-calendar-week" style="color:var(--teal)"></i> This week's schedule <span class="r"><span><i class="fa-solid fa-square" style="color:var(--mint)"></i>booked by Mia</span><span><i class="fa-solid fa-square" style="color:#e8f1f0"></i>front desk</span><span><i class="fa-solid fa-square" style="color:#ffb59f"></i>emergency</span><span><i class="fa-regular fa-square" style="color:var(--coral)"></i>freed → waitlist</span></span></h2>
+    <div class="grid" id="grid"></div></div>
+
+  <div class="two">
+    <div class="card"><h3><i class="fa-solid fa-phone-volume"></i> Latest calls <span class="n" id="n-calls">0</span></h3><div id="calls"></div></div>
+    <div class="card"><h3><i class="fa-solid fa-bell"></i> Tomorrow's confirmations <span class="n" id="n-conf">0</span></h3><div id="conf"></div>
+      <div class="ring" style="margin-top:12px"><div class="d" id="ringd" style="--pct:0"><i id="ringv">0%</i></div><div class="t"><b>Confirmed for tomorrow</b><br>reminder calls cut no-shows up to 40%</div></div></div>
+    <div class="card"><h3><i class="fa-solid fa-list-check"></i> Waitlist &amp; recall <span class="n" id="n-wl">0</span></h3><div id="wl"></div></div>
+  </div>
+</div>
+
+<script>
+const AGENT="{{ agent.id }}"; const PROV={{ agent.providers | tojson }};
+const DAYS=['Mon','Tue','Wed','Thu','Fri'];
+const BASE={"Dr. Patel":{Mon:["8:30 Filling","10:00 Crown"],Tue:["9:00 Exam","1:00 Root canal"],Wed:["8:30 Implant consult"],Thu:["9:00 Filling","11:00 Exam"],Fri:["8:30 Crown"]},
+ "Dr. Nguyen":{Mon:["9:00 Veneers"],Tue:["10:00 Extraction"],Wed:["9:00 Bridge"],Thu:["8:30 Crown","1:30 Filling"],Fri:["2:00 Exam"]},
+ "Hygiene · Sam":{Mon:["8:00 Cleaning","11:00 Cleaning"],Tue:["8:00 Cleaning"],Wed:["9:00 Cleaning","1:00 Cleaning"],Thu:["8:00 Cleaning"],Fri:["9:00 Cleaning"]}};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+function ini(n){return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+let lastTopId=null;
+function render(d){
+  const R=d.records; const m=r=>r.meta||{};
+  const newp=R.filter(r=>m(r).kind==='new'), conf=R.filter(r=>m(r).kind==='reminder'), fill=R.filter(r=>m(r).kind==='waitlist');
+  $('k-new').textContent=newp.length; $('k-conf').textContent=conf.filter(r=>/confirm|resched/i.test(r.outcome)).length; $('k-conf-s').textContent=`of ${conf.length} reminder calls`;
+  $('k-fill').textContent='$'+fill.reduce((a,r)=>a+(+m(r).value||0),0); $('k-fill-s').textContent=fill.length+' slots refilled from the waitlist';
+  const pct=conf.length?Math.round(conf.filter(r=>/confirm|resched/i.test(r.outcome)).length/conf.length*100):0; $('ringd').style.setProperty('--pct',pct); $('ringv').textContent=pct+'%';
+  // calendar
+  let h='<div></div>'+DAYS.map(x=>`<div class="h">${x}</div>`).join('');
+  PROV.forEach(p=>{h+=`<div class="p"><i class="fa-solid ${p.startsWith('Hyg')?'fa-hand-sparkles':'fa-user-doctor'}"></i>${esc(p)}</div>`;
+    DAYS.forEach(dy=>{const base=(BASE[p]||{})[dy]||[];const ai=R.filter(r=>m(r).provider===p&&m(r).day===dy&&m(r).slot);
+      const freed=R.filter(r=>m(r).provider===p&&m(r).freed&&m(r).freed.startsWith(dy)&&!R.some(x=>m(x).kind==='waitlist'&&m(x).provider===p&&m(x).day===dy));
+      h+=`<div class="day">${base.map(b=>`<div class="ap"><span class="t">${b.split(' ')[0]}</span>${b.split(' ').slice(1).join(' ')}</div>`).join('')}${ai.map(r=>`<div class="ap ai ${m(r).kind==='emergency'?'emerg':''}"><span class="t">${esc(m(r).slot)}</span>${esc(r.name.split(' ')[0])} · ${esc((r.intent||'').split(' ')[0]==='Confirmation'?'confirmed':m(r).kind==='new'?'new patient':m(r).kind==='waitlist'?'waitlist':m(r).kind==='recall'?'recall':m(r).kind==='emergency'?'emergency':'moved')}</div>`).join('')}${freed.map(r=>`<div class="ap freed"><span class="t">${esc(m(r).freed.split(' ')[1])}</span>offered to waitlist</div>`).join('')}</div>`;});});
+  $('grid').innerHTML=h;
+  $('n-calls').textContent=R.length;
+  $('calls').innerHTML=R.slice(0,5).map(r=>`<div class="row"><span class="av ${m(r).kind==='emergency'?'c':''}">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${esc(r.intent)} · ${ago(r.created)}</span></div><span class="st ${/book|confirm|refill|resched|same/i.test(r.outcome)?'ok':/emerg/i.test(r.outcome)?'hot':'mut'}">${esc(r.outcome.split(' ·')[0])}</span></div>`).join('')||'<div class="empty">No calls yet.</div>';
+  $('n-conf').textContent=conf.length;
+  $('conf').innerHTML=conf.map(r=>`<div class="row"><span class="av">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${esc(r.appointment)}</span></div><span class="st ${/confirmed/i.test(r.outcome)?'ok':'warn'}">${/confirmed/i.test(r.outcome)?'confirmed':'rescheduled'}</span></div>`).join('')||'<div class="empty">No reminders yet.</div>';
+  const wl=R.filter(r=>['waitlist','recall'].includes(m(r).kind)); $('n-wl').textContent=wl.length;
+  $('wl').innerHTML=wl.map(r=>`<div class="row"><span class="av">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${m(r).kind==='waitlist'?'filled '+esc(r.appointment)+' · $'+m(r).value:'recall · '+m(r).overdue_months+' mo overdue → '+esc(r.appointment)}</span></div><span class="st ok">${m(r).kind==='waitlist'?'refilled':'booked'}</span></div>`).join('')||'<div class="empty">Waitlist is empty.</div>';
+  if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){['k2','k3','k4'].forEach(id=>{const e=$(id);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');});const f=document.querySelector('#calls .row');if(f)f.classList.add('new');document.querySelectorAll('.ap.ai').forEach(a=>{if(a.textContent.includes(R[0].name.split(' ')[0]))a.classList.add('new')});}
+  if(R.length)lastTopId=R[0].id;
+}
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+load();setInterval(load,3000);
+</script>
+</body>
+</html>
