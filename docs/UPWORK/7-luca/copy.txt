@@ -1,11 +1,11 @@
 TITLE (68): AI Restaurant Phone Host: takeout to the kitchen, reservations, 24/7
 SKILLS: AI Agent Development · Conversational AI · Restaurant · Order Processing · Automation
-DESCRIPTION (597):
+DESCRIPTION (595):
 Restaurants miss up to 43% of calls — in the dinner rush — and 6 in 10 of those callers wanted to order or book.
 This AI phone host answers every call while staff serve the room:
-• Takeout orders with modifiers, read-back total, payment → ticket to the POS / kitchen printer
-• Allergies flagged to the kitchen every time; smart upsells
-• Reservations onto the floor plan (party, time, occasion, table); deposits for big parties
-• Hours & menu questions answered
-Live dashboard: floor plan + kitchen ticket feed. Toast / Square · OpenTable / Resy.
+• Takeout orders → ticket to the POS / kitchen printer with KDS timers; customer texted when ready
+• 86 board: sold-out items never offered — swaps suggested instantly
+• Allergies flagged to the kitchen; smart upsells; totals read back, paid by card
+• Reservations onto the floor plan; covers-by-the-hour; deposits for big parties
+Toast / Square · OpenTable / Resy.
 Demo: voicedesk-h31g.onrender.com/agent/restaurant

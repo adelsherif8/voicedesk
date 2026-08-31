@@ -71,6 +71,31 @@ h3.sec .r{margin-left:auto;font-family:Karla;font-size:.72rem;letter-spacing:.1e
 .ticket .up{color:var(--green);font-size:.72rem;padding-left:26px}
 .ticket .tot{border-top:1px dashed #999;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between;font-weight:700}
 .ticket .ft{text-align:center;color:#666;font-size:.7rem;margin-top:6px}
+
+/* 86 board + hour wave + KDS */
+.eb{background:#2a1a12;color:#fbf3e4;border-radius:10px;padding:12px 14px;border:5px solid #6b4a2e;margin-top:12px}
+.eb h4{font-family:'Courier Prime',monospace;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#ffd27a;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.eb h4 span{margin-left:auto;font-size:.66rem;color:#c9b39a;letter-spacing:.08em}
+.eb .it{display:flex;align-items:center;gap:10px;font-family:'Courier Prime',monospace;font-size:.86rem;padding:5px 0;border-top:1px dashed rgba(251,243,228,.15)}
+.eb .it:first-of-type{border-top:0}
+.eb .it b{text-decoration:line-through;text-decoration-color:#ff8a80;text-decoration-thickness:2px}
+.eb .it .alt{margin-left:auto;font-size:.7rem;color:#a5d6a7}
+.eb .it .since{font-size:.66rem;color:#c9b39a}
+.wave{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.wave h4{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:8px;display:flex}
+.wave h4 span{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--red)}
+.wave .bars{display:flex;align-items:flex-end;gap:10px;height:70px}
+.wave .b{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.wave .b i{display:block;width:100%;background:var(--olive2);border:1px solid #cfd6b5;border-radius:4px 4px 0 0;position:relative;transition:height .8s}
+.wave .b i em{position:absolute;left:0;right:0;bottom:0;background:var(--red);border-radius:0 0 0 0}
+.wave .b span{font-size:.66rem;font-weight:700;color:var(--muted)}
+.wave .b.now i{border-color:var(--red)}
+.tk-top{display:flex;justify-content:space-between;align-items:center;font-size:.66rem;margin:-4px 0 6px;font-family:Karla;font-weight:800;letter-spacing:.06em}
+.timer{padding:2px 8px;border-radius:999px;background:#e3f6ec;color:var(--green)}
+.timer.warn{background:#fff1d6;color:#8a5a00}.timer.late{background:#fde0dc;color:var(--red)}
+.ready{padding:2px 8px;border-radius:999px;background:#111;color:#ffd27a}
+.eb86{margin:6px 0;padding:4px 6px;border:1px dashed #999;font-size:.7rem;color:#555}
+
 .faq{margin-top:14px;font-size:.8rem;color:var(--muted)}
 .faq b{color:var(--ink)}
 </style>
@@ -83,7 +108,7 @@ h3.sec .r{margin-left:auto;font-family:Karla;font-size:.72rem;letter-spacing:.1e
 
 <div class="wrap">
   <div class="board">
-    <div><b class="g" id="k-ans">100%</b><span>calls answered in the rush</span><small>industry: up to 43% missed</small></div>
+    <div><b class="g" id="k-ans">100%</b><span>calls answered in the rush</span><small id="k-rec">— recovered vs a 43% miss rate</small></div>
     <div><b id="k-orders">$0</b><span>phone orders tonight</span><small id="k-orders-s">0 tickets to kitchen</small></div>
     <div><b id="k-covers">0</b><span>covers booked by phone</span><small id="k-covers-s">0 reservations</small></div>
     <div><b id="k-avg">$0</b><span>avg order · upsell</span><small id="k-avg-s">—</small></div>
@@ -94,6 +119,8 @@ h3.sec .r{margin-left:auto;font-family:Karla;font-size:.72rem;letter-spacing:.1e
       <div class="floor" id="floor"></div>
       <div class="legend"><span><i></i>open</span><span><i class="r"></i>reserved by Gia</span></div>
       <div class="reslist" id="reslist"></div>
+      <div class="wave"><h4>Tonight by the hour · covers <span id="wave-peak"></span></h4><div class="bars" id="wave"></div></div>
+      <div class="eb"><h4><i class="fa-solid fa-ban"></i> 86 board <span>Gia stops offering these instantly</span></h4><div id="eb"></div></div>
       <div class="faq" id="faq"></div></div>
     <div class="card"><h3 class="sec"><i class="fa-solid fa-receipt"></i> Kitchen printer <span class="r">takeout · read-back confirmed</span></h3>
       <div class="printer"><div class="lbl">Epson TM-T88 · kitchen</div><div class="slot"></div><div class="tickets" id="tickets"></div></div></div>
@@ -101,7 +128,7 @@ h3.sec .r{margin-left:auto;font-family:Karla;font-size:.72rem;letter-spacing:.1e
 </div>
 
 <script>
-const AGENT="{{ agent.id }}"; const TABLES={{ agent.tables | tojson }};
+const AGENT="{{ agent.id }}"; const TABLES={{ agent.tables | tojson }}; const EB={{ agent.eighty_six | tojson }}; const HOURS={{ agent.hours | tojson }};
 const POS={T1:[6,10,'round',52],T2:[22,10,'round',52],T3:[40,8,'sq',70],T4:[60,8,'sq',70],T5:[80,8,'sq',70],T6:[8,48,'sq',90],T7:[34,48,'sq',90],T8:[62,44,'sq',120],B1:[6,84,'round',44],B2:[16,84,'round',44],P1:[68,84,'sq',60],P2:[84,84,'sq',60]};
 const $=id=>document.getElementById(id);
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -115,13 +142,18 @@ function render(d){
   $('k-covers').textContent=covers; $('k-covers-s').textContent=res.length+' reservations';
   $('k-avg').textContent=orders.length?money(sales/orders.length):'$0'; $('k-avg-s').textContent=orders.filter(r=>m(r).upsell).length+' upsells accepted';
   $('k-all').textContent=orders.filter(r=>m(r).allergy).length;
+  $('k-rec').textContent=`${Math.round(R.length*0.43)} calls a typical night would have missed`;
+  $('eb').innerHTML=EB.map(e=>`<div class="it"><b>${esc(e.item)}</b><span class="since">86'd ${esc(e.since)}</span><span class="alt">offers ${esc(e.alt)} instead</span></div>`).join('');
+  const addC={}; res.forEach(r=>{const h=(m(r).time||'').match(/(\d+):/);if(h){const k=h[1]+' PM';addC[k]=(addC[k]||0)+(+m(r).party||0);}});
+  const mx=Math.max(...HOURS.map(h=>h[1]+(addC[h[0]]||0)),1); $('wave-peak').textContent='peak '+HOURS.reduce((a,b)=>(b[1]+(addC[b[0]]||0))>(a[1]+(addC[a[0]]||0))?b:a)[0];
+  $('wave').innerHTML=HOURS.map(h=>{const tot=h[1]+(addC[h[0]]||0);return `<div class="b ${h[0]==='7 PM'?'now':''}"><i style="height:${tot/mx*100}%"><em style="height:${(addC[h[0]]||0)/tot*100}%"></em></i><span>${h[0]}<br>${tot}</span></div>`}).join('');
   const byT={}; res.forEach(r=>byT[m(r).table]=r);
   $('fcount').textContent=`${res.length} of ${TABLES.length} tables reserved`;
   $('floor').innerHTML='<span class="zone" style="left:6%;top:3%">Dining room</span><span class="zone" style="left:6%;top:78%">Bar</span><span class="zone" style="left:68%;top:78%">Patio</span>'+TABLES.map(t=>{const p=POS[t.id];const r=byT[t.id];
     return `<div class="tbl ${p[2]} ${r?'res':''}" data-t="${t.id}" style="left:${p[0]}%;top:${p[1]}%;width:${p[3]}px;height:${p[2]==='round'?p[3]:Math.round(p[3]*.7)}px">${t.id}<small>${t.seats} seats</small>${r?`<span class="who">${esc(r.name.split(' ')[0])} · ${esc(m(r).time.replace(' PM','').replace('Sat ','Sat '))}</span>`:''}</div>`;}).join('');
   $('reslist').innerHTML=res.map(r=>`<div class="resrow"><span class="t">${esc(m(r).time)}</span><span class="n">${esc(r.name)}</span><span class="p">· party of ${m(r).party} · ${esc(m(r).table)}</span>${m(r).occasion?`<span class="tag gold">${esc(m(r).occasion)}</span>`:''}${m(r).deposit?`<span class="tag">$${m(r).deposit} deposit</span>`:''}</div>`).join('');
   $('faq').innerHTML=faq.length?`<b>${faq.length} question call${faq.length>1?'s':''}</b> answered from the restaurant info (hours, parking, menu) — no staff needed.`:'';
-  $('tickets').innerHTML=orders.map(r=>{const x=m(r);return `<div class="ticket"><div class="hd">Takeout · ${esc(r.name)}<small>${esc(r.phone)} · pickup ${esc(x.pickup)}</small></div>
+  $('tickets').innerHTML=orders.map(r=>{const x=m(r);const mins=x.minutes!=null?x.minutes:Math.floor((Date.now()/1000-r.created)/60);const tcls=mins<8?'':mins<12?'warn':'late';return `<div class="ticket"><div class="tk-top"><span class="timer ${tcls}"><i class="fa-regular fa-clock"></i> ${mins} min</span>${x.ready?'<span class="ready">READY · customer texted</span>':'<span style="color:#888">in kitchen</span>'}</div><div class="hd">Takeout · ${esc(r.name)}<small>${esc(r.phone)} · pickup ${esc(x.pickup)}</small></div>${x.eighty_six?`<div class="eb86">86: ${esc(x.eighty_six)}</div>`:''}
     ${(x.items||[]).map(it=>`<div class="li"><span><span class="q">${it[1]}×</span>${esc(it[0])}</span><span>${money(it[2])}</span></div>${x.upsell&&it[0].startsWith(x.upsell)?'<div class="up">↳ upsold by Gia</div>':''}`).join('')}
     ${x.allergy?`<div class="al">!! ALLERGY: ${esc(x.allergy.toUpperCase())}</div>`:''}
     <div class="tot"><span>TOTAL ${x.paid?'· PAID':''}</span><span>${money(x.total)}</span></div><div class="ft">read back to caller ✓ · receipt texted</div></div>`}).join('')||'<div class="ticket"><div class="hd">No orders yet</div></div>';

@@ -64,6 +64,7 @@ AGENTS = [
      "desc": "Answers every call during the rush: takeout orders to the POS/kitchen printer (modifiers, allergies, upsell, read-back total), reservations onto the floor plan, hours & menu questions.",
      "icon": "fa-utensils", "color": "#9b1c1c",
      "mode": "light", "bg": "#fbf3e4", "accent": "#9b1c1c", "accent2": "#5b6b3a",
+     "eighty_six": [{"item": "Branzino", "since": "6:40 PM", "alt": "Rigatoni alla vodka"}, {"item": "Burrata", "since": "7:05 PM", "alt": "Caprese"}], "hours": [["5 PM", 8], ["6 PM", 14], ["7 PM", 26], ["8 PM", 22], ["9 PM", 10]],
      "tables": [{"id":"T1","seats":2},{"id":"T2","seats":2},{"id":"T3","seats":4},{"id":"T4","seats":4},{"id":"T5","seats":4},{"id":"T6","seats":6},{"id":"T7","seats":6},{"id":"T8","seats":8},{"id":"B1","seats":2},{"id":"B2","seats":2},{"id":"P1","seats":4},{"id":"P2","seats":4}]},
     {"id": "reactivation", "name": "Lead Reactivation Agent",
      "desc": "Re-engages old/cold leads and gets them re-booked.",

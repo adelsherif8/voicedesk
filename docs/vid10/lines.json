@@ -7,8 +7,8 @@
   },
   "save": {
    "file": "docs/vid10/n_save.mp3",
-   "dur": 6.96,
-   "text": "Order read back, allergy flagged, dessert upsold, ticket on the kitchen printer \u2014 while the staff kept serving the room."
+   "dur": 8.712,
+   "text": "Sold-out item swapped, allergy flagged, dessert upsold, ticket on the kitchen printer with a timer \u2014 and the customer gets a text the moment it's ready."
   },
   "res": {
    "file": "docs/vid10/n_res.mp3",
@@ -25,32 +25,44 @@
   {
    "speaker": "alex",
    "file": "docs/vid10/c1_0.mp3",
-   "dur": 3.336,
+   "dur": 3.312,
    "text": "Luca's Trattoria, this is Gia \u2014 pickup or a table tonight?"
   },
   {
    "speaker": "caller",
    "file": "docs/vid10/c1_1.mp3",
-   "dur": 5.64,
-   "text": "Pickup. Two margherita pizzas, one with no basil, and a Caesar salad. Oh \u2014 my son has a nut allergy."
+   "dur": 2.208,
+   "text": "Pickup. Do you still have the branzino?"
   },
   {
    "speaker": "alex",
    "file": "docs/vid10/c1_2.mp3",
-   "dur": 7.296,
-   "text": "Got it: two margheritas, one no basil, one Caesar, nut allergy flagged for the kitchen. Our tiramisu is nut-free tonight \u2014 add one?"
+   "dur": 4.92,
+   "text": "We're out of branzino tonight \u2014 the rigatoni alla vodka is the closest, or a margherita pizza?"
   },
   {
    "speaker": "caller",
    "file": "docs/vid10/c1_3.mp3",
+   "dur": 4.464,
+   "text": "Two margheritas then, one no basil, and a Caesar. And my son has a nut allergy."
+  },
+  {
+   "speaker": "alex",
+   "file": "docs/vid10/c1_4.mp3",
+   "dur": 7.248,
+   "text": "Got it \u2014 two margheritas, one no basil, one Caesar, nut allergy flagged for the kitchen. Our tiramisu is nut-free tonight, add one?"
+  },
+  {
+   "speaker": "caller",
+   "file": "docs/vid10/c1_5.mp3",
    "dur": 0.768,
    "text": "Sure, add one."
   },
   {
    "speaker": "alex",
-   "file": "docs/vid10/c1_4.mp3",
-   "dur": 5.928,
-   "text": "Perfect. That's forty-eight fifty, ready at seven-fifteen. I've texted you the receipt and pickup link."
+   "file": "docs/vid10/c1_6.mp3",
+   "dur": 6.696,
+   "text": "That's forty-eight fifty, ready at seven-fifteen. I've texted your receipt \u2014 and I'll text again the moment it's ready."
   }
  ],
  "call2": [
