@@ -84,9 +84,10 @@ h3.sec .r{margin-left:auto;font-family:Karla;font-size:.72rem;letter-spacing:.1e
 .wave{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .wave h4{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:8px;display:flex}
 .wave h4 span{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--red)}
-.wave .bars{display:flex;align-items:flex-end;gap:10px;height:70px}
-.wave .b{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
-.wave .b i{display:block;width:100%;background:var(--olive2);border:1px solid #cfd6b5;border-radius:4px 4px 0 0;position:relative;transition:height .8s}
+.wave .bars{display:flex;gap:10px;height:96px}
+.wave .b{flex:1;position:relative;height:100%}
+.wave .b i{display:block;position:absolute;left:0;right:0;bottom:26px;background:var(--olive2);border:1px solid #cfd6b5;border-radius:4px 4px 0 0;transition:height .8s;overflow:hidden}
+.wave .b span{position:absolute;left:0;right:0;bottom:0;text-align:center}
 .wave .b i em{position:absolute;left:0;right:0;bottom:0;background:var(--red);border-radius:0 0 0 0}
 .wave .b span{font-size:.66rem;font-weight:700;color:var(--muted)}
 .wave .b.now i{border-color:var(--red)}
@@ -146,7 +147,7 @@ function render(d){
   $('eb').innerHTML=EB.map(e=>`<div class="it"><b>${esc(e.item)}</b><span class="since">86'd ${esc(e.since)}</span><span class="alt">offers ${esc(e.alt)} instead</span></div>`).join('');
   const addC={}; res.forEach(r=>{const h=(m(r).time||'').match(/(\d+):/);if(h){const k=h[1]+' PM';addC[k]=(addC[k]||0)+(+m(r).party||0);}});
   const mx=Math.max(...HOURS.map(h=>h[1]+(addC[h[0]]||0)),1); $('wave-peak').textContent='peak '+HOURS.reduce((a,b)=>(b[1]+(addC[b[0]]||0))>(a[1]+(addC[a[0]]||0))?b:a)[0];
-  $('wave').innerHTML=HOURS.map(h=>{const tot=h[1]+(addC[h[0]]||0);return `<div class="b ${h[0]==='7 PM'?'now':''}"><i style="height:${tot/mx*100}%"><em style="height:${(addC[h[0]]||0)/tot*100}%"></em></i><span>${h[0]}<br>${tot}</span></div>`}).join('');
+  $('wave').innerHTML=HOURS.map(h=>{const tot=h[1]+(addC[h[0]]||0);return `<div class="b ${h[0]==='7 PM'?'now':''}"><i style="height:${Math.round(tot/mx*64)}px"><em style="height:${(addC[h[0]]||0)/tot*100}%"></em></i><span>${h[0]}<br>${tot}</span></div>`}).join('');
   const byT={}; res.forEach(r=>byT[m(r).table]=r);
   $('fcount').textContent=`${res.length} of ${TABLES.length} tables reserved`;
   $('floor').innerHTML='<span class="zone" style="left:6%;top:3%">Dining room</span><span class="zone" style="left:6%;top:78%">Bar</span><span class="zone" style="left:68%;top:78%">Patio</span>'+TABLES.map(t=>{const p=POS[t.id];const r=byT[t.id];
