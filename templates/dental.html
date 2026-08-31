@@ -19,7 +19,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
 .top .r span.on i{color:var(--green)}
 .wrap{max-width:1360px;margin:0 auto;padding:12px 24px 50px}
 /* smile-o-meter */
-.kpis{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:1.2fr repeat(5,1fr);gap:10px;margin-bottom:16px}
 .k{background:var(--paper);border-radius:22px;padding:16px 18px;border:2px solid var(--line);position:relative}
 .k.hero{background:var(--teal);color:#fff;border-color:var(--teal)}
 .k .v{font-size:2.2rem;font-weight:900;line-height:1}
@@ -64,6 +64,11 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
 .row .st{margin-left:auto;font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .row .st.ok{background:#e3f6ec;color:var(--green)}.row .st.warn{background:#fff3d6;color:#8a5a00}.row .st.hot{background:#ffe6df;color:#b33d1f}.row .st.mut{background:#eef2f2;color:var(--muted)}
 .row.new{animation:slide .5s cubic-bezier(.2,1,.3,1)}
+.inscard{margin-top:6px;border:1.5px dashed var(--mint);border-radius:12px;padding:8px 10px;font-size:.72rem;background:#f4fbf9}
+.inscard b{display:block;font-size:.78rem}
+.inscard .cv{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.inscard .cv span{background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:800;color:var(--teal)}
+.due{font-size:.7rem;color:#b33d1f;font-weight:800}
 @keyframes slide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .empty{color:var(--muted);font-size:.8rem;font-weight:700;padding:10px 0}
 .ring{display:flex;align-items:center;gap:14px;margin-top:4px}
@@ -85,6 +90,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
     <div class="k" id="k2"><i class="ic fa-solid fa-user-plus"></i><div class="v" id="k-new">0</div><div class="l">New patients booked</div><div class="sub" id="k-new-s">insurance verified on call</div></div>
     <div class="k" id="k3"><i class="ic fa-solid fa-circle-check"></i><div class="v" id="k-conf">0</div><div class="l">Confirmed by reminder call</div><div class="sub" id="k-conf-s">for tomorrow</div></div>
     <div class="k" id="k4"><i class="ic fa-solid fa-rotate"></i><div class="v c" id="k-fill">$0</div><div class="l">Chair time refilled</div><div class="sub" id="k-fill-s">from the waitlist</div></div>
+    <div class="k" id="k5"><i class="ic fa-solid fa-coins"></i><div class="v" id="k-prod">$0</div><div class="l">Production booked by Mia</div><div class="sub" id="k-prod-s">today, by phone</div></div>
   </div>
 
   <div class="cal"><h2><i class="fa-solid fa-calendar-week" style="color:var(--teal)"></i> This week's schedule <span class="r"><span><i class="fa-solid fa-square" style="color:var(--mint)"></i>booked by Mia</span><span><i class="fa-solid fa-square" style="color:#e8f1f0"></i>front desk</span><span><i class="fa-solid fa-square" style="color:#ffb59f"></i>emergency</span><span><i class="fa-regular fa-square" style="color:var(--coral)"></i>freed → waitlist</span></span></h2>
@@ -114,6 +120,7 @@ function render(d){
   const newp=R.filter(r=>m(r).kind==='new'), conf=R.filter(r=>m(r).kind==='reminder'), fill=R.filter(r=>m(r).kind==='waitlist');
   $('k-new').textContent=newp.length; $('k-conf').textContent=conf.filter(r=>/confirm|resched/i.test(r.outcome)).length; $('k-conf-s').textContent=`of ${conf.length} reminder calls`;
   $('k-fill').textContent='$'+fill.reduce((a,r)=>a+(+m(r).value||0),0); $('k-fill-s').textContent=fill.length+' slots refilled from the waitlist';
+  $('k-prod').textContent='$'+R.filter(r=>/book|refill|resched|same/i.test(r.outcome)).reduce((a,r)=>a+(+m(r).value||0),0);
   const pct=conf.length?Math.round(conf.filter(r=>/confirm|resched/i.test(r.outcome)).length/conf.length*100):0; $('ringd').style.setProperty('--pct',pct); $('ringv').textContent=pct+'%';
   // calendar
   let h='<div></div>'+DAYS.map(x=>`<div class="h">${x}</div>`).join('');
@@ -123,11 +130,11 @@ function render(d){
       h+=`<div class="day">${base.map(b=>`<div class="ap"><span class="t">${b.split(' ')[0]}</span>${b.split(' ').slice(1).join(' ')}</div>`).join('')}${ai.map(r=>`<div class="ap ai ${m(r).kind==='emergency'?'emerg':''}"><span class="t">${esc(m(r).slot)}</span>${esc(r.name.split(' ')[0])} · ${esc((r.intent||'').split(' ')[0]==='Confirmation'?'confirmed':m(r).kind==='new'?'new patient':m(r).kind==='waitlist'?'waitlist':m(r).kind==='recall'?'recall':m(r).kind==='emergency'?'emergency':'moved')}</div>`).join('')}${freed.map(r=>`<div class="ap freed"><span class="t">${esc(m(r).freed.split(' ')[1])}</span>offered to waitlist</div>`).join('')}</div>`;});});
   $('grid').innerHTML=h;
   $('n-calls').textContent=R.length;
-  $('calls').innerHTML=R.slice(0,5).map(r=>`<div class="row"><span class="av ${m(r).kind==='emergency'?'c':''}">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${esc(r.intent)} · ${ago(r.created)}</span></div><span class="st ${/book|confirm|refill|resched|same/i.test(r.outcome)?'ok':/emerg/i.test(r.outcome)?'hot':'mut'}">${esc(r.outcome.split(' ·')[0])}</span></div>`).join('')||'<div class="empty">No calls yet.</div>';
+  $('calls').innerHTML=R.slice(0,5).map(r=>`<div class="row"><span class="av ${m(r).kind==='emergency'?'c':''}">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${esc(r.intent)} · ${ago(r.created)}</span>${m(r).ins_payer?`<div class="inscard"><b><i class="fa-solid fa-shield-heart" style="color:var(--teal)"></i> ${esc(m(r).ins_payer)} · verified on the call</b><div class="cv">${(m(r).ins_cov||[]).map(c=>`<span>${esc(c)}</span>`).join('')}</div></div>`:''}</div><span class="st ${/book|confirm|refill|resched|same/i.test(r.outcome)?'ok':/emerg/i.test(r.outcome)?'hot':'mut'}">${esc(r.outcome.split(' ·')[0])}</span></div>`).join('')||'<div class="empty">No calls yet.</div>';
   $('n-conf').textContent=conf.length;
   $('conf').innerHTML=conf.map(r=>`<div class="row"><span class="av">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${esc(r.appointment)}</span></div><span class="st ${/confirmed/i.test(r.outcome)?'ok':'warn'}">${/confirmed/i.test(r.outcome)?'confirmed':'rescheduled'}</span></div>`).join('')||'<div class="empty">No reminders yet.</div>';
   const wl=R.filter(r=>['waitlist','recall'].includes(m(r).kind)); $('n-wl').textContent=wl.length;
-  $('wl').innerHTML=wl.map(r=>`<div class="row"><span class="av">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${m(r).kind==='waitlist'?'filled '+esc(r.appointment)+' · $'+m(r).value:'recall · '+m(r).overdue_months+' mo overdue → '+esc(r.appointment)}</span></div><span class="st ok">${m(r).kind==='waitlist'?'refilled':'booked'}</span></div>`).join('')||'<div class="empty">Waitlist is empty.</div>';
+  $('wl').innerHTML=wl.map(r=>`<div class="row"><span class="av">${ini(r.name)}</span><div><b>${esc(r.name)}</b><span>${m(r).kind==='waitlist'?'filled '+esc(r.appointment)+' · $'+m(r).value:'recall · '+m(r).overdue_months+' mo overdue → '+esc(r.appointment)}</span>${m(r).kind==='recall'?`<span class="due">benefits expire Dec 31 — $${m(r).benefit_left||820} unused</span>`:''}</div><span class="st ok">${m(r).kind==='waitlist'?'refilled':'booked'}</span></div>`).join('')||'<div class="empty">Waitlist is empty.</div>';
   if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){['k2','k3','k4'].forEach(id=>{const e=$(id);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');});const f=document.querySelector('#calls .row');if(f)f.classList.add('new');document.querySelectorAll('.ap.ai').forEach(a=>{if(a.textContent.includes(R[0].name.split(' ')[0]))a.classList.add('new')});}
   if(R.length)lastTopId=R[0].id;
 }

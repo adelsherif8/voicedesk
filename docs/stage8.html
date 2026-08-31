@@ -38,6 +38,9 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#f7f5f0;color:#0
 .lst .pr{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700}
 .lst .ad{font-weight:600;font-size:18px}.lst .sp{font-size:14px;color:#6b7385;margin-top:2px}
 .lst .ag{font-size:13px;color:#6b7385;margin-top:10px}.lst .ag i{color:#cbb27a;margin-right:5px}
+.mkt{display:flex;gap:6px;margin-top:10px}
+.mkt span{font-size:12px;font-weight:600;padding:3px 9px;background:#f2efe7;color:#4b5563}
+.mkt span.hot{background:#0b2545;color:#cbb27a}
 .pins{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;min-height:28px}
 .pin{font-size:13px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid #e6e1d6;background:#faf8f3;display:flex;gap:6px;align-items:center}
 .pin.booked{background:#0b2545;color:#fff;border-color:#0b2545}.pin.hot{background:#cbb27a;color:#0b2545;border-color:#cbb27a}.pin.mut{color:#6b7385}
@@ -96,11 +99,11 @@ iframe{width:1800px;height:980px;border:0;display:block}
 
 <script>
 const $=id=>document.getElementById(id);let tT=null,secs=0;
-const L=[{id:'L1',addr:'14 Harbor View Dr',price:'$875K',sp:'4 bd · 3 ba · 2,860 sq ft · Coastal',ag:'Nadia Reyes',st:'Active',pins:[['mut','Daniel · nurture']]},
- {id:'L2',addr:'302 Vine St #5B',price:'$465K',sp:'2 bd · 2 ba · 1,240 sq ft · Loft',ag:'Ben Carter',st:'Active',pins:[]},
- {id:'L3',addr:'88 Maple Ridge Ln',price:'$1.25M',sp:'5 bd · 4 ba · 4,100 sq ft · Estate',ag:'Nadia Reyes',st:'Active',pins:[['hot','Grace · hot']]},
- {id:'L4',addr:'19 Cedar Ct',price:'$612K',sp:'3 bd · 2 ba · 1,780 sq ft · Craftsman',ag:'Ben Carter',st:'Pending',pins:[['mut','Leo · alternatives']]}];
-function draw(){$('grid').innerHTML=L.map(l=>`<div class="lst" id="${l.id}"><div class="ph"><div class="ground"></div><div class="roof"></div><div class="house"></div><div class="win w1"></div><div class="win w2"></div><div class="door"></div><span class="st ${l.st==='Pending'?'pending':''}">${l.st}</span></div><div class="bd"><div class="pr">${l.price}</div><div class="ad">${l.addr}</div><div class="sp">${l.sp}</div><div class="ag"><i class="fa-solid fa-user-tie"></i>${l.ag}</div><div class="pins" id="p-${l.id}">${l.pins.map(p=>`<span class="pin ${p[0]}">${p[1]}</span>`).join('')}</div></div></div>`).join('');}
+const L=[{id:'L1',addr:'14 Harbor View Dr',price:'$875K',sp:'4 bd · 3 ba · 2,860 sq ft · Coastal',ag:'Nadia Reyes',st:'Active',mkt:['12 DOM','$306/sq ft','3 interested'],pins:[['mut','Daniel · lender intro sent']]},
+ {id:'L2',addr:'302 Vine St #5B',price:'$465K',sp:'2 bd · 2 ba · 1,240 sq ft · Loft',ag:'Ben Carter',st:'Active',mkt:['5 DOM','$375/sq ft','6 interested'],hot:1,pins:[]},
+ {id:'L3',addr:'88 Maple Ridge Ln',price:'$1.25M',sp:'5 bd · 4 ba · 4,100 sq ft · Estate',ag:'Nadia Reyes',st:'Active',mkt:['34 DOM','$305/sq ft','2 interested'],pins:[['hot','Grace · hot · cash']]},
+ {id:'L4',addr:'19 Cedar Ct',price:'$612K',sp:'3 bd · 2 ba · 1,780 sq ft · Craftsman',ag:'Ben Carter',st:'Pending',mkt:['21 DOM','$344/sq ft','4 interested'],pins:[['mut','Leo · alternatives']]}];
+function draw(){$('grid').innerHTML=L.map(l=>`<div class="lst" id="${l.id}"><div class="ph"><div class="ground"></div><div class="roof"></div><div class="house"></div><div class="win w1"></div><div class="win w2"></div><div class="door"></div><span class="st ${l.st==='Pending'?'pending':''}">${l.st}</span></div><div class="bd"><div class="pr">${l.price}</div><div class="ad">${l.addr}</div><div class="sp">${l.sp}</div><div class="ag"><i class="fa-solid fa-user-tie"></i>${l.ag}</div><div class="mkt">${(l.mkt||[]).map((x,i)=>`<span class="${l.hot&&i===2?'hot':''}">${x}</span>`).join('')}</div><div class="pins" id="p-${l.id}">${l.pins.map(p=>`<span class="pin ${p[0]}">${p[1]}</span>`).join('')}</div></div></div>`).join('');}
 draw();
 window.api={
   hook(s){$('hook').className='layer on s'+s;if(s==2)$('hook').classList.add('s1');},

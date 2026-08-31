@@ -4,7 +4,7 @@ from playwright.async_api import async_playwright
 ROOT="/Users/adel/Desktop/GHAI/voicedesk"; OUT=f"{ROOT}/docs/vid_out"; FR=f"{ROOT}/docs/vid8/frames"
 L=json.load(open(f"{ROOT}/docs/vid8/lines.json")); AUDIO=[]
 def post(rec): urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/realty",data=json.dumps(rec).encode(),headers={"Content-Type":"application/json"},method="POST"),timeout=20)
-OMAR={"name":"Omar Haddad","phone":"+1 555 771 4432","email":"omar.h@mail.com","intent":"Inquiry · 302 Vine St #5B","outcome":"Showing booked · Ben Carter","appointment":"Sat 11:00 AM","summary":"Zillow inquiry. Budget $450–500K, pre-approved (Chase), moving in 60 days. Showing booked Saturday 11 AM with Ben; details texted.","listing":"L2","source":"Zillow","budget":"$450–500K","preapproved":True,"lender":"Chase","timeline":"60 days","musts":"2BR, parking","score":88,"agent":"Ben Carter","kind":"buyer","response_secs":4}
+OMAR={"tour":[["11:00","302 Vine St #5B"],["11:45","14 Harbor View Dr"]],"name":"Omar Haddad","phone":"+1 555 771 4432","email":"omar.h@mail.com","intent":"Inquiry · 302 Vine St #5B","outcome":"Showing booked · Ben Carter","appointment":"Sat 11:00 AM","summary":"Zillow inquiry. Budget $450–500K, pre-approved (Chase), moving in 60 days. Showing booked Saturday 11 AM with Ben; details texted.","listing":"L2","source":"Zillow","budget":"$450–500K","preapproved":True,"lender":"Chase","timeline":"60 days","musts":"2BR, parking","score":88,"agent":"Ben Carter","kind":"buyer","response_secs":4}
 SUSAN={"name":"Susan Park","phone":"+1 555 630 8810","email":"susan.p@mail.com","intent":"Seller · what is my home worth?","outcome":"CMA appointment · Ben Carter","appointment":"Tue 5:30 PM","summary":"Seller call: 3BR in Cedar Hills, thinking of listing in spring. Booked a comparative market analysis visit Tuesday 5:30 PM with Ben.","source":"Website","kind":"seller","address":"41 Cedar Hills Rd","timeline":"Spring","score":80,"agent":"Ben Carter","response_secs":4}
 async def main():
     os.makedirs(FR,exist_ok=True); shutil.rmtree(OUT,ignore_errors=True)
@@ -31,7 +31,8 @@ async def main():
             t+=ln["dur"]+0.1
         T=t
         await at(T); await api("endCall()"); audio("docs/vid2/ding.mp3",T+0.1); await api("chk(4,'Sat 11 AM · Ben')"); await api("pin('L2','booked','Omar · Sat 11 AM')"); await api("kp(4,2,1)"); post(OMAR)
-        audio(L["narr"]["save"]["file"],T+0.4); await api("callout('Showing booked · pinned to the listing · notes to Follow Up Boss',620,560)")
+        await at(T+1.4); await api("pin('L1','booked','Omar · Sat 11:45 · tour route')")
+        audio(L["narr"]["save"]["file"],T+0.4); await api("callout('Saturday tour route: 11:00 Vine St + 11:45 Harbor View · CRM updated',620,560)")
         await at(T+2.4); await shot("pinned")
         await at(T+5.0); await api("callout('')"); await api("cool('L2')"); await api("hide()"); await api("dash()"); await api("zoom(900,0,1.18)")
         await at(T+6.2); await api("callout('Listings board · lead score · agent calendars — live',1000,700)")
