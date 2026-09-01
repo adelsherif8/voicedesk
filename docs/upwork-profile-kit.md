@@ -72,7 +72,7 @@ Then add one item per new roadmap project (#2 outbound follow-up next).
 Catalog video = the 15-s vertical cut + captions.
 
 ## 8. Employment / certs / other sections
-- Employment: Ahlan (Founder, AI Voice Agent Engineer), theTrendUp, EfficaTech, UF Academy — same wording as the voice CV.
+- Employment: Munadim — munadim.com (Founder & AI Voice Agent Engineer), theTrendUp, EfficaTech, UF Academy — same wording as the voice CV.
 - Certifications: DataCamp Associate AI Engineer (ID AIEDA0011247893456), Working with the OpenAI API, AI Engineering with LangChain, Meta Front-End.
 - Turn on the Availability badge. Add "Other experience": "Built 7+ live stores and 30+ CRM integrations".
 

@@ -106,6 +106,45 @@ async def vapi_webhook(agent: str, request: Request):
     return {"ok": True}
 
 
+@app.post("/retell/{agent}")
+async def retell_webhook(agent: str, request: Request):
+    """Retell AI custom functions + call-analysis webhooks.
+
+    Custom function -> {"call": {...}, "name": "save_lead", "args": {...}}
+    Call analysed   -> {"event": "call_analyzed", "call": {"call_analysis": {...}}}
+    Whatever we return is handed back to the agent's LLM as the tool result,
+    so it must be a short sentence the agent can say out loud.
+    """
+    agent = _valid_agent(agent)
+    body = await request.json()
+
+    # --- custom function call ---
+    if "name" in body and "args" in body:
+        args = body.get("args") or {}
+        if isinstance(args, str):
+            import json
+            try:
+                args = json.loads(args)
+            except Exception:
+                args = {}
+        call = body.get("call") or {}
+        args.setdefault("phone", call.get("from_number", ""))
+        _store(agent, args)
+        return {"result": "Saved. The details are recorded in the system."}
+
+    # --- post-call analysis ---
+    call = body.get("call") or {}
+    analysis = call.get("call_analysis") or {}
+    if body.get("event") in ("call_analyzed", "call_ended") or analysis:
+        _store(agent, {
+            "summary": analysis.get("call_summary") or "Call completed.",
+            "outcome": "call logged",
+            "phone": call.get("from_number", ""),
+            "transcript": call.get("transcript", ""),
+        })
+    return {"ok": True}
+
+
 @app.post("/ingest/{agent}")
 async def ingest(agent: str, request: Request):
     """Generic ingest for Retell / n8n / manual — accepts a flat JSON record."""

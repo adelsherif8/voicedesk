@@ -20,17 +20,18 @@ The directory filters buyers use (so answer these to match searches):
   Price range: $0–$2,000  (matches your $350–$1,500 builds)
 
 ---- COMPANY / BUSINESS NAME ----
-Ahlan — AI Voice Agents
+Adel Atya — AI Voice Agents
+(solo operator; leave "Company Name" blank if the form treats it as a registered entity)
 
 ---- ONE-LINE DESCRIPTION ----
 AI voice agents that answer every call 24/7 — qualify, book, take payments, and write
 every call into your CRM.
 
 ---- ABOUT / OVERVIEW (paste) ----
-Ahlan builds production AI voice agents on Retell AI and Vapi for businesses that lose
-money to unanswered phones. Every build ships with the phone number, the conversation
-design, the tool-calling integrations, and a live dashboard so the client can see each
-call, outcome and booking.
+I build production AI voice agents on Retell AI and Vapi for businesses that lose money to
+unanswered phones. Every build ships with the phone number, the conversation design, the
+tool-calling integrations, and a live dashboard so the client can see each call, outcome
+and booking.
 
 Seven live demos you can open right now, one per vertical:
 • Self-storage receptionist — quotes from live inventory, reserves units, takes tenant
@@ -62,10 +63,10 @@ Home services · Healthcare / dental · Real estate · Restaurants · Self-stora
 Professional services / legal · Consumer brands & support
 
 ---- WEBSITE ----
-https://adelatya.vercel.app/voice-agent-engineer
+https://adelatya.com/voice-agent-engineer
 
 ---- CONTACT ----
-adelsherif8@gmail.com  ·  linkedin.com/in/adel-atya-551467309
+adel@adelatya.com  ·  linkedin.com/in/adel-atya-551467309
 
 
 ═══════════════════════════════════════════
@@ -79,9 +80,8 @@ Use the exact same copy as above — just swap "on Retell AI and Vapi" → "on V
 ═══════════════════════════════════════════
 3. LINKEDIN — PROFILE CHANGES + POST PACK
 ═══════════════════════════════════════════
-DO NOT lead with a company page. Post from your PERSONAL profile — company pages get a
-fraction of the organic reach, and buyers want to hire a person. Create the company page
-only as a 5-minute shell so your personal profile can say "Founder · Ahlan" with a logo.
+Post from your PERSONAL profile — company pages get a fraction of the organic reach, and
+buyers want to hire a person. No company page needed: you are the brand.
 
 PROFILE CHANGES
   Headline (220 char limit):
@@ -91,7 +91,7 @@ PROFILE CHANGES
   Banner text: "Your phone, answered by AI. 24/7."
   About: reuse the Upwork overview (the version without URLs is unnecessary here —
   LinkedIn allows links).
-  Featured section: pin 3 — StoreRight demo, the dental video, adelatya.vercel.app/voice-agent-engineer
+  Featured section: pin 3 — StoreRight demo, the dental video, adelatya.com/voice-agent-engineer
 
 POST PACK — one per project, post 2×/week, 15s vertical or the 60s video
 Format every time: pain number → what the agent does → the live link → one question.
