@@ -8,3 +8,7 @@ __pycache__/
 *.log
 data/*.db
 docs/video/
+
+# Retell provisioning state (agent ids)
+docs/retell_created.json
+.retell_key
