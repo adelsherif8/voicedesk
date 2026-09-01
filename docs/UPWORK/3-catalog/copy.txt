@@ -67,6 +67,30 @@ FAQ
   Q: Can it book into my existing calendar/CRM?  A: Yes — Google Calendar, GoHighLevel, HubSpot, Zoho, Calendly, ServiceTitan/Housecall Pro via webhooks or n8n.
   Q: What happens when it can't answer?  A: It takes a message or warm-transfers to a human with the call context — you choose.
 
+
+════════════════════════════════════════════════
+UPWORK PROJECT CATALOG — CONFIRMED FIELD LIMITS
+(hit in the real form; do not guess these again)
+════════════════════════════════════════════════
+  Title              75 INCLUDING the auto "You will get " prefix (13) -> 62 usable
+  Project summary    1,200 max, 120 MINIMUM
+  Project step       75 chars each  <-- easy to miss, rejected at 76
+  Tier custom title  30 chars
+  Tier custom desc   80 chars
+  Search tags        5 max, free text (so "Vapi" / "Retell AI" work here
+                     even though they are NOT valid Upwork *skills*)
+  FAQ                5 questions max
+  Images             20 max, <10MB, <4000px — CROPPED TO 4:3, so pad first
+  Video              1, .mp4, <100MB, <90s (60s recommended)
+  Sample documents   2 PDFs, <2MB each, only first 3 pages shown
+
+PROJECT STEPS (Upwork owns step 1 and the final step; these go in between)
+  30-min discovery call: hours, services, prices, top 3 calls          (59)
+  Conversation design: system prompt, tool schema, guardrails          (59)
+  Calendar, CRM and SMS wired up; phone number provisioned             (56)
+  Tested against 20 scripted calls, including the awkward ones         (60)
+  Demo number sent — you call it, we tune the script until right       (62)
+
 GALLERY — upload images in this exact order (9 images + 1 video)
   0-cover.png                  purpose-built cover: the offer, the proof numbers, all 7 industries
   1-call-in-progress.png       a live call mid-conversation
