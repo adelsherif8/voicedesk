@@ -1,6 +1,10 @@
 PROJECT CATALOG — paste-ready
 
-TITLE (66 chars, after "You will get"): a 24/7 AI voice agent that answers your calls & books appointments
+TITLE — CATALOG LIMIT IS 75 INCLUDING THE "You will get " PREFIX (13 chars), so you get 62.
+  PRIMARY  (74/75, 1 spare): a 24/7 AI voice agent that answers calls & books appointments
+  SAFE     (66/75, 9 spare): a 24/7 AI voice agent that answers calls & books jobs
+  -> Try PRIMARY first. If Upwork rejects on length, use SAFE.
+  -> The old title (79/75) was over the limit and would have been rejected.
 CATEGORY: Development & IT → AI Apps & Integration → AI Agents (or "AI Chatbot Development" if AI Agents isn't offered)
 SEARCH TAGS (5): AI Voice Agent · AI Receptionist · Vapi · Retell AI · Twilio
 ATTRIBUTES: Language = English; Platform = Vapi, Retell AI, Twilio; Purpose = Customer service, Lead generation, Appointment booking
