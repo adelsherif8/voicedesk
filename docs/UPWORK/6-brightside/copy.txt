@@ -1,11 +1,12 @@
 TITLE (70): AI Dental Front Desk: books patients, reminder calls, refills no-shows
 SKILLS: AI Agent Development · Conversational AI · Appointment Setting · Healthcare · Automation
-DESCRIPTION (588):
+DESCRIPTION (593):
 1 in 5 dental appointments is a no-show ($200–375 per empty chair) and 1 in 3 new-patient calls goes unanswered.
 This AI front-desk coordinator fixes both:
 • Books new patients — insurance eligibility verified live (payer, coverage %, remaining benefit)
 • Day-before reminder calls; reschedules on the spot
 • Cancellations offered to the waitlist in minutes — chair refilled
-• Hygiene recall with use-it-or-lose-it benefit reminders; same-day emergency triage
-Week-schedule dashboard with production booked by AI. Open Dental / Dentrix sync.
+• Hygiene recall with benefit reminders; same-day emergency triage
+Week-schedule dashboard, production booked by AI. Open Dental / Dentrix sync.
+Vapi / Retell AI · Twilio.
 Demo: voicedesk-h31g.onrender.com/agent/dental

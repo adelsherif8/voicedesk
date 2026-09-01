@@ -1,11 +1,12 @@
 TITLE (68): AI Voice Receptionist for Self-Storage: answers, quotes & books 24/7
 SKILLS: AI Agent Development · Conversational AI · AI Chatbot · Chatbot Integration · Python
 LINK: https://voicedesk-h31g.onrender.com/agent/receptionist
-DESCRIPTION (496):
+DESCRIPTION (564):
 Storage facilities miss ~40% of calls (≈$58K/yr lost). This AI receptionist answers every call in 1s, 24/7:
 • Quotes from live unit inventory, reserves the unit, books the tour, texts confirmation
 • Takes tenant payments by keypad + enrols autopay
 • Verifies identity, resets gate codes for locked-out tenants
 • Auto-texts quotes to not-ready callers
 Every call lands in a live operator dashboard (leads · tenants · payments · inventory).
+Built on Vapi / Retell AI · GPT-4o tool-calling · Twilio · FastAPI.
 Live demo: voicedesk-h31g.onrender.com/agent/receptionist

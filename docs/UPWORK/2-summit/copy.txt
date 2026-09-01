@@ -1,7 +1,7 @@
 TITLE (70): AI Speed-to-Lead Agent (HVAC): calls new leads in 60s, books estimates
 SKILLS: AI Agent Development · Conversational AI · Lead Generation · GoHighLevel · Automation
 LINK: https://voicedesk-h31g.onrender.com/agent/sales
-DESCRIPTION (570):
+DESCRIPTION (582):
 Home-service companies take 42 min on average to call a new lead back; 1 in 4 never do. A 5-min response makes you 21× more likely to qualify.
 This outbound AI agent calls every new web/LSA/Angi lead within 60 seconds:
 • Qualifies — issue, urgency, homeowner, timeline
@@ -9,4 +9,4 @@ This outbound AI agent calls every new web/LSA/Angi lead within 60 seconds:
 • No answer? 6-attempt call + SMS cadence
 • Big ticket or financing? Flags HOT and hands it to your closer
 Live speed-to-lead dashboard (avg 51s), syncs to ServiceTitan / Housecall Pro / GoHighLevel.
-Stack: Vapi, GPT-4o, Twilio, FastAPI.
+Stack: Vapi / Retell AI, GPT-4o, Twilio, FastAPI.

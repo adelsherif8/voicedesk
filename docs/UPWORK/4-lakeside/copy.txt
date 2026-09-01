@@ -1,10 +1,11 @@
 TITLE (67): AI Visual Voicemail for IP Desk Phones: transcribe, summarize, sort
 SKILLS: AI Agent Development · Conversational AI · VoIP · API Development · Automation
-DESCRIPTION (590):
-80% of callers sent to voicemail hang up without a message; the rest wait ~8 hours to be heard.
+DESCRIPTION (599):
+80% of callers sent to voicemail hang up without a message; the rest wait ~8h to be heard.
 This replaces the beep with an AI attendant and puts every message on the desk phone:
 • AI attendant takes a structured message (who, matter, urgency, callback window)
 • Whisper transcription + GPT summary, priority flag, auto-routing
-• Pushed to Cisco / Yealink / Poly phones via real CiscoIPPhoneMenu / CiscoIPPhoneText XML — one softkey to call back
+• Pushed to Cisco / Yealink / Poly phones via real CiscoIPPhone XML — one softkey to call back
 • Web inbox with transcript, summary, matter, assignee; hang-ups get an auto text-back
+Vapi / Retell AI · Whisper · GPT-4o.
 Live demo: voicedesk-h31g.onrender.com/agent/voicemail

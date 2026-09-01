@@ -1,8 +1,8 @@
 TITLE (69): AI Revenue Recovery Agent for Plumbers: missed calls, estimates (GHL)
 SKILLS: AI Agent Development · Conversational AI · GoHighLevel · Lead Generation · Automation
-DESCRIPTION (567):
+DESCRIPTION (574):
 Plumbers miss up to 40% of calls and 85% of those callers never call back — about $13.5K/month lost at a $450 ticket.
-This AI agent on GoHighLevel + Retell AI recovers it:
+This AI agent on GoHighLevel + Vapi / Retell AI recovers it:
 • Missed call → text-back in 8s, AI callback in 52s, job booked
 • Unsold estimates → follows up, handles the objection, offers financing, closes
 • Past customers → reactivation calls for maintenance & seasonal checks
