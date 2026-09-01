@@ -37,11 +37,29 @@ Premium — "Full front desk: inbound + outbound + payments"  $1,500 · 10 days 
 ADD-ONS (optional)
   Extra language (Arabic/Spanish) +$150 · Extra call type / agent +$300 · Monthly care plan (monitoring, prompt tuning, reports) $149/mo
 
-REQUIREMENTS FROM THE CLIENT (Upwork asks you to list these)
-  1. Business name, hours, services/prices, and the 3 most common calls you get
-  2. Where bookings should land (calendar/CRM) and who to transfer to when the AI can't help
-  3. A Twilio account (I can set it up) or your existing number for forwarding
-  4. Approval on the call script before go-live
+REQUIREMENTS FOR THE CLIENT (add each as a separate entry in Upwork)
+  NOTE: the delivery clock starts when the client submits these. Ask for everything
+  up front or you lose days chasing details while the countdown runs.
+
+  1. What does your business do, and what are your hours? Please include your
+     services and prices — the agent quotes from this list, so send the real one.
+
+  2. What are the three calls you get most? Rough wording is fine — "how much is
+     a 10x10", "can someone come out today", "I need to reschedule". These become
+     the flows the agent handles best.
+
+  3. Where should bookings and leads land? Name the calendar (Google, Cal.com,
+     Calendly) and the CRM (GoHighLevel, HubSpot, Zoho, other) and I'll wire it up.
+
+  4. When the agent shouldn't handle a call, who should it go to? Give me a name
+     and number for warm transfer, plus anything you'd rather it took a message for.
+
+  5. Do you have a phone number for the agent, or should I provision one? If you
+     have an existing line, tell me whether you want it forwarded or kept separate.
+
+  6. Is there anything the agent must never say or promise? Prices it shouldn't
+     quote, medical or legal advice, discounts, delivery guarantees — I build these
+     in as hard guardrails.
 
 FAQ
   Q: Does it sound robotic?  A: No — natural voices (ElevenLabs / OpenAI), interruption handling, and a script written in your brand tone. You'll hear it on a demo number before go-live.
