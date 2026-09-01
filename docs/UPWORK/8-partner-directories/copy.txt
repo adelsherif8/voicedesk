@@ -1,0 +1,172 @@
+PARTNER DIRECTORY + LINKEDIN KIT — paste-ready
+==============================================
+
+═══════════════════════════════════════════
+1. RETELL AI — SOLUTION PARTNER DIRECTORY
+═══════════════════════════════════════════
+Start here:  https://www.retellai.com/partners-program
+Apply form:  https://retell-partner-portal.lovable.app/join   (the "Submit Application" button)
+See who's listed: https://www.retellai.com/partners
+
+Why: Retell REFERS inbound customers to certified partners, and you get a listing page on
+their site. Tiers are Gold → Diamond → Elite. Free to apply.
+
+The directory filters buyers use (so answer these to match searches):
+  Location: Middle East & Africa  (also select Europe / United States if you serve remote)
+  Languages: English, Arabic
+  Integrations: GoHighLevel, HubSpot, n8n, Make, Twilio, Google Calendar, Zapier,
+                Open Dental, ServiceTitan, Toast, OpenTable  (tick every one you've built)
+  Free consultation: YES
+  Price range: $0–$2,000  (matches your $350–$1,500 builds)
+
+---- COMPANY / BUSINESS NAME ----
+Ahlan — AI Voice Agents
+
+---- ONE-LINE DESCRIPTION ----
+AI voice agents that answer every call 24/7 — qualify, book, take payments, and write
+every call into your CRM.
+
+---- ABOUT / OVERVIEW (paste) ----
+Ahlan builds production AI voice agents on Retell AI and Vapi for businesses that lose
+money to unanswered phones. Every build ships with the phone number, the conversation
+design, the tool-calling integrations, and a live dashboard so the client can see each
+call, outcome and booking.
+
+Seven live demos you can open right now, one per vertical:
+• Self-storage receptionist — quotes from live inventory, reserves units, takes tenant
+  payments by keypad, resets gate codes → voicedesk-h31g.onrender.com/agent/receptionist
+• Appliance-brand support line — serial + warranty lookup, KB troubleshooting, technician
+  dispatch, frustration-triggered warm transfer → /agent/support
+• Plumbing revenue recovery (GoHighLevel + Retell) — missed-call text-back in 8s, AI
+  callback in 52s, unsold-estimate follow-up, reactivation → /agent/recovery
+• Law-firm visual voicemail — AI attendant + transcription/summary/urgency pushed to Cisco
+  desk phones via CiscoIPPhone XML → /agent/voicemail
+• Real-estate listing line — qualifies budget/pre-approval/timeline, books showings and
+  Saturday tour routes → /agent/realty
+• Dental front desk — books new patients with live insurance eligibility, reminder calls,
+  waitlist refills of cancellations → /agent/dental
+• Restaurant phone host — takeout orders to the POS/kitchen printer with ready-texts, 86
+  board, reservations on the floor plan → /agent/restaurant
+
+Background: 2 years building GoHighLevel lead-capture and follow-up pipelines across 30+
+businesses, plus production LLM engineering (LangGraph agents, RAG, Langfuse tracing).
+BSc Artificial Intelligence. Top Rated on Upwork with 100% Job Success.
+
+---- SERVICES (tick/list) ----
+Inbound AI receptionist · Outbound speed-to-lead & follow-up · Appointment setting &
+reminders · Customer support / tier-1 deflection · Payments & identity verification by
+phone · Warm transfer to humans · CRM + calendar + SMS integration · Custom dashboards
+
+---- INDUSTRIES ----
+Home services · Healthcare / dental · Real estate · Restaurants · Self-storage ·
+Professional services / legal · Consumer brands & support
+
+---- WEBSITE ----
+https://adelatya.vercel.app/voice-agent-engineer
+
+---- CONTACT ----
+adelsherif8@gmail.com  ·  linkedin.com/in/adel-atya-551467309
+
+
+═══════════════════════════════════════════
+2. VAPI — PARTNER / EXPERT DIRECTORY
+═══════════════════════════════════════════
+Apply:      https://vapi.ai/partnerships   ("become a partner" form)
+Directory:  https://vapi.ai/partnerships/directory
+Use the exact same copy as above — just swap "on Retell AI and Vapi" → "on Vapi and Retell AI".
+
+
+═══════════════════════════════════════════
+3. LINKEDIN — PROFILE CHANGES + POST PACK
+═══════════════════════════════════════════
+DO NOT lead with a company page. Post from your PERSONAL profile — company pages get a
+fraction of the organic reach, and buyers want to hire a person. Create the company page
+only as a 5-minute shell so your personal profile can say "Founder · Ahlan" with a logo.
+
+PROFILE CHANGES
+  Headline (220 char limit):
+  AI Voice Agent Engineer | I build phone agents that answer every call, qualify, book &
+  take payments — Vapi / Retell + Twilio + GoHighLevel | 7 live demos you can open
+
+  Banner text: "Your phone, answered by AI. 24/7."
+  About: reuse the Upwork overview (the version without URLs is unnecessary here —
+  LinkedIn allows links).
+  Featured section: pin 3 — StoreRight demo, the dental video, adelatya.vercel.app/voice-agent-engineer
+
+POST PACK — one per project, post 2×/week, 15s vertical or the 60s video
+Format every time: pain number → what the agent does → the live link → one question.
+
+  POST 1 (storage)
+  Storage facilities miss about 40% of their calls. That's ~$58,000 a year walking to the
+  next facility on the list.
+  I built an AI receptionist that answers in 1 second: quotes from live unit inventory,
+  reserves the unit, books the tour, takes tenant payments, even resets gate codes for
+  someone locked out at 11pm.
+  Live demo (no signup): voicedesk-h31g.onrender.com/agent/receptionist
+  Storage operators — how many calls do you think you miss on a Saturday?
+
+  POST 2 (dental)
+  1 in 5 dental appointments is a no-show. At $200–375 a chair, that's $2–3K of empty
+  chair every single day.
+  Mia books new patients with insurance verified live on the call, makes the day-before
+  reminder calls, and when someone cancels she offers the slot to the waitlist within
+  minutes — the chair gets refilled instead of sitting empty.
+  Live: voicedesk-h31g.onrender.com/agent/dental
+
+  POST 3 (plumbing / home services)
+  Plumbers miss up to 40% of calls — and 85% of those callers never call back.
+  Text-back in 8 seconds. AI callback in 52 seconds. Job booked. Then it chases the unsold
+  estimates nobody had time to chase.
+  Built on GoHighLevel + Retell: voicedesk-h31g.onrender.com/agent/recovery
+
+  POST 4 (restaurant)
+  Restaurants miss up to 43% of calls — during the dinner rush, when everyone's carrying
+  plates. 6 in 10 of those callers wanted to order or book a table.
+  Gia takes the order, flags the allergy, upsells the dessert, and prints the ticket to
+  the kitchen — and never offers an item that's been 86'd.
+  Live: voicedesk-h31g.onrender.com/agent/restaurant
+
+  POST 5 (real estate)
+  The median agent takes 15 HOURS to answer a listing inquiry. 78% of buyers go with
+  whoever answers first.
+  4 seconds. Qualifies budget, pre-approval and timeline, books the showing with the
+  listing agent, and builds the Saturday tour route.
+  Live: voicedesk-h31g.onrender.com/agent/realty
+
+  POST 6 (appliance support)
+  A human-handled support call costs about $7.16 — after the customer waits 4 minutes on
+  hold. Most of those calls are "where's my warranty" and "my fridge is warm."
+  $1.18 a call, zero hold. And when someone's on their third call about the same repair,
+  it stops trying and warm-transfers them to a human with the full history.
+  Live: voicedesk-h31g.onrender.com/agent/support
+
+  POST 7 (voicemail / legal)
+  80% of callers sent to voicemail hang up without leaving a message. The ones who do wait
+  ~8 hours to be heard.
+  I replaced the beep with an AI attendant that takes a structured message, summarizes it,
+  flags urgency — and pushes it onto the attorney's Cisco desk phone screen with a
+  one-touch call back.
+  Live: voicedesk-h31g.onrender.com/agent/voicemail
+
+
+═══════════════════════════════════════════
+4. GOHIGHLEVEL COMMUNITIES
+═══════════════════════════════════════════
+Official community (free account, real agencies):
+  https://community.gohighlevel.com   → "HighLevel Town Hall Community"
+
+Facebook — search these exact names and request to join (agency owners, not end clients):
+  • "Official HighLevel Community"  (the big one, 11K+)
+  • "GoHighLevel Agency Owners Mastermind"   ← best fit, agency owners hiring for clients
+  • "GoHighLevel User Community"
+  • "GoHighLevel Hacks & Strategies"
+  • "GoHighLevel Marketplace"     ← people actively buying/selling services here
+
+HOW TO PLAY IT (do NOT post an ad on day one):
+  Week 1: answer 5 questions about GHL workflows/webhooks with real help, no link.
+  Week 2: post the Blue Ridge plumbing video framed as a build breakdown —
+    "Wired a Retell voice agent into GHL so missed calls get a text-back in 8s and an AI
+     callback in 52s. Pipeline moves Missed → Texted → Called → Booked automatically.
+     Here's the flow — happy to share how the webhook is set up."
+  Then let DMs come. Agencies want a white-label builder, which is recurring work.
+  Offer them agency pricing (you build, they resell under their brand).

@@ -1,0 +1,32 @@
+{
+ "hook": {
+  "file": "docs/thastock/vid/hook.mp3",
+  "dur": 11.088,
+  "text": "Active traders drown in information and still miss the move. So I built Thastock \u2014 an AI market desk that reads your watchlist before the bell and tells you the moment something changes."
+ },
+ "brief": {
+  "file": "docs/thastock/vid/brief.mp3",
+  "dur": 8.376,
+  "text": "Eight-thirty, every trading day: an AI-written brief on your tickers. Overnight moves, RSI levels, earnings dates, macro \u2014 not generic market news."
+ },
+ "alert": {
+  "file": "docs/thastock/vid/alert.mp3",
+  "dur": 6.336,
+  "text": "Then the alert engine watches price, RSI, volume and moving averages, and fires the second a condition is met."
+ },
+ "research": {
+  "file": "docs/thastock/vid/research.mp3",
+  "dur": 5.664,
+  "text": "Drop a ticker, get a thesis in seconds \u2014 momentum, risk score, analyst consensus, directional bias."
+ },
+ "insider": {
+  "file": "docs/thastock/vid/insider.mp3",
+  "dur": 6.0,
+  "text": "And SEC Form 4 filings parsed in real time, so you see what the C-suite does with their own money."
+ },
+ "cta": {
+  "file": "docs/thastock/vid/cta.mp3",
+  "dur": 8.112,
+  "text": "Eight thousand equities screened, portfolios stress-tested. Free forever, nine dollars a month for pro. Built end to end \u2014 Thastock dot com."
+ }
+}

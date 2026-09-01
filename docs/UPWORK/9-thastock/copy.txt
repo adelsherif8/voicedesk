@@ -1,0 +1,11 @@
+TITLE (66): AI Market Intelligence SaaS: AI briefs, smart alerts, insider flow
+SKILLS: AI Development · Next.js · OpenAI API · SaaS Development · Python
+DESCRIPTION (599):
+Active traders drown in information and still miss the move. Thastock is a live AI market-intelligence platform I designed, built and shipped end to end:
+• 08:30 EST daily AI-written brief on your watchlist — overnight moves, RSI, earnings, macro
+• Alert engine on price · RSI · volume · MA cross, with AND/OR compound conditions
+• Drop a ticker → AI thesis in seconds (momentum, risk, analyst consensus, bias)
+• SEC Form 4 insider filings parsed in real time
+• 8,000+ equity screener, portfolio optimizer and stress testing
+Four live tiers: free forever → $9 / $19 / $44 a month.
+Live: thastock.com
