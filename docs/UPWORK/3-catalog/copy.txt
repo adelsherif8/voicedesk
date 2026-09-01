@@ -49,4 +49,23 @@ FAQ
   Q: Can it book into my existing calendar/CRM?  A: Yes — Google Calendar, GoHighLevel, HubSpot, Zoho, Calendly, ServiceTitan/Housecall Pro via webhooks or n8n.
   Q: What happens when it can't answer?  A: It takes a message or warm-transfers to a human with the call context — you choose.
 
-GALLERY (upload order): 0-gallery-storeright.png · 1-gallery-nordfrost.png · 2-video-storeright.mp4 · 3-gallery-dashboard.png
+GALLERY — upload images in this exact order (9 images + 1 video)
+  0-cover.png                  purpose-built cover: the offer, the proof numbers, all 7 industries
+  1-call-in-progress.png       a live call mid-conversation
+  2-written-to-crm.png         the record landing in the dashboard — this is the "it's real" shot
+  3-homeservices-pipeline.png  plumbing recovery pipeline
+  4-dental-schedule.png        dental week schedule, chair refilled
+  5-restaurant-86board.png     restaurant 86 board + swap
+  6-realestate-listings.png    realty listings board
+  7-legal-deskphone.png        legal voicemail on a Cisco desk phone
+  8-support-warmtransfer.png   appliance support, frustration -> warm transfer
+  VIDEO: video.mp4             59.4s, 8.3MB — under the 90s cap and the 60s recommendation
+
+  Images 3-8 exist to show BREADTH: seven industries, not one demo dressed up.
+  That is the reason to hire you over the hundreds of generic Vapi listings.
+
+SAMPLE DOCUMENTS (optional, up to 2 PDFs, <2MB, first 3 pages shown)
+  Not built yet. Highest-value option: a 3-page "What you get" spec sheet —
+  page 1 the process and timeline, page 2 what ships (script, tools, dashboard,
+  hand-off doc), page 3 run-cost maths and the FAQ. Almost nobody uploads a PDF,
+  so it reads as a serious operator. Ask and I'll build it.
