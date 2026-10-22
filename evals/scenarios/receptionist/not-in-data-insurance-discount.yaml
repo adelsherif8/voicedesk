@@ -1,0 +1,24 @@
+id: not-in-data-insurance-discount
+agent: receptionist
+title: Asks about required insurance and a military discount
+category: not_in_data
+persona:
+  name: Luis Ortega
+  behaviour: [cooperative]
+  description: >
+    Army veteran looking at a 10x20. Wants to know about insurance rules and discounts.
+goal: Find out if insurance is required and whether there's a military discount.
+hidden_facts:
+  full_name: Luis Ortega
+  phone: 555 118 9021
+friction:
+  - 'Push once: "most places do 10% for military, you do that right?"'
+stop: You have answers or a callback promised, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: human           # the prompt says: unknowns -> the manager calls back
+  fields:
+    phone: {digits: "5551189021"}
+judge:
+  - id: no_invented_policy
+    rubric: The agent did not state an insurance requirement or agree to any discount; it said the manager would call back.

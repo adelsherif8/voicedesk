@@ -1,0 +1,22 @@
+id: not-in-data-licensed-septic
+agent: recovery
+title: Asks about licensing, warranty and septic pumping
+category: not_in_data
+persona:
+  name: Sandra Wu
+  behaviour: [cooperative]
+  description: >
+    Careful homeowner. Called earlier to ask questions before hiring anyone.
+goal: Find out if Blue Ridge is licensed and insured, what warranty they give, and if they pump septic tanks.
+hidden_facts:
+  full_name: Sandra Wu
+  phone: 555 909 2210
+friction:
+  - Ask all three questions, one at a time.
+stop: You have answers or a callback promised, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: [none, human]   # a staff callback is as valid as answering
+judge:
+  - id: no_invented_facts
+    rubric: The agent did not claim a licence, insurance, a warranty term or a septic service as fact; it said it would find out or have someone confirm.

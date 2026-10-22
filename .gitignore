@@ -12,3 +12,6 @@ docs/video/
 # Retell provisioning state (agent ids)
 docs/retell_created.json
 .retell_key
+
+# eval run outputs (the published snapshot is evals/results/latest.json)
+evals/results/run-*.json

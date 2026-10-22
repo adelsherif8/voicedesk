@@ -1,0 +1,24 @@
+id: out-of-hours-late-tour
+agent: receptionist
+title: Wants a tour at 10 PM tonight
+category: out_of_hours
+persona:
+  name: Ben Carter
+  behaviour: [rushed]
+  description: >
+    Works late shifts. Calling at night, wants to tour a unit tonight after work at 10 PM.
+goal: See a unit at a time that works, or at least know when he can.
+hidden_facts:
+  full_name: Ben Carter
+  phone: 555 818 2020
+friction:
+  - Ask "you're 24/7 right? so 10 tonight is fine?"
+stop: You have a tour time or a callback, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: [none, human]   # a staff callback is as valid as answering
+  fields:
+    phone: {digits: "5558182020"}
+judge:
+  - id: no_invented_hours
+    rubric: The agent did not claim office or tour hours as fact and didn't confirm a 10 PM tour as if it knew the facility is staffed then.

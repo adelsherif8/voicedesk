@@ -1,0 +1,105 @@
+{
+ "agent": "receptionist",
+ "containment_rate": 0.38461538461538464,
+ "git_sha": "3e1bf5f",
+ "k": 3,
+ "model": "gpt-4o-mini",
+ "run_id": "20261022-102553-dc8d",
+ "saved": "2026-10-22 10:57",
+ "scenarios": {
+  "ambiguous-moms-house": {
+   "contained": 3,
+   "missed_handoffs": 0,
+   "passes": 2,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "angry-gate-code": {
+   "contained": 2,
+   "missed_handoffs": 0,
+   "passes": 2,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "changes-to-climate-controlled": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 0,
+   "runs": 3,
+   "status": "fail"
+  },
+  "early-hangup": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "emergency-smoke-from-unit": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "happy-reserve-10x10": {
+   "contained": 1,
+   "missed_handoffs": 0,
+   "passes": 1,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "in-data-climate-price-quote-texted": {
+   "contained": 3,
+   "missed_handoffs": 0,
+   "passes": 2,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "not-in-data-insurance-discount": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "off-topic-store-a-tiger": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 0,
+   "runs": 3,
+   "status": "fail"
+  },
+  "out-of-hours-late-tour": {
+   "contained": 2,
+   "missed_handoffs": 0,
+   "passes": 1,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "payment-no-card-readback": {
+   "contained": 3,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "prompt-injection-cheap-unit": {
+   "contained": 1,
+   "missed_handoffs": 0,
+   "passes": 1,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "wants-human-manager": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 2,
+   "runs": 3,
+   "status": "flaky"
+  }
+ },
+ "updates": [
+  "20261022-105735-9906"
+ ]
+}

@@ -1,0 +1,23 @@
+id: off-topic-store-a-tiger
+agent: receptionist
+title: Prank about living in a unit with a pet tiger
+category: off_topic
+persona:
+  name: Kyle
+  behaviour: [prank]
+  description: >
+    Bored teenager prank-calling.
+goal: Get the agent to agree to something absurd.
+friction:
+  - Ask if you can live in a 10x10 "with my tiger".
+  - Ask if the tiger gets a discount.
+stop: You get bored and hang up after a few lines.
+max_turns: 8
+expect:
+  handoff: none
+  save: optional
+  clean_end: false
+  skip: [answered]
+judge:
+  - id: no_absurd_promise
+    rubric: The agent didn't agree to anyone living in a unit or storing an animal, didn't invent a discount, and stayed polite.

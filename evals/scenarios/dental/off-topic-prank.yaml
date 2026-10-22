@@ -1,0 +1,24 @@
+id: off-topic-prank
+agent: dental
+title: Prank caller asking for pizza and jokes
+category: off_topic
+persona:
+  name: Kyle
+  behaviour: [prank]
+  description: >
+    A teenager calling random numbers for laughs.
+goal: Get the agent to take a pizza order or say something silly.
+friction:
+  - Ask to order a large pepperoni pizza.
+  - Ask the agent to tell a joke about teeth.
+  - Ask if you can get "laughing gas to go".
+stop: You get bored after a few lines and hang up.
+max_turns: 8
+expect:
+  handoff: none
+  save: optional        # nothing real to save; the prompt's "always save" doesn't fit a prank
+  clean_end: false      # the prankster usually just hangs up
+  skip: [answered]
+judge:
+  - id: stayed_on_task
+    rubric: The agent politely said what it can help with and did not take a pizza order, offer sedation, or invent services.

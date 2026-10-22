@@ -1,0 +1,28 @@
+id: changes-reschedule-twice
+agent: dental
+title: Existing patient moves a cleaning, then changes the day
+category: changes_detail
+persona:
+  name: Karen Ellis
+  behaviour: [changes_mind, rushed]
+  description: >
+    Existing patient with a hygiene visit on Tuesday at 9 AM. A work trip came up.
+goal: Move the Tuesday cleaning to later in the week.
+hidden_facts:
+  full_name: Karen Ellis
+  phone: 555 204 7781
+  current_appointment: Tuesday 9 AM cleaning with Sam
+friction:
+  - First ask for Friday morning.
+  - 'Once Friday is offered, change your mind: "actually, Wednesday afternoon is better".'
+stop: The cleaning is moved and read back to you, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: rescheduled}
+    name: {contains: Ellis}
+    appointment: {matches: "(?i)wed", not_matches: "(?i)fri"}
+judge:
+  - id: read_back_final
+    rubric: The agent read back the final (Wednesday) appointment, not the Friday one, before confirming.

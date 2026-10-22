@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ r.title }} · Attempt {{ r.attempt }} · Agent QA Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#eef1f6;--surface:#fff;--ink:#171a21;--ink2:#454b5a;--muted:#697086;--line:#e4e7ee;--soft:#f5f7fa;--acc:#4f46e5;
+--good:#0ca30c;--good-bg:#e9f6e9;--warn:#fab219;--warn-ink:#8a5a00;--warn-bg:#fff5de;--crit:#d03b3b;--crit-bg:#fcecec;
+--mono:"JetBrains Mono",ui-monospace,monospace;--agent:{{ agent.color }}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+a{color:inherit}
+.app{max-width:1240px;margin:0 auto;padding:16px}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}
+.crumbs a{text-decoration:none;color:var(--ink2);font-weight:600}
+.crumbs a:hover{color:var(--acc)}
+.head{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.head .ic{width:42px;height:42px;border-radius:11px;background:var(--agent);color:#fff;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+.head h1{font-size:1.12rem;font-weight:700;letter-spacing:-.01em}
+.head .sub{font-size:.76rem;color:var(--muted);margin-top:2px}
+.head .sub code{font-family:var(--mono);font-size:.72rem}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;color:var(--ink2);background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:3px 9px;white-space:nowrap}
+.chip i{color:var(--muted);font-size:.7rem}
+.chip b{font-weight:600;color:var(--ink)}
+.chip.bad{background:var(--crit-bg);border-color:#f3c9c9;color:#8f1f1f}.chip.bad i{color:var(--crit)}
+.verdict{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.84rem;font-weight:700;border-radius:9px;padding:6px 12px}
+.pill.pass{background:var(--good-bg);color:#14531a}.pill.pass i{color:var(--good)}
+.pill.fail{background:var(--crit-bg);color:#8f1f1f}.pill.fail i{color:var(--crit)}
+.sibs{display:flex;gap:4px;align-items:center;font-size:.72rem;color:var(--muted)}
+.sib{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:#fff;font-size:.68rem;text-decoration:none}
+.sib.p{background:var(--good)}.sib.f{background:var(--crit)}
+.sib.on{outline:2px solid var(--ink);outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:14px;align-items:start}
+.pane{background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.pane .hd{padding:11px 15px;border-bottom:1px solid var(--line);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.pane .hd .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500}
+.convo{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.turn{display:flex;gap:10px;max-width:88%;scroll-margin-top:90px}
+.turn.caller{align-self:flex-end;flex-direction:row-reverse}
+.av{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:.72rem;flex-shrink:0;margin-top:2px}
+.turn.agent .av{background:var(--agent);color:#fff}
+.turn.caller .av{background:#e6e9f0;color:var(--ink2)}
+.bub{border-radius:12px;padding:9px 12px;font-size:.86rem;position:relative}
+.turn.agent .bub{background:var(--soft);border:1px solid var(--line);border-top-left-radius:4px}
+.turn.caller .bub{background:#eef0ff;border:1px solid #dfe2fb;border-top-right-radius:4px}
+.who{font-size:.68rem;font-weight:600;color:var(--muted);margin-bottom:2px;display:flex;gap:8px;align-items:center}
+.who .ix{font-family:var(--mono);font-weight:400}
+.txt{white-space:pre-wrap;color:var(--ink)}
+.txt.silent{color:var(--muted);font-style:italic}
+.turn.flag .bub{box-shadow:0 0 0 2px var(--crit);border-color:transparent}
+.turn.focus .bub{box-shadow:0 0 0 2px var(--crit),0 0 0 6px rgba(208,59,59,.15)}
+.flags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.flagtag{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;color:#8f1f1f;background:var(--crit-bg);border:1px solid #f3c9c9;border-radius:6px;padding:1px 7px;text-decoration:none}
+.flagtag.adv{color:var(--warn-ink);background:var(--warn-bg);border-color:#f3dfae}
+.tool{margin-top:8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);overflow:hidden}
+.tool .th{display:flex;align-items:center;gap:7px;padding:6px 10px;font-size:.72rem;font-weight:600;border-bottom:1px solid var(--line);background:#fbfcfe}
+.tool .th code{font-family:var(--mono);font-size:.72rem}
+.tool .th .res{margin-left:auto;font-weight:400;color:var(--muted);font-size:.7rem}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;padding:7px 10px;font-size:.74rem}
+.kv dt{font-family:var(--mono);color:var(--muted);font-size:.7rem}
+.kv dd{color:var(--ink);word-break:break-word}
+.end{align-self:center;font-size:.74rem;color:var(--muted);display:flex;align-items:center;gap:7px;background:var(--soft);border:1px dashed var(--line);border-radius:999px;padding:4px 12px}
+.side{display:flex;flex-direction:column;gap:14px;position:sticky;top:12px}
+.checks{list-style:none}
+.ck{display:flex;gap:9px;padding:9px 14px;border-bottom:1px solid var(--line);font-size:.78rem}
+.ck:last-child{border-bottom:none}
+.ck .si{width:18px;flex-shrink:0;text-align:center;margin-top:1px}
+.ck.ok .si{color:var(--good)}.ck.bad .si{color:var(--crit)}.ck.adv .si{color:#d99400}.ck.cls .si{color:var(--muted)}
+.ck .nm{font-family:var(--mono);font-size:.72rem;font-weight:600}
+.ck .kd{font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:6px}
+.ck .dt{color:var(--ink2);margin-top:2px}
+.ck .jump{font-size:.7rem;color:var(--acc);text-decoration:none;font-weight:600;white-space:nowrap;margin-left:auto}
+.ck.focus{background:#fff7f7;box-shadow:inset 3px 0 0 var(--crit)}
+.sd{padding:11px 14px;font-size:.78rem;display:flex;flex-direction:column;gap:8px}
+.sd .k{font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.sd ul{margin-left:16px;color:var(--ink2)}
+.sd .v{color:var(--ink2)}
+.exp code{font-family:var(--mono);font-size:.7rem;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.side{position:static}.turn{max-width:100%}.verdict{margin-left:0;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="crumbs">
+    <a href="/evals?run={{ run.id }}#{{ r.agent }}"><i class="fa-solid fa-arrow-left"></i> Agent QA console</a>
+    <span>/</span><span>{{ agent.name }}</span><span>/</span><span>{{ r.scenario }}</span>
+  </div>
+
+  {% set blocking_fail = r.checks|selectattr('passed','equalto',false)|rejectattr('advisory')|list %}
+  <div class="head">
+    <div class="ic"><i class="fa-solid {{ agent.icon }}"></i></div>
+    <div style="min-width:0;flex:1">
+      <h1>{{ r.title }}</h1>
+      <div class="sub">{{ agent.name }} · <code>{{ r.scenario }}</code> · {{ (r.category or '')|replace('_',' ') }} · attempt {{ r.attempt }} of run <code>{{ run.id }}</code> on {{ run.agent_model }}</div>
+      <div class="meta">
+        <span class="chip"><i class="fa-solid fa-comments"></i><b>{{ r.turns }}</b> caller turns</span>
+        <span class="chip"><i class="fa-solid fa-phone-slash"></i>ended: <b>{{ r.end_reason|replace('_',' ') }}</b></span>
+        <span class="chip {{ 'bad' if r.handoff not in (r.handoff_expected or '').split('|') }}"><i class="fa-solid fa-right-left"></i>handoff expected <b>{{ (r.handoff_expected or 'none')|replace('|',' or ') }}</b>, got <b>{{ r.handoff }}</b></span>
+        {% if r.missed_handoff %}<span class="chip bad"><i class="fa-solid fa-triangle-exclamation"></i><b>missed handoff (critical)</b></span>{% endif %}
+        <span class="chip"><i class="fa-solid fa-circle-nodes"></i>contained: <b>{{ 'yes' if r.contained else 'no' }}</b></span>
+        {% if r.hallucinated %}<span class="chip bad"><i class="fa-solid fa-ghost"></i><b>hallucinated</b></span>{% endif %}
+        <span class="chip"><i class="fa-solid fa-coins"></i><b>${{ '%.4f'|format(r.cost_usd or 0) }}</b></span>
+      </div>
+    </div>
+    <div class="verdict">
+      <span class="pill {{ 'pass' if r.passed else 'fail' }}"><i class="fa-solid {{ 'fa-circle-check' if r.passed else 'fa-circle-xmark' }}"></i>{{ 'Passed' if r.passed else 'Failed ' ~ blocking_fail|length ~ ' check' ~ ('s' if blocking_fail|length != 1 else '') }}</span>
+      <div class="sibs">Attempts
+        {% for s in siblings %}<a class="sib {{ 'p' if s.passed else 'f' }} {{ 'on' if s.id == r.id }}" href="/evals/result/{{ s.id }}" aria-label="Attempt {{ s.attempt }} {{ 'passed' if s.passed else 'failed' }}"><i class="fa-solid {{ 'fa-check' if s.passed else 'fa-xmark' }}"></i></a>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="pane">
+      <div class="hd"><i class="fa-solid fa-wave-square"></i> Transcript<span class="r">{{ r.transcript|length }} turns · failing turns outlined</span></div>
+      <div class="convo">
+        {% for t in r.transcript %}
+        {% set ti = loop.index0 %}
+        {% set fl = marks.get(ti, []) %}
+        {% set is_focus = focus and focus.turn == ti %}
+        <div class="turn {{ t.role }} {{ 'flag' if fl|rejectattr('advisory')|list }} {{ 'focus' if is_focus }}" id="t{{ ti }}">
+          <div class="av"><i class="fa-solid {{ agent.icon if t.role == 'agent' else 'fa-user' }}"></i></div>
+          <div class="bub">
+            {% if fl %}<div class="flags">{% for c in fl %}<a class="flagtag {{ 'adv' if c.advisory }}" href="?check={{ c.id|urlencode }}#t{{ ti }}"><i class="fa-solid {{ 'fa-circle-info' if c.advisory else 'fa-circle-xmark' }}"></i>{{ c.id }}</a>{% endfor %}</div>{% endif %}
+            <div class="who">{{ 'Agent' if t.role == 'agent' else 'Simulated caller' }}<span class="ix">T{{ ti }}</span></div>
+            {% if t.text %}<div class="txt">{{ t.text }}</div>{% elif not t.tool_calls %}<div class="txt silent">(silence)</div>{% endif %}
+            {% for c in t.tool_calls or [] %}
+            <div class="tool">
+              <div class="th"><i class="fa-solid {{ 'fa-phone-slash' if c.name == 'end_call' else 'fa-database' }}"></i><code>{{ c.name }}</code><span class="res">{{ c.result }}</span></div>
+              {% if c.args %}<dl class="kv">{% for k, v in c.args.items() %}<dt>{{ k }}</dt><dd>{{ v }}</dd>{% endfor %}</dl>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+        <div class="end"><i class="fa-solid fa-flag-checkered"></i>{{ {'agent_end':'Agent ended the call','caller_goodbye':'Caller said goodbye and hung up','caller_hangup':'Caller hung up','max_turns':'Turn limit reached','error':'Call errored'}.get(r.end_reason, r.end_reason) }}{% if r.error %} · {{ r.error }}{% endif %}</div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="pane">
+        <div class="hd"><i class="fa-solid fa-list-check"></i> Checks<span class="r">code first, judge for the rest</span></div>
+        <ul class="checks">
+          {% for c in r.checks|sort(attribute='passed') %}
+          {% set st = 'cls' if c.kind == 'classify' else 'ok' if c.passed else 'adv' if c.advisory else 'bad' %}
+          <li class="ck {{ st }} {{ 'focus' if focus and focus.id == c.id }}" id="ck-{{ c.id }}">
+            <span class="si"><i class="fa-solid {{ {'ok':'fa-circle-check','bad':'fa-circle-xmark','adv':'fa-circle-info','cls':'fa-tag'}[st] }}"></i></span>
+            <div style="min-width:0;flex:1">
+              <div><span class="nm">{{ c.id }}</span><span class="kd">{{ 'yes/no' if c.kind == 'classify' else c.kind }}</span>{% if c.advisory and c.kind != 'classify' %}<span class="kd">advisory</span>{% endif %}</div>
+              <div class="dt">{% if c.kind == 'classify' %}{{ 'Happened' if c.passed else 'Did not happen' }}: {% endif %}{{ c.detail }}</div>
+            </div>
+            {% if c.turn is not none and not c.passed %}<a class="jump" href="?check={{ c.id|urlencode }}#t{{ c.turn }}">T{{ c.turn }} <i class="fa-solid fa-arrow-right"></i></a>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% set d = r.scenario_def %}
+      {% if d %}
+      <div class="pane">
+        <div class="hd"><i class="fa-solid fa-user-gear"></i> Scenario</div>
+        <div class="sd">
+          <div><div class="k">Simulated caller</div><div class="v"><b>{{ d.persona.name }}</b> · {{ (d.persona.behaviour or [])|join(', ')|replace('_',' ') }}</div><div class="v">{{ d.persona.description }}</div></div>
+          <div><div class="k">Goal</div><div class="v">{{ d.goal }}</div></div>
+          {% if d.friction %}<div><div class="k">Friction</div><ul>{% for f in d.friction %}<li>{{ f }}</li>{% endfor %}</ul></div>{% endif %}
+          {% if d.hidden_facts %}<div><div class="k">Revealed only when asked</div><ul>{% for k, v in d.hidden_facts.items() %}<li>{{ k|replace('_',' ') }}: {{ v }}</li>{% endfor %}</ul></div>{% endif %}
+          <div class="exp"><div class="k">Expected</div>
+            <div class="v">handoff <code>{{ d.expect.handoff if d.expect.handoff is string else d.expect.handoff|join(' or ') }}</code>{% if d.expect.save %} · save <code>{{ d.expect.save }}</code>{% endif %}</div>
+            {% if d.expect.fields %}<ul>{% for k, rule in d.expect.fields.items() %}<li><code>{{ k }}</code> {% for rk, rv in rule.items() %}{{ rk|replace('_',' ') }} {{ rv }}{{ ', ' if not loop.last }}{% endfor %}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% set effects = (r.events or [])|selectattr('effect')|list %}
+      {% if effects %}
+      <div class="pane">
+        <div class="hd"><i class="fa-solid fa-calendar-check"></i> What the booking consumed</div>
+        <div class="sd">
+          {% for e in effects %}<div class="v"><i class="fa-solid {{ 'fa-circle-check' if e.effect.ok else 'fa-circle-xmark' }}" style="color:{{ 'var(--good)' if e.effect.ok else 'var(--crit)' }}"></i>
+            {{ e.effect.kind }} "{{ e.effect.requested }}" →
+            {% if e.effect.ok %}took {{ e.effect.provider or e.effect.size or '' }} {{ e.effect.day or '' }} {{ e.effect.time or '' }}{% else %}{{ e.effect.reason }}{% endif %}</div>{% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+// bring the failing turn into view (the URL hash wins when present)
+const target = location.hash ? document.querySelector(location.hash) : document.querySelector('.turn.focus');
+if (target) setTimeout(() => target.scrollIntoView({block: 'center'}), 60);
+</script>
+</body>
+</html>

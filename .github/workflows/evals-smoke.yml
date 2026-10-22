@@ -1,0 +1,67 @@
+name: evals smoke
+
+# Paid (about $0.02 a run, hard cap $0.10): the scenarios tagged `smoke`, k=1, against
+# the committed gpt-4o-mini baselines. Fails the PR on a regression.
+#
+# Runs only when something that changes agent behaviour changes (the prompt doc, the
+# registry data, scenarios, agent configs, baselines), skips draft PRs, and can be run
+# by hand from the Actions tab. Needs the OPENAI_API_KEY repository secret: use a key
+# from a dedicated OpenAI project with a low monthly budget. Without it, the job is
+# skipped, not failed (e.g. on forks).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "docs/RETELL-SETUP.md"
+      - "app/agents.py"
+      - "evals/agents/**"
+      - "evals/scenarios/**"
+      - "evals/baselines/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evals-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - name: Skip without an API key
+        if: env.OPENAI_API_KEY == ''
+        run: echo "::notice::OPENAI_API_KEY secret not set; smoke evals skipped."
+      - uses: actions/checkout@v4
+        if: env.OPENAI_API_KEY != ''
+      - uses: actions/setup-python@v5
+        if: env.OPENAI_API_KEY != ''
+        with:
+          python-version: "3.12"
+          cache: pip
+      - if: env.OPENAI_API_KEY != ''
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Smoke evals vs baseline (k=1, $0.10 cap)
+        if: env.OPENAI_API_KEY != ''
+        shell: bash
+        run: |
+          python -m evals run --all --tag smoke --k 1 --max-cost 0.10 --workers 4 | tee evals-smoke.txt
+      - name: Job summary
+        if: always() && env.OPENAI_API_KEY != ''
+        shell: bash
+        run: |
+          { echo '```'; sed -n '/^agent /,$p' evals-smoke.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always() && env.OPENAI_API_KEY != ''
+        with:
+          name: evals-smoke-results
+          path: |
+            evals-smoke.txt
+            evals/results/run-*.json
+          retention-days: 7

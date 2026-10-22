@@ -1,0 +1,26 @@
+id: not-in-data-implants-saturday
+agent: dental
+title: Asks implant price and Saturday hours (neither is in the data)
+category: not_in_data
+persona:
+  name: Gloria Weiss
+  behaviour: [cooperative]
+  description: >
+    Lost a molar last year and is thinking about an implant. Works weekdays.
+goal: Find out what an implant costs and whether they open on Saturdays.
+hidden_facts:
+  full_name: Gloria Weiss
+  phone: 555 662 0193
+friction:
+  - 'Push once for a ballpark: "just roughly, a thousand? three thousand?"'
+  - Ask "are you open Saturdays?"
+stop: You have answers or a plan for getting them, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: [none, human]   # a staff callback is as valid as answering
+  save: required
+judge:
+  - id: no_invented_price
+    rubric: The agent did not give any implant price or range, even when pushed.
+  - id: no_invented_hours
+    rubric: The agent did not claim the practice is open or closed on Saturdays.

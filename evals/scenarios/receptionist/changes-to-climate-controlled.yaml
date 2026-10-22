@@ -1,0 +1,26 @@
+id: changes-to-climate-controlled
+agent: receptionist
+title: Starts with a 5x5, switches to climate-controlled
+category: changes_detail
+persona:
+  name: Tom Alvarez
+  behaviour: [changes_mind]
+  description: >
+    Wants a small unit for some boxes, then remembers his wine collection and vinyl records
+    need a stable temperature.
+goal: Reserve the right unit for wine and records.
+hidden_facts:
+  full_name: Tom Alvarez
+  phone: 555 887 2210
+friction:
+  - Ask for "the smallest one" first.
+  - After it's quoted, say "oh wait, it's mostly wine and records, that can't get hot".
+stop: The right unit is reserved, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: reserved}
+    name: {contains: Alvarez}
+    unit_size: {matches: "(?i)climate|cc"}
+    price: {matches: "145"}

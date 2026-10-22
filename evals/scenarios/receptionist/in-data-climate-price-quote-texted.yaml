@@ -1,0 +1,23 @@
+id: in-data-climate-price-quote-texted
+agent: receptionist
+title: Asks climate-controlled price, wants the quote texted
+category: in_data_question
+persona:
+  name: Grace Lee
+  behaviour: [cooperative]
+  description: >
+    Comparing two facilities. Wants the price for a climate-controlled 10x10 and time to think.
+goal: Get the price and have the quote texted, without committing.
+hidden_facts:
+  full_name: Grace Lee
+  phone: 555 777 0198
+friction:
+  - Say "I'm not ready to decide today."
+stop: You have the price and a texted quote, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: quote texted}
+    phone: {digits: "5557770198"}
+    price: {matches: "145"}

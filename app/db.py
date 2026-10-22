@@ -226,3 +226,106 @@ def _seed():
                 """INSERT INTO records (agent,name,phone,email,intent,outcome,appointment,summary,transcript,meta,created)
                    VALUES (?,?,?,?,?,?,?,?,'',?,?)""",
                 (agent, name, phone, email, intent, outcome, appt, summary, json.dumps(meta), created))
+
+
+# ---- eval runs (python -m evals ... --publish) ----
+# One row per suite run, one row per simulated call. Rates and pass^k come precomputed
+# in eval_runs.summary (evals/metrics.py is the single definition); the page reads them.
+
+_RESULT_COLS = ("run_id", "agent", "scenario", "title", "category", "attempt", "passed", "contained",
+                "transferred", "handoff", "handoff_expected", "missed_handoff", "unnecessary_handoff",
+                "task_success", "hallucinated", "turns", "end_reason", "error", "checks", "transcript",
+                "events", "scenario_def", "cost_usd")
+_JSON_COLS = {"checks", "transcript", "events", "scenario_def"}
+
+
+def init_evals():
+    with _conn() as c:
+        c.execute("""CREATE TABLE IF NOT EXISTS eval_runs (
+            id TEXT PRIMARY KEY, created REAL, git_sha TEXT, backend TEXT, agent_model TEXT,
+            k INTEGER, cost_usd REAL, planned_calls INTEGER, aborted TEXT, selection TEXT,
+            patches TEXT, summary TEXT, comparison TEXT, has_results INTEGER)""")
+        c.execute("""CREATE TABLE IF NOT EXISTS eval_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, run_id TEXT REFERENCES eval_runs(id) ON DELETE CASCADE,
+            agent TEXT, scenario TEXT, title TEXT, category TEXT, attempt INTEGER, passed INTEGER,
+            contained INTEGER, transferred INTEGER, handoff TEXT, handoff_expected TEXT,
+            missed_handoff INTEGER, unnecessary_handoff INTEGER, task_success INTEGER,
+            hallucinated INTEGER, turns INTEGER, end_reason TEXT, error TEXT, checks TEXT,
+            transcript TEXT, events TEXT, scenario_def TEXT, cost_usd REAL)""")
+        c.execute("CREATE INDEX IF NOT EXISTS eval_results_run ON eval_results(run_id, agent, scenario)")
+
+
+def save_eval_run(run: dict) -> int:
+    """Insert or replace a run (idempotent on run id). Returns the number of results stored.
+    A run without `results` (history snapshot) is stored as summary only."""
+    results = run.get("results") or []
+    with _conn() as c:
+        c.execute("DELETE FROM eval_results WHERE run_id=?", (run["id"],))
+        c.execute("DELETE FROM eval_runs WHERE id=?", (run["id"],))
+        c.execute("""INSERT INTO eval_runs (id,created,git_sha,backend,agent_model,k,cost_usd,planned_calls,
+                     aborted,selection,patches,summary,comparison,has_results) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                  (run["id"], run.get("created", time.time()), run.get("git_sha", ""), run.get("backend", ""),
+                   run.get("agent_model", ""), run.get("k", 0), run.get("cost_usd", 0), run.get("planned_calls", 0),
+                   run.get("aborted"), json.dumps(run.get("selection") or {}), json.dumps(run.get("patches") or []),
+                   json.dumps(run.get("summary") or {}), json.dumps(run.get("comparison") or {}), int(bool(results))))
+        for r in results:
+            vals = [_result_value(run["id"], r, col) for col in _RESULT_COLS]
+            c.execute(f"INSERT INTO eval_results ({','.join(_RESULT_COLS)}) VALUES ({','.join('?' * len(_RESULT_COLS))})", vals)
+    return len(results)
+
+
+def _result_value(run_id: str, r: dict, col: str):
+    if col == "run_id":
+        return run_id
+    if col in _JSON_COLS:
+        return json.dumps(r.get(col))
+    if col == "task_success":          # tri-state: None means "no fields expected"
+        return None if r.get(col) is None else int(r[col])
+    return r.get(col)
+
+
+def _run_row(r) -> dict:
+    d = dict(r)
+    for k in ("selection", "patches", "summary", "comparison"):
+        d[k] = json.loads(d.get(k) or "null")
+    return d
+
+
+def eval_runs(limit: int = 50) -> list[dict]:
+    with _conn() as c:
+        return [_run_row(r) for r in c.execute("SELECT * FROM eval_runs ORDER BY created DESC LIMIT ?", (limit,))]
+
+
+def eval_run(run_id: str) -> dict | None:
+    with _conn() as c:
+        r = c.execute("SELECT * FROM eval_runs WHERE id=?", (run_id,)).fetchone()
+    return _run_row(r) if r else None
+
+
+def eval_results(run_id: str, with_transcripts: bool = False) -> list[dict]:
+    cols = "*" if with_transcripts else ", ".join(["id"] + [c for c in _RESULT_COLS if c not in ("transcript", "events", "scenario_def")])
+    with _conn() as c:
+        rows = c.execute(f"SELECT {cols} FROM eval_results WHERE run_id=? ORDER BY agent, scenario, attempt", (run_id,)).fetchall()
+    out = []
+    for r in rows:
+        d = dict(r)
+        for k in _JSON_COLS & d.keys():
+            d[k] = json.loads(d[k] or "null")
+        out.append(d)
+    return out
+
+
+def eval_result(rid: int) -> dict | None:
+    with _conn() as c:
+        r = c.execute("SELECT * FROM eval_results WHERE id=?", (rid,)).fetchone()
+    if not r:
+        return None
+    d = dict(r)
+    for k in _JSON_COLS:
+        d[k] = json.loads(d[k] or "null")
+    return d
+
+
+def eval_run_count() -> int:
+    with _conn() as c:
+        return c.execute("SELECT COUNT(*) FROM eval_runs").fetchone()[0]

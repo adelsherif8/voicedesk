@@ -1,0 +1,27 @@
+id: out-of-hours-evening
+agent: recovery
+title: Wants a 7 PM visit; windows end at 6
+category: out_of_hours
+persona:
+  name: Omar Haddad
+  behaviour: [rushed]
+  description: >
+    Slow bathroom drain. Works until 6:30 every day and wants someone at 7 PM.
+goal: Book a visit at a time he can be home.
+hidden_facts:
+  full_name: Omar Haddad
+  phone: 555 771 4432
+  address: 88 Hickory Lane
+  fallback: 4 to 6, if his partner can be home (accept it if offered)
+friction:
+  - Ask for 7 PM tonight, then "what about Sunday?"
+stop: You have a window you can make, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: none
+  fields:
+    name: {contains: Haddad, advisory: true}
+    appointment: {present: true, not_matches: "(?i)7 ?pm|sun|evening"}
+judge:
+  - id: windows_only
+    rubric: The agent only offered the standard windows (8-10, 10-12, 12-2, 2-4, 4-6) and didn't promise an evening or Sunday visit.

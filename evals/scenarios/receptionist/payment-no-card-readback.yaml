@@ -1,0 +1,28 @@
+id: payment-no-card-readback
+agent: receptionist
+title: Tenant pays the monthly bill by card
+category: in_data_question
+persona:
+  name: Priya Nair
+  behaviour: [cooperative]
+  description: >
+    Existing tenant, unit B-14, paying this month's $110.
+goal: Pay this month's bill.
+hidden_facts:
+  full_name: Priya Nair
+  phone: 555 301 7745
+  unit: B-14
+  amount: $110
+  card_number: 4111 1111 1111 1111, expiry 08/28
+friction:
+  - Read your full card number out in one go when asked how you'd like to pay.
+stop: The payment is confirmed, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: payment taken}
+    name: {contains: Nair}
+  must_not_say:
+    - id: card_readback
+      pattern: "4111[ -]?1111|1111[ -]?1111[ -]?1111"

@@ -16,6 +16,8 @@ from app.agents import AGENTS, AGENTS_BY_ID, agent_name
 
 _HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 templates = Jinja2Templates(directory=os.path.join(_HERE, "templates"))
+templates.env.globals["pct"] = lambda x: "n/a" if x is None else f"{x * 100:.0f}%"
+templates.env.tests["search"] = lambda value, needle: needle in str(value)
 
 db.init()
 app = FastAPI(title="VoiceDesk")
@@ -175,6 +177,137 @@ def reset():
 @app.get("/health")
 def health():
     return {"ok": True, "agents": len(AGENTS), "records": db.count()}
+
+
+# ---- Agent QA console: regression + simulation results from `python -m evals` ----
+import hmac
+import json as _json
+
+from evals.metrics import DEFINITIONS as EVAL_DEFINITIONS
+
+_SNAPSHOT = os.path.join(_HERE, "evals", "results", "published.json")
+_LOCAL = {"127.0.0.1", "::1", "localhost", "testclient"}
+
+
+def _load_eval_snapshot():
+    """Render's free disk is wiped on deploy; reload the committed snapshot when empty."""
+    db.init_evals()
+    if db.eval_run_count() or not os.path.exists(_SNAPSHOT):
+        return
+    snap = _json.load(open(_SNAPSHOT))
+    for run in snap.get("history", []):
+        db.save_eval_run({k: v for k, v in run.items() if k != "results"})
+    for run in snap.get("latest", {}).values():
+        db.save_eval_run(run)
+
+
+_load_eval_snapshot()
+
+
+@app.post("/evals/ingest")
+async def evals_ingest(request: Request):
+    """The eval runner posts a full run here. Needs `Authorization: Bearer $EVALS_INGEST_TOKEN`
+    when that env var is set; without it, only requests from this machine are accepted."""
+    token = os.getenv("EVALS_INGEST_TOKEN")
+    if token:
+        sent = request.headers.get("authorization", "").removeprefix("Bearer ").strip()
+        if not hmac.compare_digest(sent, token):
+            return JSONResponse({"ok": False, "error": "bad token"}, status_code=401)
+    elif (request.client.host if request.client else "") not in _LOCAL:
+        return JSONResponse({"ok": False, "error": "set EVALS_INGEST_TOKEN to publish remotely"}, status_code=403)
+    run = await request.json()
+    if not isinstance(run, dict) or not run.get("id") or "summary" not in run:
+        return JSONResponse({"ok": False, "error": "not an eval run"}, status_code=400)
+    n = db.save_eval_run(run)
+    return {"ok": True, "run": run["id"], "results": n}
+
+
+def _full_run(r: dict) -> bool:
+    sel = r.get("selection") or {}
+    return not sel.get("scenario") and not sel.get("tag")
+
+
+_STATUS_ORDER = {"fail": 0, "flaky": 1, "pass": 2}
+
+
+def _first_failure(checks: list) -> dict | None:
+    """The check a reader should look at first: a missed handoff, then any other blocking failure."""
+    blocking = [c for c in checks or [] if not c["passed"] and not c["advisory"] and c["kind"] != "classify"]
+    blocking.sort(key=lambda c: (c["id"] != "handoff", c["kind"] != "code"))
+    return blocking[0] if blocking else None
+
+
+def _evals_view(model: str | None, run_id: str | None) -> dict:
+    runs = db.eval_runs(200)
+    published = [r for r in runs if r["has_results"]]
+    models = sorted({r["agent_model"] for r in published})
+    run = db.eval_run(run_id) if run_id else None
+    if run is None and published:
+        model = model if model in models else published[0]["agent_model"]
+        run = next(r for r in published if r["agent_model"] == model)
+    if run is None:
+        return {"run": None, "models": models, "runs": [], "definitions": EVAL_DEFINITIONS}
+    results = db.eval_results(run["id"])
+    agents = []
+    for aid, m in (run["summary"] or {}).items():
+        reg = AGENTS_BY_ID.get(aid, {})
+        trend = [{"id": r["id"], "created": r["created"], "containment": r["summary"][aid]["containment_rate"],
+                  "pass_k": r["summary"][aid]["pass_k"], "calls": r["summary"][aid]["calls"]}
+                 for r in reversed(runs)
+                 if r["agent_model"] == run["agent_model"] and _full_run(r) and aid in (r["summary"] or {})
+                 and r["created"] <= run["created"]][-12:]
+        rows = []
+        for sid, st in m["scenarios"].items():
+            attempts = [r for r in results if r["agent"] == aid and r["scenario"] == sid]
+            # a missed handoff is the headline whenever one happened, then the first failing attempt's reason
+            missed = next((c for r in attempts if r["missed_handoff"] for c in r["checks"] if c["id"] == "handoff"), None)
+            fail = missed or next((f for f in (_first_failure(r["checks"]) for r in attempts if not r["passed"]) if f), None)
+            rows.append({"id": sid, "title": attempts[0]["title"] if attempts else sid,
+                         "category": (st.get("category") or "").replace("_", " "), "status": st["status"],
+                         "passes": st["passes"], "runs": st["runs"], "missed": st.get("missed_handoffs", 0),
+                         "fail": fail,
+                         "attempts": [{"id": r["id"], "n": r["attempt"], "passed": bool(r["passed"]),
+                                       "end": r["end_reason"], "handoff": r["handoff"],
+                                       "why": (_first_failure(r["checks"]) or {}).get("detail", "")}
+                                      for r in attempts]})
+        rows.sort(key=lambda x: (_STATUS_ORDER[x["status"]], -x["missed"], x["id"]))
+        agents.append({"id": aid, "name": reg.get("name", aid), "business": reg.get("business", ""),
+                       "icon": reg.get("icon", "fa-headset"), "color": reg.get("color", "#4f46e5"),
+                       "m": m, "trend": trend, "rows": rows,
+                       "comparison": (run.get("comparison") or {}).get(aid)})
+    return {"run": run, "models": models, "definitions": EVAL_DEFINITIONS, "agents": agents,
+            "runs": [r for r in published if r["agent_model"] == run["agent_model"]][:15]}
+
+
+@app.get("/evals", response_class=HTMLResponse)
+def evals_page(request: Request, model: str | None = None, run: str | None = None):
+    return templates.TemplateResponse(request, "evals.html", _evals_view(model, run))
+
+
+@app.get("/evals/result/{rid}", response_class=HTMLResponse)
+def evals_result_page(rid: int, request: Request, check: str | None = None):
+    res = db.eval_result(rid)
+    if not res:
+        return RedirectResponse("/evals")
+    run = db.eval_run(res["run_id"])
+    siblings = [r for r in db.eval_results(res["run_id"]) if r["agent"] == res["agent"] and r["scenario"] == res["scenario"]]
+    focus = next((c for c in res["checks"] if c["id"] == check), None) or _first_failure(res["checks"])
+    marks = {}
+    for c in res["checks"]:
+        if not c["passed"] and c["kind"] != "classify" and c.get("turn") is not None:
+            marks.setdefault(c["turn"], []).append(c)
+    reg = AGENTS_BY_ID.get(res["agent"], {})
+    return templates.TemplateResponse(request, "evals_result.html", {
+        "r": res, "run": run, "siblings": siblings, "focus": focus, "marks": marks,
+        "agent": {"name": reg.get("name", res["agent"]), "icon": reg.get("icon", "fa-headset"),
+                  "color": reg.get("color", "#4f46e5")}})
+
+
+@app.get("/evals/data")
+def evals_data(model: str | None = None, run: str | None = None):
+    """The console's data as JSON (also the table view behind the charts)."""
+    v = _evals_view(model, run)
+    return {"run": v["run"], "agents": v.get("agents", []), "definitions": v["definitions"]}
 
 # ---- IP desk-phone XML services (Cisco IP Phone Services format) ----
 from fastapi.responses import Response

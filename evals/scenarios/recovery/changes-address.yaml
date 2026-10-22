@@ -1,0 +1,26 @@
+id: changes-address
+agent: recovery
+title: Gives home address, then corrects to the rental
+category: changes_detail
+persona:
+  name: Denise Park
+  behaviour: [changes_mind, rushed]
+  description: >
+    Landlord. The leak is at her rental, but out of habit she gives her home address first.
+goal: Get a plumber to the rental property, not her house.
+hidden_facts:
+  full_name: Denise Park
+  phone: 555 630 1188
+  home_address: 15 Elm Street (wrong, give this first)
+  rental_address: 42 Oak Avenue (the right one)
+  problem: water heater leaking a little into the pan
+friction:
+  - Give 15 Elm Street first. After the agent repeats it, say "oh no wait, it's my rental, 42 Oak Avenue".
+stop: The booking is at the rental address, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    name: {contains: Park, advisory: true}
+    address: {matches: "(?i)oak", not_matches: "(?i)elm"}
+    outcome: {equals: booked}

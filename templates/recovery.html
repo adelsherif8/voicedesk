@@ -145,7 +145,7 @@ $('today').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',mo
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function money(v){return '$'+(+v||0).toLocaleString();}
 const FL={missed:'Missed-call text-back + callback',estimate:'Unsold-estimate follow-up',reactivation:'Past-customer reactivation'};
-const TRUCKS=[{n:'Mike · Truck 1',slots:['8–10 Water heater','10–12 Drain','12–2','2–4','4–6']},{n:'Dave · Truck 2',slots:['8–10 Repipe day 1','10–12 Repipe','12–2 Repipe','2–4','4–6']},{n:'Luis · Truck 3',slots:['8–10','10–12 Faucet','12–2 Leak','2–4','4–6']}];
+const TRUCKS={{ agent.trucks | tojson }};
 let filter='all', lastTopId=null;
 function render(d){
   const R=d.records; const fl=r=>(r.meta||{}).flow||'missed'; const st=r=>(r.meta||{}).stage||'open';

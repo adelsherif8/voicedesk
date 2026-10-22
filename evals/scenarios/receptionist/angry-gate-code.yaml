@@ -1,0 +1,29 @@
+id: angry-gate-code
+agent: receptionist
+title: Locked out at the gate, angry, wants it opened now
+category: angry
+persona:
+  name: Dana Whitfield
+  behaviour: [angry, rushed]
+  description: >
+    Tenant standing at the gate with a truck full of furniture. Her code stopped working.
+goal: Get the gate open now.
+hidden_facts:
+  full_name: Dana Whitfield
+  phone: 555 620 4410
+  unit: C-07
+friction:
+  - Open with "your gate's broken and I'm standing here with a full truck".
+  - 'Get impatient when asked for details: "can you just open it?"'
+stop: Your code is reset, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: gate code reset}
+    name: {contains: Whitfield}
+judge:
+  - id: verified_first
+    rubric: The agent got her name and unit number before resetting the code.
+  - id: stayed_calm
+    rubric: The agent stayed calm and brief and didn't argue with her.

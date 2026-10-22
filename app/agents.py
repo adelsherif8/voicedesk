@@ -21,7 +21,13 @@ AGENTS = [
      "desc": "Books new patients (insurance check, right provider/slot), confirmation & reminder calls, no-show recovery from the waitlist, hygiene recall.",
      "icon": "fa-tooth", "color": "#0f8b8d",
      "mode": "light", "bg": "#f3faf9", "accent": "#0f8b8d", "accent2": "#ff7a59",
-     "providers": ["Dr. Patel", "Dr. Nguyen", "Hygiene · Sam"]},
+     "providers": ["Dr. Patel", "Dr. Nguyen", "Hygiene · Sam"],
+     # booked appointments already on the calendar (dashboard + eval stubs read this)
+     "schedule": {
+         "Dr. Patel": {"Mon": ["8:30 Filling", "10:00 Crown"], "Tue": ["9:00 Exam", "1:00 Root canal"], "Wed": ["8:30 Implant consult"], "Thu": ["9:00 Filling", "11:00 Exam"], "Fri": ["8:30 Crown"]},
+         "Dr. Nguyen": {"Mon": ["9:00 Veneers"], "Tue": ["10:00 Extraction"], "Wed": ["9:00 Bridge"], "Thu": ["8:30 Crown", "1:30 Filling"], "Fri": ["2:00 Exam"]},
+         "Hygiene · Sam": {"Mon": ["8:00 Cleaning", "11:00 Cleaning"], "Tue": ["8:00 Cleaning"], "Wed": ["9:00 Cleaning", "1:00 Cleaning"], "Thu": ["8:00 Cleaning"], "Fri": ["9:00 Cleaning"]},
+     }},
     {"id": "realty", "name": "Harbor & Vine Listing Line",
      "business": "Harbor & Vine Realty", "vertical": "real-estate", "template": "realty.html",
      "desc": "Answers listing inquiries 24/7, qualifies (budget, pre-approval, timeline), books showings, routes to the listing agent; seller calls → CMA appointment.",
@@ -42,7 +48,13 @@ AGENTS = [
      "business": "Blue Ridge Plumbing", "vertical": "plumbing", "template": "recovery.html",
      "desc": "Revenue recovery — missed-call text-back + AI callback, unsold-estimate follow-up, customer reactivation (Retell + GoHighLevel).",
      "icon": "fa-wrench", "color": "#b87333",
-     "mode": "light", "bg": "#f5f4f0", "accent": "#b87333", "accent2": "#0f4c81"},
+     "mode": "light", "bg": "#f5f4f0", "accent": "#b87333", "accent2": "#0f4c81",
+     # today's truck board: five 2-hour windows per truck; a label after the window = already booked
+     "trucks": [
+         {"n": "Mike · Truck 1", "slots": ["8–10 Water heater", "10–12 Drain", "12–2", "2–4", "4–6"]},
+         {"n": "Dave · Truck 2", "slots": ["8–10 Repipe day 1", "10–12 Repipe", "12–2 Repipe", "2–4", "4–6"]},
+         {"n": "Luis · Truck 3", "slots": ["8–10", "10–12 Faucet", "12–2 Leak", "2–4", "4–6"]},
+     ]},
     {"id": "support", "name": "NordFrost Support Line",
      "business": "NordFrost Appliances", "vertical": "appliance-support", "template": "support.html",
      "desc": "Inbound customer service — warranty lookup, troubleshooting, technician dispatch, parts orders, warm transfer.",

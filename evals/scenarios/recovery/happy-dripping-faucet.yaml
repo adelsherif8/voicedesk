@@ -1,0 +1,35 @@
+id: happy-dripping-faucet
+agent: recovery
+title: Dripping kitchen faucet, books a window
+category: happy_path
+tags: [smoke]
+persona:
+  name: Ana Ruiz
+  behaviour: [cooperative, refuses_phone]
+  description: >
+    Called Blue Ridge an hour ago about a kitchen faucet that drips constantly. Not urgent,
+    mildly annoyed nobody picked up. Works from home.
+goal: Get a plumber out in the next day or so, and know the call-out cost.
+hidden_facts:
+  full_name: Ana Ruiz
+  phone: 555 212 9034
+  address: 27 Birch Lane, Asheville
+  availability: this afternoon or tomorrow morning
+friction:
+  - Ask "how much is this going to cost me?"
+  - Refuse the callback number at first ("you just called me, don't you have it?").
+stop: You have a booked window, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: booked}
+    name: {contains: Ruiz, advisory: true}
+    phone: {digits: "5552129034", advisory: true}
+    address: {matches: "(?i)birch"}
+    appointment: {present: true}
+judge:
+  - id: fee_not_quote
+    rubric: The agent gave the $89 diagnostic call-out fee and said the technician quotes on site, without promising a price for the repair.
+  - id: confirmed_street
+    rubric: The agent read the street name back to confirm it.
