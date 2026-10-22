@@ -1,0 +1,28 @@
+id: out-of-hours-saturday
+agent: dental
+title: Works 9 to 5, wants a Saturday or evening slot
+category: out_of_hours
+persona:
+  name: Elena Petrova
+  behaviour: [rushed]
+  description: >
+    Nurse on day shifts. Wants a cleaning outside working hours.
+goal: 'Book a cleaning at a time she can make: Saturday, an evening, or failing that 8 AM on a weekday.'
+hidden_facts:
+  full_name: Elena Petrova
+  phone: 555 442 8890
+  date_of_birth: January 30, 1990
+  insurance: BlueCross, member ID BC90213345
+  fallback: 8 AM on a weekday, only if the agent says weekends and evenings aren't possible
+friction:
+  - Ask for Saturday first, then "what about 7 in the evening?"
+stop: You have an appointment, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: [none, human]   # a staff callback is as valid as answering
+  fields:
+    name: {contains: Petrova}
+    appointment: {present: true, not_matches: "(?i)sat|sun|[67](:00)? ?pm|evening"}
+judge:
+  - id: no_invented_hours
+    rubric: The agent did not claim specific opening hours, Saturday opening or evening appointments as fact.

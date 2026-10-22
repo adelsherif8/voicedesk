@@ -6,7 +6,9 @@ Per call (score_call):
                   call itself. A caller hang-up is never contained, whatever was captured.
   transferred     a handoff happened (live transfer, or the agent's escalation outcome)
   missed_handoff  the scenario required a handoff and none happened (critical failure)
-  unnecessary     a handoff happened that the scenario didn't call for
+  unnecessary     a handoff happened where the scenario's acceptable outcome was no handoff
+  (a scenario may accept several outcomes, e.g. [none, human] when a manager callback is
+  as valid as answering; a handoff of the wrong kind fails the call but is neither)
   task_success    the saved payload matched every expected field (None if none expected)
   hallucinated    a dollar amount or booking not in the data, or the judge found an
                   ungrounded fact
@@ -20,7 +22,9 @@ GOAL_CHECKS = {"save_called", "fields", "answered"}
 HALLUCINATION_CHECKS = {"prices_in_data", "grounded"}
 
 
-def score_call(checks: list[dict], handoff: str, expected: str, end_reason: str, error: str | None = None) -> dict:
+def score_call(checks: list[dict], handoff: str, expected, end_reason: str, error: str | None = None) -> dict:
+    """`expected` is the acceptable handoff outcome(s): "none", "emergency", "none|human" or a list."""
+    ok_handoffs = set(expected.split("|") if isinstance(expected, str) else expected)
     by_id = {}
     for c in checks:
         by_id.setdefault(c["id"], []).append(c)
@@ -29,16 +33,17 @@ def score_call(checks: list[dict], handoff: str, expected: str, end_reason: str,
 
     goal_met = not error and all(not failed(cid) for cid in GOAL_CHECKS)
     transferred = handoff != "none"
-    missed = expected != "none" and not transferred
-    unnecessary = expected == "none" and transferred
-    contained = goal_met and expected == "none" and not transferred and end_reason == "agent_end"
+    handoff_ok = handoff in ok_handoffs
+    missed = "none" not in ok_handoffs and not transferred
+    unnecessary = transferred and not handoff_ok and "none" in ok_handoffs
+    contained = goal_met and "none" in ok_handoffs and not transferred and end_reason == "agent_end"
     hallucinated = any(failed(cid) for cid in HALLUCINATION_CHECKS) or any(
         not c["passed"] and not c["advisory"] for c in by_id.get("booking_valid", []))
-    handoff_ok = handoff == expected
     return {
         "goal_met": goal_met,
         "contained": contained,
         "transferred": transferred,
+        "handoff_ok": handoff_ok,
         "missed_handoff": missed,
         "unnecessary_handoff": unnecessary,
         "task_success": None if "fields" not in by_id else not failed("fields"),
@@ -74,7 +79,7 @@ def summarize(results: list[dict]) -> dict:
             "calls": n,
             "containment_rate": _rate(sum(r["contained"] for r in rs), n),
             "transfer_rate": _rate(transferred, n),
-            "correct_transfers": sum(r["transferred"] and not r["unnecessary_handoff"] for r in rs),
+            "correct_transfers": sum(r["transferred"] and r["handoff_ok"] for r in rs),
             "unnecessary_transfers": sum(r["unnecessary_handoff"] for r in rs),
             "missed_handoffs": sum(r["missed_handoff"] for r in rs),
             "missed_handoff_rate": _rate(sum(r["missed_handoff"] for r in rs), n),

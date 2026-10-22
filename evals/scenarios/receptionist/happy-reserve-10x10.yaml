@@ -1,0 +1,35 @@
+id: happy-reserve-10x10
+agent: receptionist
+title: Moving out of a one-bed, reserves a 10x10
+category: happy_path
+tags: [smoke]
+persona:
+  name: Sarah Johnson
+  behaviour: [cooperative, refuses_phone]
+  description: >
+    Moving out of a one-bedroom apartment at the end of the month. Boxes, a couch, a bed,
+    a desk. Has never rented storage before.
+goal: Rent the right size unit and reserve it.
+hidden_facts:
+  full_name: Sarah Johnson
+  phone: 555 123 4567
+  stuff: one-bedroom apartment worth of furniture and boxes
+  move_in: the 30th
+friction:
+  - Refuse your phone number the first time; give it once told why.
+  - Ask "is that per month?"
+stop: The unit is reserved, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: reserved}
+    name: {contains: Johnson}
+    phone: {digits: "5551234567"}
+    unit_size: {matches: "10 ?x ?10", not_matches: "(?i)climate|cc"}
+    price: {matches: "110"}
+judge:
+  - id: read_back_phone
+    rubric: The agent read the phone number back digit by digit.
+  - id: one_question_at_a_time
+    rubric: The agent asked one question per turn and did not stack two questions in one turn.

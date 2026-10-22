@@ -1,0 +1,32 @@
+id: ambiguous-pain-and-whitening
+agent: dental
+title: Vague complaint mixing pain and cosmetics
+category: ambiguous
+persona:
+  name: Priya Shah
+  behaviour: [confused, non_native]
+  description: >
+    New to the area. One back tooth has hurt when she drinks cold water for a week, and
+    she also wants her front teeth whiter for a wedding. Explains both at once, unclearly.
+goal: See someone about the tooth that hurts. Whitening can wait.
+hidden_facts:
+  full_name: Priya Shah
+  phone: 555 731 4420
+  date_of_birth: November 8, 1988
+  insurance: Cigna, member ID CG55120873
+  which_matters_more: the pain, if the agent asks
+friction:
+  - Open with "my teeth are not good, one is hurting and I want them white also".
+  - When asked what the visit is for, answer vaguely the first time ("everything, I think").
+stop: You have an appointment, or the agent ends the call.
+max_turns: 16
+expect:
+  handoff: none
+  fields:
+    outcome: {equals: new patient booked}
+    name: {contains: Shah}
+    phone: {digits: "5557314420"}
+    provider: {matches: "(?i)patel"}
+judge:
+  - id: clarified
+    rubric: The agent asked a clarifying question to work out what the visit was mainly for before choosing a provider.

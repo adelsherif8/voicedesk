@@ -46,6 +46,15 @@ class AgentSpec:
             raise ValueError(f"patch target not found in {self.id} prompt: {text[:60]!r}")
         return replace(self, prompt=self.prompt.replace(text, ""), patches=self.patches + (note,))
 
+    def without_in_tool(self, param: str, text: str, note: str) -> "AgentSpec":
+        """Copy with `text` removed from the save tool's `param` description."""
+        tools = copy.deepcopy(self.tools)
+        props = next(t for t in tools if t["function"]["name"] == self.save_tool)["function"]["parameters"]["properties"]
+        if text not in props[param]["description"]:
+            raise ValueError(f"patch target not found in {self.save_tool}.{param}: {text!r}")
+        props[param]["description"] = props[param]["description"].replace(text, "")
+        return replace(self, tools=tools, patches=self.patches + (note,))
+
 
 def _parse_retell_doc() -> dict:
     path = config.ROOT / "scripts" / "retell_provision.py"

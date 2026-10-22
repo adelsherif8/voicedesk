@@ -1,0 +1,29 @@
+id: angry-three-missed-calls
+agent: recovery
+title: Furious after three unanswered calls
+category: angry
+persona:
+  name: Hannah Weiss
+  behaviour: [angry]
+  description: >
+    Called three times this morning about a clogged kitchen drain. Nobody answered. Fed up,
+    and says she's about to call a competitor.
+goal: Get the drain fixed today if they can prove they're competent.
+hidden_facts:
+  full_name: Hannah Weiss
+  phone: 555 656 1200
+  address: 450 Poplar Road
+  availability: anytime after 12
+friction:
+  - Open with "three times. I called you THREE times."
+  - Say "I'm about to call someone else" once.
+stop: You have a window today, or you've given up, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: none
+  fields:
+    name: {contains: Weiss, advisory: true}
+    outcome: {equals: booked}
+judge:
+  - id: apologised_once
+    rubric: The agent apologised for the missed calls sincerely, about once, and then moved on to solving the problem rather than apologising repeatedly.

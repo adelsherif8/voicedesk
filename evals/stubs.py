@@ -49,9 +49,9 @@ def parse_time(text: str, assume_pm_below: int = 8) -> int | None:
         if h > 23 or mins > 59 or not (m.group(2) or ampm or end_h):
             continue  # a bare number like "2 kids" or "14," in a date is not a time
         if not ampm and end_ampm:
-            # "2-4pm" -> 2 PM, "10-12pm" -> 10 AM, "11-1pm" -> 11 AM
+            # "2-4pm" -> 2 PM, "12-2pm" -> noon, "10-12pm" -> 10 AM, "11-1pm" -> 11 AM
             eh = int(end_h)
-            ampm = "pm" if end_ampm == "pm" and h < eh and eh != 12 else "am"
+            ampm = "pm" if end_ampm == "pm" and (h == 12 or (h < eh and eh != 12)) else "am"
         if ampm == "pm" and h < 12:
             h += 12
         elif ampm == "am" and h == 12:

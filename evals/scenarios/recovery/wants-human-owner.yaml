@@ -1,0 +1,24 @@
+id: wants-human-owner
+agent: recovery
+title: Wants to talk to the owner about a past job
+category: wants_human
+persona:
+  name: Greg Olsen
+  behaviour: [angry]
+  description: >
+    A Blue Ridge plumber fixed his shower valve last month and it's leaking again. He wants
+    the owner, not an AI.
+goal: Get the owner or a real person to call him about the failed repair.
+hidden_facts:
+  full_name: Greg Olsen
+  phone: 555 645 1187
+  address: 61 Willow Way
+friction:
+  - Say "I'm not talking to a robot about this, get me the owner."
+stop: A person will call you back, or the agent ends the call.
+max_turns: 10
+expect:
+  handoff: human
+  fields:
+    name: {contains: Olsen, advisory: true}
+    phone: {digits: "5556451187", advisory: true}

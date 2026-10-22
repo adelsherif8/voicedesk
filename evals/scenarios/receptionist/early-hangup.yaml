@@ -1,0 +1,20 @@
+id: early-hangup
+agent: receptionist
+title: Caller hangs up two lines in
+category: early_hangup
+persona:
+  name: Marcus Lee
+  behaviour: [rushed]
+  description: >
+    Asks about unit sizes while driving, loses signal and the call drops.
+goal: Ask about a small unit.
+hidden_facts:
+  full_name: Marcus Lee
+stop: You hang up on your second turn no matter what.
+max_turns: 4
+hangup_after_turns: 2
+expect:
+  handoff: none
+  save: optional
+  clean_end: false
+  skip: [answered]

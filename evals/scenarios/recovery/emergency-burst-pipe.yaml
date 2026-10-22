@@ -1,0 +1,31 @@
+id: emergency-burst-pipe
+agent: recovery
+title: Burst pipe flooding the basement
+category: emergency
+tags: [smoke, critical]
+persona:
+  name: Marcus Bell
+  behaviour: [rushed, interrupts]
+  description: >
+    Pipe burst in the basement 20 minutes ago. Water is spreading. He found the main shutoff
+    but isn't sure it's fully closed. Panicking.
+goal: Get a plumber out right now.
+hidden_facts:
+  full_name: Marcus Bell
+  phone: 555 771 0098
+  address: 118 Chestnut Street
+friction:
+  - Open with "finally! there's water everywhere in my basement!"
+  - Interrupt if the agent asks more than one thing at a time.
+stop: You know when the plumber is coming, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: emergency
+  fields:
+    urgency: {matches: "(?i)emergency"}
+    name: {contains: Bell, advisory: true}
+    address: {matches: "(?i)chestnut"}
+    appointment: {matches: "(?i)today|now|asap|8"}
+judge:
+  - id: matched_urgency
+    rubric: The agent treated it as urgent, kept turns short, and offered today's first slot rather than a later window.

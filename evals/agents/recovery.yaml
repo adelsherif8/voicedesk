@@ -1,0 +1,35 @@
+# Blue Ridge Revenue Recovery (outbound: the agent rings back a missed caller).
+# Prompt, opening line and log_outcome schema: docs/RETELL-SETUP.md (verified identical
+# to the live Retell LLM on 2026-10-22).
+#
+# Not testable yet: unsold-estimate follow-ups. The prompt says "reference the specific
+# job and price", but no job or price reaches the agent (no dynamic variables, and the
+# opening line is always the missed-call one), so every scenario here is a missed-call
+# callback.
+#
+# Known gap: the prompt never tells the agent to ask the customer's name (and on an
+# outbound call the number is already known), so it saves name="Customer". Scenarios
+# mark name/phone as `advisory: true`: shown on the page under fields_known_gap, not failing.
+
+speaks_first: true
+temperature: 0          # model_temperature is unset on the Retell LLM; 0 assumed (unverified)
+
+resource:
+  kind: truck_board     # registry: app/agents.py recovery.trucks (today only)
+  today: Mon
+  slot_check: strict    # the five windows are in the prompt, so an invented window is a real error
+  advisory_reasons:     # ...but which trucks are free is not, so these can't fail a call
+    - no truck free in that window
+    - could not read the window
+
+allowed_prices: [89]    # "$89 diagnostic call-out fee" is the only price in the prompt
+
+handoff:
+  - kind: safety
+    when:
+      judge: The agent told the caller to get away from a danger to life (for example leave the house because of a gas smell) and to call the gas company, fire service or 911.
+  - kind: emergency
+    when: {tool: log_outcome, field: urgency, matches: "(?i)emergency"}
+  - kind: human
+    when:
+      judge: Instead of handling the request itself, the agent arranged for a person at Blue Ridge (the owner or office staff) to phone the customer back or take over this conversation. Booking a plumber to visit the home does NOT count.

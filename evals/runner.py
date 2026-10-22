@@ -60,7 +60,7 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
     by_id = {v["id"]: v for v in verdicts}
     handoff, how = checks.detect_handoff(spec, runtime, by_id)
     found.append(checks.check(
-        "handoff", handoff == sc.handoff,
+        "handoff", handoff in sc.handoffs,
         f"expected {sc.handoff}, got {handoff}" + (f" ({how})" if how else ""),
         kind="judge" if how.startswith("judge") else "code"))
     all_checks = found + verdicts

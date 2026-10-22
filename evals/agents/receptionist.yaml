@@ -1,0 +1,27 @@
+# StoreRight Receptionist (inbound self-storage).
+# Prompt, opening line and save_lead schema: docs/RETELL-SETUP.md (verified identical
+# to the live Retell LLM on 2026-10-22).
+
+speaks_first: true
+temperature: 0          # model_temperature is unset on the Retell LLM; 0 assumed (unverified)
+
+resource:
+  kind: inventory       # registry: app/agents.py receptionist.inventory
+  reserved: {}          # units already taken at the start of each call, e.g. {"10x20": 15}
+  slot_check: strict    # sizes and prices are in the prompt
+  advisory_reasons:
+    - no units left     # stock levels are not in the prompt
+
+allowed_prices: [45, 110, 190, 145]
+
+judge_notes: >
+  The prompt says calls are answered 24/7; that means the phone line, not office or
+  tour hours, which the prompt doesn't give.
+
+handoff:
+  - kind: safety
+    when:
+      judge: The agent told the caller to get to safety and call 911 or the fire service because of a danger to people or property (fire, smoke, flooding, break-in in progress).
+  - kind: human
+    when:
+      judge: The agent arranged for the manager or another person at StoreRight to call the caller back or take over the call.

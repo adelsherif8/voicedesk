@@ -36,9 +36,8 @@ def _digits(s) -> str:
 def match_field(value, rule: dict) -> tuple[bool, str]:
     """One expected-field rule against the saved value. Returns (ok, why-not)."""
     v = "" if value is None else str(value)
-    if "present" in rule:
-        ok = bool(v.strip()) == bool(rule["present"])
-        return ok, "" if ok else ("missing" if rule["present"] else f"should be empty, got {v!r}")
+    if rule.get("present") is False:
+        return (not v.strip()), "" if not v.strip() else f"should be empty, got {v!r}"
     if not v.strip():
         return False, "missing"
     if "equals" in rule and v.strip().lower() != str(rule["equals"]).lower():
@@ -68,26 +67,36 @@ def code_checks(spec, sc, transcript: list, runtime, end_reason: str) -> list[di
         out.append(check("save_called", not saves, "" if not saves else f"{spec.save_tool} called but shouldn't be", save_turn))
 
     # 2. the saved payload has the right fields (last save wins, as on the dashboard)
+    #    rules marked `advisory: true` are known gaps: reported under fields_known_gap only
     fields = sc.expect.get("fields") or {}
-    if fields:
-        payload = saves[-1]["args"] if saves else {}
-        bad = []
-        for name, rule in fields.items():
-            ok, why = match_field(payload.get(name), rule)
-            if not ok:
-                bad.append(f"{name}: {why}")
-        out.append(check("fields", saves and not bad, "; ".join(bad) if bad else "all expected fields match"
-                         if saves else "nothing saved", save_turn))
+    payload = saves[-1]["args"] if saves else {}
+    for check_id, rules in (("fields", {k: r for k, r in fields.items() if not r.get("advisory")}),
+                            ("fields_known_gap", {k: r for k, r in fields.items() if r.get("advisory")})):
+        if not rules:
+            continue
+        bad = [f"{name}: {why}" for name, rule in rules.items()
+               for ok, why in [match_field(payload.get(name), rule)] if not ok]
+        detail = ("; ".join(bad) if bad else "all expected fields match") if saves else "nothing saved"
+        out.append(check(check_id, saves and not bad, detail, save_turn, advisory=check_id == "fields_known_gap"))
 
     # 3. every booking/reservation landed on something that exists and was free
-    advisory = spec.resource.get("slot_check") == "advisory"
+    #    (advisory when the agent couldn't know: no data in its prompt for that reason)
+    all_advisory = spec.resource.get("slot_check") == "advisory"
+    soft = set(spec.resource.get("advisory_reasons", []))
     for e in saves:
         eff = e.get("effect")
         if eff and not eff["ok"]:
             idx = next((i for i, t in enumerate(transcript) if t.get("turn") == e["turn"] and t["role"] == "agent"), save_turn)
-            out.append(check("booking_valid", False, f"{eff['kind']} '{eff.get('requested')}': {eff['reason']}", idx, advisory))
+            out.append(check("booking_valid", False, f"{eff['kind']} '{eff.get('requested')}': {eff['reason']}", idx,
+                             all_advisory or eff["reason"] in soft))
     if not any(c["id"] == "booking_valid" for c in out) and any(e.get("effect") for e in saves):
-        out.append(check("booking_valid", True, "booking matches available data", advisory=advisory))
+        out.append(check("booking_valid", True, "booking matches available data", advisory=all_advisory))
+
+    # 3b. things the agent must never say (card numbers read back, prompt leaks, ...)
+    for rule in sc.expect.get("must_not_say", []):
+        hit = next((i for i, t in enumerate(transcript) if t["role"] == "agent" and re.search(rule["pattern"], t["text"])), None)
+        out.append(check(f"must_not_say:{rule['id']}", hit is None,
+                         "never said" if hit is None else f"agent said: {transcript[hit]['text'][:100]!r}", hit))
 
     # 4. every dollar amount the agent said exists in its data (or the caller said it first)
     allowed = set(spec.allowed_prices)

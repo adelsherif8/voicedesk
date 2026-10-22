@@ -37,8 +37,14 @@ class Scenario:
     hangup_after_turns: int | None = None   # caller hangs up after N of their turns, no matter what
 
     @property
+    def handoffs(self) -> list[str]:
+        """Acceptable handoff outcomes; a scenario may allow several (e.g. [none, human])."""
+        h = self.expect.get("handoff", "none")
+        return [h] if isinstance(h, str) else list(h)
+
+    @property
     def handoff(self) -> str:
-        return self.expect.get("handoff", "none")
+        return "|".join(self.handoffs)
 
     @property
     def save(self) -> str:
@@ -58,7 +64,8 @@ def _validate(d: dict, path) -> None:
     bad = set(d["persona"].get("behaviour", [])) - BEHAVIOURS
     if bad:
         raise ValueError(f"{where}: unknown behaviour {sorted(bad)}; allowed {sorted(BEHAVIOURS)}")
-    if d["expect"].get("handoff", "none") not in HANDOFFS:
+    h = d["expect"].get("handoff", "none")
+    if not set([h] if isinstance(h, str) else h) <= HANDOFFS:
         raise ValueError(f"{where}: expect.handoff must be one of {sorted(HANDOFFS)}")
     if d["expect"].get("save", "required") not in SAVE:
         raise ValueError(f"{where}: expect.save must be one of {sorted(SAVE)}")
@@ -69,7 +76,10 @@ def _validate(d: dict, path) -> None:
 def load_all(agent: str, only: str | None = None, tag: str | None = None) -> list[Scenario]:
     out = []
     for path in sorted((config.SCENARIOS_DIR / agent).glob("*.yaml")):
-        d = yaml.safe_load(path.read_text())
+        try:
+            d = yaml.safe_load(path.read_text())
+        except yaml.YAMLError as e:
+            raise ValueError(f"{path.relative_to(config.ROOT)}: invalid YAML: {e}") from None
         _validate(d, path)
         sc = Scenario(**{k: d.get(k, _DEFAULTS.get(k)) for k in Scenario.__dataclass_fields__})
         if only and sc.id != only:

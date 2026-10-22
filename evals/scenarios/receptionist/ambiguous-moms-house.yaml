@@ -1,0 +1,28 @@
+id: ambiguous-moms-house
+agent: receptionist
+title: Clearing out a parent's house, no idea what size
+category: ambiguous
+persona:
+  name: Elena Voss
+  behaviour: [confused, non_native]
+  description: >
+    Her mother moved into assisted living. She has to empty a three-bedroom house and has
+    no idea what storage she needs. Talks in circles.
+goal: Find out what size she needs and the price; maybe reserve.
+hidden_facts:
+  full_name: Elena Voss
+  phone: 555 245 6610
+  stuff: furniture from a three-bedroom house, including a piano
+  decision: reserve if the agent recommends one clearly
+friction:
+  - Open with "I have many things from my mother, I don't know what is the size".
+stop: You have a recommendation and price (and maybe a reservation), or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    name: {contains: Voss}
+    unit_size: {matches: "10 ?x ?20"}
+judge:
+  - id: asked_what_storing
+    rubric: The agent based its size recommendation on what she is storing, asking about it if she hadn't already said, rather than guessing.

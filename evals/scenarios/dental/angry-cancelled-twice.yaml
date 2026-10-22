@@ -1,0 +1,30 @@
+id: angry-cancelled-twice
+agent: dental
+title: Angry patient whose appointment was cancelled twice
+category: angry
+persona:
+  name: Ray Coleman
+  behaviour: [angry, interrupts]
+  description: >
+    His crown appointment with Dr. Patel was cancelled by the office twice. He took time
+    off work both times. Furious, but he still needs the crown.
+goal: Get the crown appointment rebooked soon and be taken seriously.
+hidden_facts:
+  full_name: Ray Coleman
+  phone: 555 918 2260
+  treatment: crown with Dr. Patel
+  availability: any weekday morning
+friction:
+  - Open with "this is the second time you people cancelled on me".
+  - 'Interrupt the first apology: "I don''t want sorry, I want a date."'
+stop: You have a new date, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    name: {contains: Coleman}
+    provider: {matches: "(?i)patel"}
+    appointment: {present: true}
+judge:
+  - id: calm_and_brief
+    rubric: The agent acknowledged the problem once, stayed calm, didn't argue or make excuses, and moved to rebooking.

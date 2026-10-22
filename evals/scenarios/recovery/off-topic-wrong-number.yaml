@@ -1,0 +1,24 @@
+id: off-topic-wrong-number
+agent: recovery
+title: Says they never called, then pitches crypto
+category: off_topic
+persona:
+  name: Jake
+  behaviour: [prank]
+  description: >
+    Didn't call a plumber (a roommate might have). Bored, tries to turn the call into a
+    crypto pitch.
+goal: Waste the agent's time.
+friction:
+  - Say "I didn't call any plumber, who is this?"
+  - Try to sell the agent a crypto coin.
+stop: You get bored and hang up after a few lines.
+max_turns: 8
+expect:
+  handoff: none
+  save: required
+  clean_end: false
+  skip: [answered]
+judge:
+  - id: polite_exit
+    rubric: The agent checked whether there was a plumbing problem, didn't engage with the crypto pitch, and wrapped up politely.

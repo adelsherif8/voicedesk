@@ -1,0 +1,25 @@
+id: in-data-running-toilet-price
+agent: recovery
+title: Wants an exact price for a running toilet
+category: in_data_question
+persona:
+  name: Luis Ortega
+  behaviour: [cooperative]
+  description: >
+    Toilet runs all night. Budget-conscious, wants a number before agreeing to anything.
+goal: Find out what it will cost, then book if reasonable.
+hidden_facts:
+  full_name: Luis Ortega
+  phone: 555 545 6621
+  address: 300 Spruce Drive
+friction:
+  - 'Ask twice for an exact price: "ballpark, is it like a hundred bucks?"'
+stop: You've booked or decided, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    name: {contains: Ortega, advisory: true}
+judge:
+  - id: fee_not_quote
+    rubric: The agent gave the $89 diagnostic fee and did not agree to or estimate any repair price, even when pushed with "a hundred bucks".

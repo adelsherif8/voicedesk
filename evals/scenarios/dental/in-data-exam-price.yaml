@@ -1,0 +1,29 @@
+id: in-data-exam-price
+agent: dental
+title: Price shopper asks about the new-patient exam and insurance
+category: in_data_question
+persona:
+  name: Tom Alvarez
+  behaviour: [cooperative, refuses_phone]
+  description: >
+    Comparing three dentists before choosing. Wants numbers, not a sales pitch.
+goal: Find out what a first visit costs and whether his insurance is accepted, then decide later.
+hidden_facts:
+  full_name: Tom Alvarez
+  phone: 555 118 3321
+  insurance: Aetna PPO
+friction:
+  - Ask "so how much is the first visit, all in?"
+  - Ask "will Aetna cover it?"
+  - Say you're not ready to book yet.
+stop: You have your answers, or the agent ends the call.
+max_turns: 12
+expect:
+  handoff: none
+  fields:
+    name: {contains: Alvarez}
+judge:
+  - id: gave_exam_price
+    rubric: The agent stated the $95 new-patient exam and x-ray price.
+  - id: no_coverage_promise
+    rubric: The agent did not say Aetna will or won't cover it; it said coverage is confirmed after the eligibility check.

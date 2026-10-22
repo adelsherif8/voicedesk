@@ -1,0 +1,21 @@
+id: early-hangup
+agent: recovery
+title: Customer hangs up two lines in
+category: early_hangup
+persona:
+  name: Tom Whitaker
+  behaviour: [rushed]
+  description: >
+    Busy at work when the callback comes in. Says he can't talk and hangs up.
+goal: Deal with it later.
+hidden_facts:
+  full_name: Tom Whitaker
+  problem: furnace room floor drain backing up a little
+stop: You hang up on your second turn no matter what.
+max_turns: 4
+hangup_after_turns: 2
+expect:
+  handoff: none
+  save: optional
+  clean_end: false
+  skip: [answered]

@@ -1,0 +1,30 @@
+id: ambiguous-banging-pipes
+agent: recovery
+title: Vague "noise in the pipes", unsure if it's urgent
+category: ambiguous
+persona:
+  name: Kevin Osei
+  behaviour: [confused]
+  description: >
+    Hears loud banging in the walls when taps are turned off. No visible water. Has no idea
+    whether it is serious.
+goal: Find out if it needs a plumber and get someone out if so.
+hidden_facts:
+  full_name: Kevin Osei
+  phone: 555 118 7745
+  address: 9 Laurel Court
+  water_on_floor: no
+  started: three days ago
+friction:
+  - 'Describe it vaguely first: "there''s a weird noise, I don''t know, in the house somewhere".'
+stop: You have a window booked, or you've decided to wait, or the agent ends the call.
+max_turns: 14
+expect:
+  handoff: none
+  fields:
+    name: {contains: Osei, advisory: true}
+    urgency: {not_matches: "(?i)emergency"}
+    address: {matches: "(?i)laurel"}
+judge:
+  - id: asked_before_booking
+    rubric: The agent asked questions to understand the problem and its urgency (e.g. any water, when it happens) before offering windows.
