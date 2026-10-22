@@ -102,3 +102,28 @@ def summarize(results: list[dict]) -> dict:
             "cost_usd": round(sum(r.get("cost_usd", 0) for r in rs), 4),
         }
     return out
+
+
+# Shown verbatim on the /evals page and mirrored in the README.
+DEFINITIONS = [
+    ("Containment rate",
+     "Calls where the caller's goal was completed by the agent with no handoff, divided by all calls. "
+     "The call must end cleanly: the agent closes it, or the caller says goodbye after the goal is met. "
+     "Abrupt hang-ups and abandoned calls are never contained, whatever was captured."),
+    ("Transfer rate",
+     "Calls with a handoff (live transfer, or the agent's escalation outcome such as an emergency booking "
+     "or a staff callback) divided by all calls. Split into correct (the scenario allowed that handoff) "
+     "and unnecessary (the scenario's right answer was no handoff)."),
+    ("Missed handoff",
+     "The scenario required a handoff and none happened. Counted as a critical failure: it fails the "
+     "call and, in regression mode, fails the run even on a scenario that was already failing."),
+    ("Task success",
+     "The saved record matched every required field (name, phone, outcome, appointment...), over the "
+     "calls whose scenario defines required fields."),
+    ("Hallucination rate",
+     "Calls where the agent stated a price, slot, policy or fact not in its data: a dollar amount not in "
+     "its prompt, a booking that doesn't exist in the schedule, or an ungrounded claim found by the judge."),
+    ("Pass^k",
+     "Each scenario runs k times. A scenario passes only if all k runs pass; some-but-not-all is flaky. "
+     "Pass^k is the share of scenarios that pass."),
+]

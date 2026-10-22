@@ -55,3 +55,15 @@ def test_only_shared_scenarios_compared_and_new_ones_listed():
 
 def test_improvement_reported():
     assert compare(base(a=sc("fail", 0, 3)), now(a=sc("pass", 3, 3)))["improvements"]
+
+
+def test_partial_save_keeps_the_full_baseline_run(tmp_path, monkeypatch):
+    from evals import baseline, config
+    monkeypatch.setattr(config, "BASELINES_DIR", tmp_path)
+    def run(rid, scen, selection):
+        return {"id": rid, "agent_model": "m", "k": 3, "git_sha": "x", "selection": selection,
+                "summary": {"a": {"scenarios": {s: sc("pass", 3, 3) for s in scen}}}}
+    baseline.save(run("full", ["s1", "s2"], {}))
+    baseline.save(run("part", ["s2"], {"scenario": "s2"}))
+    d = baseline.load("a", "m")
+    assert d["run_id"] == "full" and d["updates"] == ["part"] and set(d["scenarios"]) == {"s1", "s2"}

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agent QA Console · VoiceDesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{--bg:#eef1f6;--surface:#fff;--ink:#171a21;--ink2:#454b5a;--muted:#697086;--line:#e4e7ee;--soft:#f5f7fa;--acc:#4f46e5;
+--good:#0ca30c;--good-bg:#e9f6e9;--warn:#fab219;--warn-ink:#8a5a00;--warn-bg:#fff5de;--crit:#d03b3b;--crit-bg:#fcecec;
+--grid:#e1e0d9;--axis:#c3c2b7;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+a{color:inherit}
+.app{max-width:1240px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.mk{width:40px;height:40px;border-radius:11px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:1.05rem}
+.brand b{font-size:1.16rem;font-weight:700;letter-spacing:-.01em}
+.brand span{display:block;font-size:.76rem;color:var(--muted)}
+.nav{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:.8rem;font-weight:600;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:#cdd2de}
+select.btn{appearance:none;padding-right:28px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat;cursor:pointer;font-family:inherit}
+.runbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;color:var(--ink2);background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:3px 9px;white-space:nowrap}
+.chip i{color:var(--muted);font-size:.7rem}
+.chip b{font-weight:600;color:var(--ink)}
+.chip.mono b{font-family:var(--mono);font-weight:600;font-size:.72rem}
+.chip.alert{background:var(--crit-bg);border-color:#f3c9c9;color:#8f1f1f}.chip.alert i{color:var(--crit)}
+.runbar .sp{flex:1}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 15px;display:flex;flex-direction:column;gap:12px}
+.ch{display:flex;align-items:center;gap:11px}
+.ch .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:.9rem;flex-shrink:0}
+.ch .nm{font-weight:700;font-size:.93rem;letter-spacing:-.005em}
+.ch .bz{font-size:.72rem;color:var(--muted)}
+.passk{margin-left:auto;text-align:right}
+.passk .v{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.passk .l{font-size:.68rem;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--soft);position:relative}
+.tile .l{font-size:.7rem;color:var(--muted);display:flex;align-items:center;gap:5px}
+.tile .l a{color:#a3a9b8;text-decoration:none;margin-left:auto;font-size:.68rem}
+.tile .l a:hover{color:var(--acc)}
+.tile .v{font-size:1.2rem;font-weight:700;letter-spacing:-.02em}
+.tile .s{font-size:.7rem;color:var(--muted)}
+.tile.crit{background:var(--crit-bg);border-color:#f3c9c9}
+.tile.crit .v{color:#a32626}
+.tile.wide{grid-column:span 2}
+.tile .v i{font-size:.85rem;margin-right:5px}
+.trend .hd{display:flex;align-items:baseline;gap:8px;font-size:.72rem;color:var(--muted);margin-bottom:4px}
+.trend .hd b{color:var(--ink2);font-weight:600}
+.trend svg{display:block;width:100%;height:64px;overflow:visible}
+.cmp{font-size:.76rem;border-radius:9px;padding:7px 10px;display:flex;gap:8px;align-items:flex-start}
+.cmp i{margin-top:3px}
+.cmp.ok{background:var(--good-bg);color:#14531a}.cmp.ok i{color:var(--good)}
+.cmp.bad{background:var(--crit-bg);color:#7d1d1d}.cmp.bad i{color:var(--crit)}
+.cmp.none{background:var(--soft);color:var(--muted)}
+.cmp.warn{background:var(--warn-bg);color:var(--warn-ink)}.cmp.warn i{color:#d99400}
+.cmp ul{margin:3px 0 0 14px}
+.pane{background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-bottom:14px}
+.tabs{display:flex;gap:2px;padding:6px 8px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{display:flex;align-items:center;gap:8px;padding:9px 13px;font-size:.82rem;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit}
+.tab .dot{width:9px;height:9px;border-radius:3px}
+.tab.on{color:var(--ink);border-bottom-color:var(--ink)}
+.tab .n{font-size:.7rem;font-weight:600;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+.gridbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.gridbar .t{font-weight:600;font-size:.88rem}
+.counts{display:flex;gap:6px;flex-wrap:wrap}
+.filt{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:var(--surface);cursor:pointer;color:var(--ink2);font-family:inherit}
+.filt.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.filt.on i{color:#fff!important}
+.gridbar .legend{margin-left:auto;display:flex;gap:12px;font-size:.72rem;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-grid;place-items:center;color:#fff;font-size:.5rem}
+table.grid{width:100%;border-collapse:collapse}
+.grid th{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--soft)}
+.grid td{padding:9px 14px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:.82rem}
+.grid tr:last-child td{border-bottom:none}
+.grid tr:hover td{background:#fafbfd}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;border-radius:7px;padding:3px 9px;white-space:nowrap}
+.pill.pass{background:var(--good-bg);color:#14531a}.pill.pass i{color:var(--good)}
+.pill.flaky{background:var(--warn-bg);color:var(--warn-ink)}.pill.flaky i{color:#d99400}
+.pill.fail{background:var(--crit-bg);color:#8f1f1f}.pill.fail i{color:var(--crit)}
+.sc .tt{font-weight:600;color:var(--ink)}
+.sc .id{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.cat{font-size:.7rem;color:var(--ink2);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:2px 7px;white-space:nowrap;text-transform:capitalize}
+.att{display:flex;gap:4px}
+.cell{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;color:#fff;font-size:.72rem;text-decoration:none;outline-offset:2px;transition:transform .08s}
+.cell.p{background:var(--good)}.cell.f{background:var(--crit)}
+.cell.cf{box-shadow:inset 0 0 0 2px rgba(255,255,255,.55)}
+.cell:hover,.cell:focus-visible{transform:translateY(-1px);outline:2px solid var(--ink)}
+.why{font-size:.76rem;color:var(--ink2);max-width:420px}
+.why code{font-family:var(--mono);font-size:.68rem;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:0 5px;color:var(--ink);margin-right:5px}
+.crit-b{display:inline-flex;align-items:center;gap:4px;font-size:.66rem;font-weight:700;color:#8f1f1f;background:var(--crit-bg);border:1px solid #f3c9c9;border-radius:5px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line)}
+.def{background:var(--surface);padding:12px 15px}
+.def b{display:block;font-size:.82rem;margin-bottom:3px}
+.def p{font-size:.78rem;color:var(--ink2)}
+.def:target{background:#f3f4ff}
+.pane .hd{padding:11px 15px;border-bottom:1px solid var(--line);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;gap:8px;align-items:center}
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.empty code{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink)}
+#tip{position:fixed;pointer-events:none;background:#171a21;color:#fff;border-radius:8px;padding:7px 10px;font-size:.74rem;line-height:1.4;max-width:300px;z-index:50;opacity:0;transition:opacity .08s;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+#tip .tv{font-weight:700;font-size:.82rem}
+#tip .tl{color:#c3c7d2}
+.foot{font-size:.72rem;color:var(--muted);text-align:center;padding:8px 0 20px}
+.hide{display:none}
+@media(max-width:720px){.gridbar .legend{margin-left:0}.why{max-width:none}.grid .c-cat,.grid .c-why{display:none}.tiles{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="mk"><i class="fa-solid fa-vial-circle-check"></i></div>
+    <div class="brand"><b>Agent QA console</b><span>VoiceDesk · scripted callers phone every agent, every call is scored</span></div>
+    <div class="nav">
+      {% if models|length > 1 %}
+      <select class="btn" aria-label="Agent model" onchange="location.search='?model='+encodeURIComponent(this.value)">
+        {% for m in models %}<option value="{{ m }}" {% if run and run.agent_model == m %}selected{% endif %}>{{ m }}</option>{% endfor %}
+      </select>
+      {% endif %}
+      {% if runs|length > 1 %}
+      <select class="btn" aria-label="Run" onchange="location.search='?run='+encodeURIComponent(this.value)">
+        {% for r in runs %}<option value="{{ r.id }}" {% if r.id == run.id %}selected{% endif %}>Run {{ r.id }}{% if r.selection and (r.selection.tag or r.selection.scenario) %} · subset{% endif %}</option>{% endfor %}
+      </select>
+      {% endif %}
+      <a class="btn" href="/evals/data{% if run %}?run={{ run.id }}{% endif %}"><i class="fa-solid fa-table"></i> Data</a>
+      <a class="btn" href="/"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+    </div>
+  </div>
+
+{% if not run %}
+  <div class="pane"><div class="empty">
+    <i class="fa-solid fa-flask-vial" style="font-size:1.6rem;margin-bottom:10px;display:block"></i>
+    No eval runs published yet.<br/><br/>Run <code>python -m evals run --all --k 3 --publish</code>
+  </div></div>
+{% else %}
+  {% set sel = run.selection or {} %}
+  <div class="runbar">
+    <span class="chip mono"><i class="fa-solid fa-hashtag"></i><b>{{ run.id }}</b></span>
+    <span class="chip"><i class="fa-solid fa-microchip"></i>Agent model <b>{{ run.agent_model }}</b></span>
+    <span class="chip"><i class="fa-solid fa-repeat"></i>k <b>{{ run.k }}</b></span>
+    <span class="chip"><i class="fa-solid fa-phone"></i><b>{{ agents|sum(attribute='m.calls') }}</b> simulated calls</span>
+    <span class="chip"><i class="fa-solid fa-coins"></i><b>${{ '%.3f'|format(run.cost_usd) }}</b></span>
+    {% if run.git_sha %}<span class="chip mono"><i class="fa-solid fa-code-branch"></i><b>{{ run.git_sha }}</b></span>{% endif %}
+    <span class="chip"><i class="fa-solid fa-plug"></i>{{ run.backend }}</span>
+    {% if sel.tag or sel.scenario %}<span class="chip"><i class="fa-solid fa-filter"></i>subset: <b>{{ sel.tag or sel.scenario }}</b></span>{% endif %}
+    {% if run.aborted %}<span class="chip alert"><i class="fa-solid fa-circle-exclamation"></i>stopped at cost cap</span>{% endif %}
+    <span class="sp"></span>
+    <span class="chip"><i class="fa-regular fa-clock"></i><span data-ts="{{ run.created }}"></span></span>
+  </div>
+
+  <div class="cards">
+  {% for a in agents %}
+    {% set m = a.m %}
+    <div class="card" id="card-{{ a.id }}">
+      <div class="ch">
+        <div class="ic" style="background:{{ a.color }}"><i class="fa-solid {{ a.icon }}"></i></div>
+        <div><div class="nm">{{ a.name }}</div><div class="bz">{{ a.business }} · {{ m.scenarios|length }} scenarios · {{ m.calls }} calls</div></div>
+        <div class="passk" title="Share of scenarios that passed all {{ run.k }} attempts">
+          <div class="v">{{ pct(m.pass_k) }}</div><div class="l">pass^{{ run.k }}</div>
+        </div>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="l">Containment<a href="#def-containment-rate" aria-label="definition"><i class="fa-solid fa-circle-info"></i></a></div>
+          <div class="v">{{ pct(m.containment_rate) }}</div><div class="s">resolved by the agent, no handoff</div></div>
+        <div class="tile"><div class="l">Transfer rate<a href="#def-transfer-rate" aria-label="definition"><i class="fa-solid fa-circle-info"></i></a></div>
+          <div class="v">{{ pct(m.transfer_rate) }}</div><div class="s">{{ m.correct_transfers }} correct · {{ m.unnecessary_transfers }} unnecessary</div></div>
+        <div class="tile {% if m.missed_handoffs %}crit{% endif %}"><div class="l">Missed handoffs<a href="#def-missed-handoff" aria-label="definition"><i class="fa-solid fa-circle-info"></i></a></div>
+          <div class="v">{% if m.missed_handoffs %}<i class="fa-solid fa-triangle-exclamation"></i>{% endif %}{{ m.missed_handoffs }}</div>
+          <div class="s">{% if m.missed_handoffs %}critical · {{ pct(m.missed_handoff_rate) }} of calls{% else %}none — every required handoff happened{% endif %}</div></div>
+        <div class="tile"><div class="l">Hallucination<a href="#def-hallucination-rate" aria-label="definition"><i class="fa-solid fa-circle-info"></i></a></div>
+          <div class="v">{{ pct(m.hallucination_rate) }}</div><div class="s">price, slot or fact not in its data</div></div>
+        <div class="tile wide"><div class="l">Task success<a href="#def-task-success" aria-label="definition"><i class="fa-solid fa-circle-info"></i></a></div>
+          <div class="v">{{ pct(m.task_success_rate) }}</div><div class="s">saved record matched every required field</div></div>
+      </div>
+      <div class="trend">
+        <div class="hd"><b>Containment</b> · last {{ a.trend|length }} full {{ 'run' if a.trend|length == 1 else 'runs' }} on {{ run.agent_model }}</div>
+        <svg class="spark" data-agent="{{ a.id }}" role="img" aria-label="Containment trend for {{ a.name }}"></svg>
+      </div>
+      {% set c = a.comparison %}
+      {% if c and c.regressions %}
+        <div class="cmp bad"><i class="fa-solid fa-circle-xmark"></i><div><b>{{ c.regressions|length }} regression{{ 's' if c.regressions|length > 1 }}</b> vs baseline {{ c.baseline_run }}
+          <ul>{% for x in c.regressions[:4] %}<li>{{ x }}</li>{% endfor %}</ul></div></div>
+      {% elif c %}
+        {% set notes = c.warnings|reject('search', 'not gated')|list %}
+        {% if notes %}
+        <div class="cmp warn"><i class="fa-solid fa-triangle-exclamation"></i><div><b>No regressions</b> vs baseline {{ c.baseline_run }}, but {{ notes|length }} newly flaky{% if c.improvements %} · {{ c.improvements|length }} improved{% endif %}
+          <ul>{% for x in notes[:4] %}<li>{{ x }}</li>{% endfor %}</ul></div></div>
+        {% else %}
+        <div class="cmp ok"><i class="fa-solid fa-circle-check"></i><div><b>No regressions</b> vs baseline {{ c.baseline_run }}{% if c.improvements %} · {{ c.improvements|length }} improved{% endif %}</div></div>
+        {% endif %}
+      {% else %}
+        <div class="cmp none"><i class="fa-solid fa-flag"></i><div>Baseline run: later runs are compared with this one.</div></div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  </div>
+
+  <div class="pane">
+    <div class="tabs" role="tablist">
+      {% for a in agents %}
+      <button class="tab {% if loop.first %}on{% endif %}" role="tab" data-agent="{{ a.id }}" aria-selected="{{ 'true' if loop.first else 'false' }}">
+        <span class="dot" style="background:{{ a.color }}"></span>{{ a.name }}<span class="n">{{ a.rows|length }}</span></button>
+      {% endfor %}
+    </div>
+    {% for a in agents %}
+    {% set n_pass = a.rows|selectattr('status','equalto','pass')|list|length %}
+    {% set n_flaky = a.rows|selectattr('status','equalto','flaky')|list|length %}
+    {% set n_fail = a.rows|selectattr('status','equalto','fail')|list|length %}
+    <div class="agentgrid {% if not loop.first %}hide{% endif %}" data-agent="{{ a.id }}">
+      <div class="gridbar">
+        <span class="t">Scenarios</span>
+        <div class="counts">
+          <button class="filt on" data-f="all">All {{ a.rows|length }}</button>
+          <button class="filt" data-f="fail"><i class="fa-solid fa-circle-xmark" style="color:var(--crit)"></i>Fail {{ n_fail }}</button>
+          <button class="filt" data-f="flaky"><i class="fa-solid fa-triangle-exclamation" style="color:#d99400"></i>Flaky {{ n_flaky }}</button>
+          <button class="filt" data-f="pass"><i class="fa-solid fa-circle-check" style="color:var(--good)"></i>Pass {{ n_pass }}</button>
+        </div>
+        <div class="legend">
+          <span><span class="sw" style="background:var(--good)"><i class="fa-solid fa-check"></i></span>attempt passed</span>
+          <span><span class="sw" style="background:var(--crit)"><i class="fa-solid fa-xmark"></i></span>attempt failed</span>
+          <span>click an attempt for its transcript</span>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+      <table class="grid">
+        <thead><tr><th>Status</th><th>Scenario</th><th class="c-cat">Category</th><th>Attempts</th><th class="c-why">First failing check</th></tr></thead>
+        <tbody>
+        {% for row in a.rows %}
+          <tr data-status="{{ row.status }}">
+            <td><span class="pill {{ row.status }}">
+              <i class="fa-solid {{ {'pass':'fa-circle-check','flaky':'fa-triangle-exclamation','fail':'fa-circle-xmark'}[row.status] }}"></i>
+              {{ {'pass':'Pass','flaky':'Flaky','fail':'Fail'}[row.status] }} {{ row.passes }}/{{ row.runs }}</span></td>
+            <td class="sc"><div class="tt">{{ row.title }}{% if row.missed %}<span class="crit-b"><i class="fa-solid fa-triangle-exclamation"></i>missed handoff</span>{% endif %}</div><div class="id">{{ row.id }}</div></td>
+            <td class="c-cat"><span class="cat">{{ row.category }}</span></td>
+            <td><div class="att">
+              {% for t in row.attempts %}
+              <a class="cell {{ 'p' if t.passed else 'f' }} {{ 'cf' if t.n > run.k }}" href="/evals/result/{{ t.id }}"
+                 data-tip-v="Attempt {{ t.n }}{{ ' (confirmation)' if t.n > run.k }} · {{ 'passed' if t.passed else 'failed' }}"
+                 data-tip-l="ended: {{ t.end|replace('_',' ') }} · handoff: {{ t.handoff }}{% if t.why %} · {{ t.why[:120] }}{% endif %}"
+                 aria-label="Attempt {{ t.n }} {{ 'passed' if t.passed else 'failed' }}, open transcript">
+                <i class="fa-solid {{ 'fa-check' if t.passed else 'fa-xmark' }}"></i></a>
+              {% endfor %}
+            </div></td>
+            <td class="c-why"><div class="why">{% if row.fail %}<code>{{ row.fail.id }}</code>{{ row.fail.detail[:150] }}{% else %}<span style="color:var(--muted)">—</span>{% endif %}</div></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+  <div class="pane">
+    <div class="hd"><i class="fa-solid fa-book"></i> Metric definitions</div>
+    <div class="defs">
+      {% for name, text in definitions %}
+      <div class="def" id="def-{{ name|lower|replace(' ','-')|replace('^','') }}"><b>{{ name }}</b><p>{{ text }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="foot">Text-mode simulation: each agent's deployed prompt and tools on an LLM, against an LLM caller with scripted friction. Deterministic checks first; an LLM judge (temperature 0) only for tone and grounding.</div>
+</div>
+<div id="tip" role="tooltip"></div>
+
+{% if run %}
+<script>
+const TRENDS = {{ agents|map(attribute='trend')|list|tojson }};
+const AGENT_IDS = {{ agents|map(attribute='id')|list|tojson }};
+const COLORS = {{ agents|map(attribute='color')|list|tojson }};
+const CURRENT = {{ run.id|tojson }};
+const tip = document.getElementById('tip');
+const fmtDate = ts => new Date(ts * 1000).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'});
+document.querySelectorAll('[data-ts]').forEach(el => el.textContent = fmtDate(+el.dataset.ts));
+
+function showTip(x, y, value, label) {
+  tip.replaceChildren();
+  const v = document.createElement('div'); v.className = 'tv'; v.textContent = value;
+  const l = document.createElement('div'); l.className = 'tl'; l.textContent = label;
+  tip.append(v, l);
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(x + 14, innerWidth - w - 8) + 'px';
+  tip.style.top = Math.max(8, y - h - 12) + 'px';
+  tip.style.opacity = 1;
+}
+const hideTip = () => tip.style.opacity = 0;
+
+// attempt cells: the mark is the hit target
+document.querySelectorAll('.cell').forEach(c => {
+  const show = e => { const r = c.getBoundingClientRect(); showTip(e.clientX ?? r.right, e.clientY ?? r.top, c.dataset.tipV, c.dataset.tipL); };
+  c.addEventListener('pointermove', show); c.addEventListener('focus', show);
+  c.addEventListener('pointerleave', hideTip); c.addEventListener('blur', hideTip);
+});
+
+// containment sparklines: one series, 0-100% axis, crosshair snaps to the nearest run
+const NS = 'http://www.w3.org/2000/svg';
+const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const pctText = v => v == null ? 'n/a' : Math.round(v * 100) + '%';
+document.querySelectorAll('svg.spark').forEach(svg => {
+  const i = AGENT_IDS.indexOf(svg.dataset.agent), pts = TRENDS[i], color = COLORS[i];
+  const W = svg.clientWidth || 300, H = 64, padL = 26, padR = 8, padT = 6, padB = 6;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const x = j => pts.length === 1 ? (padL + W - padR) / 2 : padL + j * (W - padL - padR) / (pts.length - 1);
+  const y = v => padT + (1 - v) * (H - padT - padB);
+  [0, .5, 1].forEach(g => {
+    svg.append(el('line', {x1: padL, x2: W - padR, y1: y(g), y2: y(g), stroke: g === 0 ? '#c3c2b7' : '#e1e0d9', 'stroke-width': 1}));
+    const t = el('text', {x: padL - 5, y: y(g) + 3, 'text-anchor': 'end', 'font-size': 9, fill: '#898781'}); t.textContent = (g * 100) + '%'; svg.append(t);
+  });
+  const valid = pts.map((p, j) => [j, p.containment]).filter(([, v]) => v != null);
+  if (valid.length > 1)
+    svg.append(el('polyline', {points: valid.map(([j, v]) => `${x(j)},${y(v)}`).join(' '), fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'}));
+  valid.forEach(([j, v]) => {
+    const cur = pts[j].id === CURRENT;
+    svg.append(el('circle', {cx: x(j), cy: y(v), r: cur ? 4.5 : 3, fill: cur ? color : '#fff', stroke: cur ? '#fff' : color, 'stroke-width': 2}));
+  });
+  if (pts.length === 1) {   // one point: say so instead of implying a flat line
+    const t = el('text', {x: x(0), y: H - padB - 4, 'text-anchor': 'middle', 'font-size': 10, fill: '#697086'});
+    t.textContent = 'first full run'; svg.append(t);
+  }
+  const cross = el('line', {y1: padT, y2: H - padB, stroke: '#171a21', 'stroke-width': 1, opacity: 0});
+  svg.append(cross);
+  svg.addEventListener('pointermove', e => {
+    const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * W / r.width;
+    let j = 0; pts.forEach((_, k) => { if (Math.abs(x(k) - px) < Math.abs(x(j) - px)) j = k; });
+    cross.setAttribute('x1', x(j)); cross.setAttribute('x2', x(j)); cross.setAttribute('opacity', .35);
+    const p = pts[j];
+    showTip(e.clientX, r.top + y(p.containment ?? 0) * r.height / H, `Containment ${pctText(p.containment)}`,
+            `pass^k ${pctText(p.pass_k)} · ${p.calls} calls · ${fmtDate(p.created)}${p.id === CURRENT ? ' · this run' : ''}`);
+  });
+  svg.addEventListener('pointerleave', () => { cross.setAttribute('opacity', 0); hideTip(); });
+});
+
+// agent tabs + status filters (one row above the grid)
+function selectAgent(id) {
+  document.querySelectorAll('.tab').forEach(t => { const on = t.dataset.agent === id; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); });
+  document.querySelectorAll('.agentgrid').forEach(g => g.classList.toggle('hide', g.dataset.agent !== id));
+  try { history.replaceState(null, '', '#' + id); } catch (e) {}
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => selectAgent(t.dataset.agent)));
+document.querySelectorAll('.agentgrid').forEach(g => g.querySelectorAll('.filt').forEach(b => b.addEventListener('click', () => {
+  g.querySelectorAll('.filt').forEach(x => x.classList.toggle('on', x === b));
+  g.querySelectorAll('tbody tr').forEach(tr => tr.classList.toggle('hide', b.dataset.f !== 'all' && tr.dataset.status !== b.dataset.f));
+})));
+const h = location.hash.slice(1);
+if (AGENT_IDS.includes(h)) selectAgent(h);
+</script>
+{% endif %}
+</body>
+</html>

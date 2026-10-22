@@ -6,7 +6,9 @@ Exit codes: 0 ok, 1 regression against the baseline, 2 usage error, 3 cost cap h
 import argparse
 import sys
 
-from evals import baseline, config, metrics, report, runner, scenario, spec
+import json
+
+from evals import baseline, config, metrics, publish, report, runner, scenario, spec
 
 
 def main(argv=None) -> int:
@@ -32,7 +34,15 @@ def main(argv=None) -> int:
     run.add_argument("--confirm", type=int, default=2,
                      help="re-run a scenario that went pass -> fail this many extra times before calling it a "
                           "regression (0 = off); missed handoffs are never retried")
+    run.add_argument("--publish", nargs="?", const=publish.DEFAULT_URL, metavar="URL",
+                     help=f"post the run to VoiceDesk (default {publish.DEFAULT_URL}) and update the committed snapshot")
+    pub = sub.add_parser("publish", help="publish an existing results file to VoiceDesk")
+    pub.add_argument("file", help="evals/results/run-....json")
+    pub.add_argument("--url", default=publish.DEFAULT_URL)
     a = ap.parse_args(argv)
+
+    if a.cmd == "publish":
+        return _publish(json.loads(open(a.file).read()), a.url)
 
     model = config.PROD_MODEL if a.prod_parity else a.model
     agents = spec.available() if a.all else a.agent
@@ -58,6 +68,8 @@ def main(argv=None) -> int:
               f"{r['end_reason']}  ${r['cost_usd']:.4f}", flush=True)
 
     result = runner.run_suite(jobs, a.k, model, a.max_cost, a.backend, a.workers, on_result=progress)
+    # what the run covered: the page only trends runs that covered every scenario
+    result["selection"] = {"agents": None if a.all else sorted(agents), "scenario": a.scenario, "tag": a.tag}
     report.print_summary(result)
 
     code = 3 if result["aborted"] else 0
@@ -85,7 +97,20 @@ def main(argv=None) -> int:
         if code == 1:
             print("\nREGRESSION: exit 1")
     print(f"results: {runner.save(result)}")
+    if a.publish:
+        if _publish(result, a.publish):
+            code = code or 2
     return code
+
+
+def _publish(run: dict, url: str) -> int:
+    if run.get("patches"):
+        print("refusing to publish a run of a deliberately patched agent", file=sys.stderr)
+        return 2
+    print(f"snapshot: {publish.update_snapshot(run)}")
+    msg = publish.post(run, url)
+    print(msg)
+    return 0 if msg.startswith("published") else 1
 
 
 def _confirm_failures(result: dict, jobs: list, model: str, a) -> None:

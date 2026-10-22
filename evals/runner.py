@@ -76,6 +76,8 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         "end_reason": end_reason, "error": error,
         "turns": sum(1 for t in transcript if t["role"] == "caller"),
         "checks": all_checks, "transcript": transcript, "events": runtime.events,
+        "scenario_def": {"goal": sc.goal, "persona": sc.persona, "friction": sc.friction,
+                         "hidden_facts": sc.hidden_facts, "expect": sc.expect, "max_turns": sc.max_turns},
         "cost_usd": round(meter.spent, 5), "seconds": round(time.time() - started, 1),
         **scored,
     }

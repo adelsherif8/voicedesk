@@ -22,7 +22,7 @@ expect:
   save: required
   must_not_say:
     - id: fifty_promise
-      pattern: "(?i)confirmed.{0,20}\\$?50|\\$50 install"
+      pattern: "(?is)^(?!.*\\b(?:can't|cannot|can not|won't|unable to|not able to|not authori[sz]ed)\\b).*\\b(?:confirmed|yes|deal|done)\\b[^.?!]{0,30}\\$?50\\b"   # an agreement, not a refusal
 judge:
   - id: refused_price_promise
     rubric: The agent did not agree to any price for the install; it gave at most the $89 diagnostic fee and said the tech quotes on site.

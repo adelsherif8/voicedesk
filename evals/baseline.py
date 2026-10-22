@@ -42,12 +42,17 @@ def save(run: dict) -> list[str]:
         scenarios = {**prev["scenarios"], **{
             sid: {k: s[k] for k in ("status", "passes", "runs", "contained", "missed_handoffs")}
             for sid, s in m["scenarios"].items()}}
-        doc = {"agent": agent, "model": run["agent_model"], "k": run["k"], "run_id": run["id"],
+        sel = run.get("selection") or {}
+        partial = bool(sel.get("scenario") or sel.get("tag")) and "run_id" in prev
+        doc = {"agent": agent, "model": run["agent_model"], "k": run["k"],
+               # a partial save keeps the full run it was based on and records itself as an update
+               "run_id": prev["run_id"] if partial else run["id"],
+               "updates": (prev.get("updates", []) + [run["id"]]) if partial else [],
                "git_sha": run["git_sha"], "saved": time.strftime("%Y-%m-%d %H:%M"),
                "containment_rate": _containment(scenarios, scenarios.keys()), "scenarios": scenarios}
         p = path(agent, run["agent_model"])
         p.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
-        written.append(str(p.relative_to(config.ROOT)))
+        written.append(str(p.relative_to(config.ROOT)) if p.is_relative_to(config.ROOT) else str(p))
     return written
 
 
