@@ -1,0 +1,34 @@
+# Brightside Dental Front Desk.
+# Prompt, opening line and book_patient schema: docs/RETELL-SETUP.md (verified identical to
+# the live Retell LLM on 2026-10-22). This file adds what the doc doesn't hold.
+
+speaks_first: true
+temperature: 0          # model_temperature is unset on the Retell LLM; 0 assumed (unverified)
+
+resource:
+  kind: calendar        # registry: app/agents.py dental.schedule
+  today: Mon
+  # RECONSTRUCTED: opening hours aren't in the prompt or the registry. The dashboard
+  # schedule runs 8:00-2:00, so 8 AM - 5 PM on a 30-minute grid, Mon-Fri.
+  hours: {start: "8:00 AM", end: "5:00 PM", step_min: 30}
+  open_days: [Mon, Tue, Wed, Thu, Fri]
+  # The prompt has no schedule and the agent has no availability tool, so any time it
+  # offers is not backed by data. Bookings are still checked and reported, but don't
+  # fail the call. Known gap, listed as an agent bug.
+  slot_check: advisory
+
+judge_notes: >
+  For "grounded", don't count the specific appointment times the agent offers or its
+  saying it is checking the schedule: it has no calendar, and that gap is tracked by the
+  booking_valid check. Every other fact counts.
+
+allowed_prices: [95]    # "$95 new-patient exam and x-ray" is the only price in the prompt
+
+# What counts as a handoff, first match wins. This agent has no transfer tool:
+# emergencies are escalated by booking a same-day triage slot.
+handoff:
+  - kind: emergency
+    when: {tool: book_patient, field: outcome, matches: "(?i)emergency"}
+  - kind: human
+    when:
+      judge: The agent arranged for a person at the practice (a dentist, the office manager or front-desk staff) to call the caller back or take over the call.

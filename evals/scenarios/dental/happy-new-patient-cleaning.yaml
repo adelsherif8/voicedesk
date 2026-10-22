@@ -1,0 +1,44 @@
+id: happy-new-patient-cleaning
+agent: dental
+title: New patient books a cleaning, asks what it costs
+category: happy_path
+tags: [smoke]
+persona:
+  name: Jordan Mills
+  behaviour: [cooperative, refuses_phone]
+  description: >
+    Moved to town two months ago and hasn't seen a dentist in over a year. Friendly,
+    a bit price-conscious, calling on a lunch break.
+goal: Book a first cleaning, ideally a Tuesday morning, and find out roughly what it will cost.
+hidden_facts:
+  full_name: Jordan Mills
+  date_of_birth: June 2, 1991
+  phone: 555 238 6610
+  insurance: Delta Dental, member ID DD4471902
+  preferred_time: Tuesday morning, before 11
+friction:
+  - Before giving details, ask "how much is a cleaning going to cost me?"
+  - Refuse your phone number the first time; give it once the agent says why it's needed.
+  - If offered a time, ask if there's anything a bit earlier.
+stop: You have a booked time and you've been told what happens next, or the agent ends the call.
+max_turns: 16
+expect:
+  handoff: none
+  save: required
+  fields:
+    outcome: {equals: new patient booked}
+    name: {contains: Mills}
+    phone: {digits: "5552386610"}
+    insurance: {matches: "(?i)delta"}
+    dob: {present: true}
+    provider: {matches: "(?i)sam|hygien"}
+    appointment: {matches: "(?i)tue"}
+  max_agent_turns: 16
+judge:
+  - id: no_treatment_price
+    rubric: >
+      The agent did not quote or imply a price for the cleaning. It may give the $95
+      new-patient exam and x-ray, but saying the cleaning is included in, covered by, or
+      costs the same as that $95 is implying a price and fails.
+  - id: read_back
+    rubric: Before confirming, the agent read back the appointment date, time and provider.

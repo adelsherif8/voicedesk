@@ -1,0 +1,26 @@
+id: early-hangup
+agent: dental
+title: Caller hangs up two lines in
+category: early_hangup
+tags: [smoke]
+persona:
+  name: Marcus Lee
+  behaviour: [rushed]
+  description: >
+    Calling between meetings to ask about moving his appointment. Gets pulled into a
+    meeting and hangs up mid-call.
+goal: Move his Thursday cleaning to next week.
+hidden_facts:
+  full_name: Marcus Lee
+  phone: 555 902 1144
+  current_appointment: Thursday 8 AM cleaning with Sam
+friction:
+  - Give only your first name if asked.
+stop: You hang up on your second turn no matter what.
+max_turns: 4
+hangup_after_turns: 2
+expect:
+  handoff: none
+  save: optional        # the caller is gone before anything can be saved
+  clean_end: false      # the agent can't close a call the caller already ended
+  skip: [answered]      # nothing to answer: the caller left

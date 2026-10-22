@@ -107,9 +107,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
 <script>
 const AGENT="{{ agent.id }}"; const PROV={{ agent.providers | tojson }};
 const DAYS=['Mon','Tue','Wed','Thu','Fri'];
-const BASE={"Dr. Patel":{Mon:["8:30 Filling","10:00 Crown"],Tue:["9:00 Exam","1:00 Root canal"],Wed:["8:30 Implant consult"],Thu:["9:00 Filling","11:00 Exam"],Fri:["8:30 Crown"]},
- "Dr. Nguyen":{Mon:["9:00 Veneers"],Tue:["10:00 Extraction"],Wed:["9:00 Bridge"],Thu:["8:30 Crown","1:30 Filling"],Fri:["2:00 Exam"]},
- "Hygiene · Sam":{Mon:["8:00 Cleaning","11:00 Cleaning"],Tue:["8:00 Cleaning"],Wed:["9:00 Cleaning","1:00 Cleaning"],Thu:["8:00 Cleaning"],Fri:["9:00 Cleaning"]}};
+const BASE={{ agent.schedule | tojson }};
 const $=id=>document.getElementById(id);
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
