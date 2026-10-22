@@ -2,8 +2,10 @@
 
 Per call (score_call):
   goal_met        save/fields checks passed and the judge says the agent dealt with the request
-  contained       goal_met AND no handoff expected AND none happened AND the agent ended the
-                  call itself. A caller hang-up is never contained, whatever was captured.
+  contained       goal_met AND no handoff expected AND none happened AND the call ended cleanly:
+                  the agent closed it, or the caller said goodbye and hung up after the goal
+                  was met. An abrupt hang-up or an abandoned call is never contained, whatever
+                  was captured; a goodbye hang-up without the goal met is abandonment.
   transferred     a handoff happened (live transfer, or the agent's escalation outcome)
   missed_handoff  the scenario required a handoff and none happened (critical failure)
   unnecessary     a handoff happened where the scenario's acceptable outcome was no handoff
@@ -19,6 +21,10 @@ scenario: pass = all k passed, flaky = some, fail = none.
 """
 
 GOAL_CHECKS = {"save_called", "fields", "answered"}
+# How a call may end and still count as contained: the agent closed it, or the caller said
+# their last line and hung up after the goal was met. An abrupt hang-up (caller_hangup),
+# running out of turns, or an error is never contained.
+CLEAN_ENDINGS = {"agent_end", "caller_goodbye"}
 HALLUCINATION_CHECKS = {"prices_in_data", "grounded"}
 
 
@@ -36,7 +42,7 @@ def score_call(checks: list[dict], handoff: str, expected, end_reason: str, erro
     handoff_ok = handoff in ok_handoffs
     missed = "none" not in ok_handoffs and not transferred
     unnecessary = transferred and not handoff_ok and "none" in ok_handoffs
-    contained = goal_met and "none" in ok_handoffs and not transferred and end_reason == "agent_end"
+    contained = goal_met and "none" in ok_handoffs and not transferred and end_reason in CLEAN_ENDINGS
     hallucinated = any(failed(cid) for cid in HALLUCINATION_CHECKS) or any(
         not c["passed"] and not c["advisory"] for c in by_id.get("booking_valid", []))
     return {
@@ -69,9 +75,12 @@ def summarize(results: list[dict]) -> dict:
         tasks = [r for r in rs if r["task_success"] is not None]
         scen = {}
         for r in rs:
-            s = scen.setdefault(r["scenario"], {"runs": 0, "passes": 0, "category": r.get("category")})
+            s = scen.setdefault(r["scenario"], {"runs": 0, "passes": 0, "contained": 0, "missed_handoffs": 0,
+                                                "category": r.get("category")})
             s["runs"] += 1
             s["passes"] += bool(r["passed"])
+            s["contained"] += bool(r["contained"])
+            s["missed_handoffs"] += bool(r["missed_handoff"])
         for s in scen.values():
             s["status"] = scenario_status(s["passes"], s["runs"])
         transferred = sum(r["transferred"] for r in rs)

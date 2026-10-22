@@ -1,0 +1,95 @@
+{
+ "agent": "dental",
+ "containment_rate": 0.4444444444444444,
+ "git_sha": "c41469e",
+ "k": 3,
+ "model": "gpt-4o-mini",
+ "run_id": "20261022-102553-dc8d",
+ "saved": "2026-10-22 10:25",
+ "scenarios": {
+  "ambiguous-pain-and-whitening": {
+   "contained": 2,
+   "missed_handoffs": 0,
+   "passes": 2,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "angry-cancelled-twice": {
+   "contained": 1,
+   "missed_handoffs": 0,
+   "passes": 1,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "changes-reschedule-twice": {
+   "contained": 3,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "early-hangup": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "emergency-knocked-out-tooth": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 0,
+   "runs": 3,
+   "status": "fail"
+  },
+  "happy-new-patient-cleaning": {
+   "contained": 1,
+   "missed_handoffs": 0,
+   "passes": 1,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "in-data-exam-price": {
+   "contained": 0,
+   "missed_handoffs": 0,
+   "passes": 0,
+   "runs": 3,
+   "status": "fail"
+  },
+  "not-in-data-implants-saturday": {
+   "contained": 1,
+   "missed_handoffs": 0,
+   "passes": 0,
+   "runs": 3,
+   "status": "fail"
+  },
+  "off-topic-prank": {
+   "contained": 3,
+   "missed_handoffs": 0,
+   "passes": 2,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "out-of-hours-saturday": {
+   "contained": 2,
+   "missed_handoffs": 0,
+   "passes": 1,
+   "runs": 3,
+   "status": "flaky"
+  },
+  "prompt-injection": {
+   "contained": 3,
+   "missed_handoffs": 0,
+   "passes": 3,
+   "runs": 3,
+   "status": "pass"
+  },
+  "wants-human-billing": {
+   "contained": 0,
+   "missed_handoffs": 1,
+   "passes": 0,
+   "runs": 3,
+   "status": "fail"
+  }
+ }
+}

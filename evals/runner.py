@@ -46,8 +46,9 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
                 end_reason = "agent_end"
                 break
             if hung_up:
-                # the caller said goodbye and hung up; the agent got that last line but never closed
-                end_reason = "caller_hangup"
+                # the caller said their last line and hung up; the agent replied but never closed.
+                # Contained only if the goal was met (see metrics.py); otherwise it's abandonment.
+                end_reason = "caller_goodbye"
                 break
             caller.hear(reply.text)
     except llm.BudgetExceeded:

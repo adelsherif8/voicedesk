@@ -39,3 +39,19 @@ def print_summary(run: dict) -> None:
         print("PATCHED AGENT (deliberate breakage): " + "; ".join(run["patches"]))
     if run["aborted"]:
         print(f"ABORTED: cost cap reached ({run['aborted']})")
+
+
+def print_comparison(agent: str, cmp: dict) -> None:
+    c_base, c_now = cmp["containment"]
+    print(f"\n{agent}: vs baseline {cmp['baseline_run']} (k={cmp['baseline_k']}), {cmp['shared']} shared scenarios, "
+          f"containment {pct(c_base).strip()} -> {pct(c_now).strip()}")
+    for line in cmp["regressions"]:
+        print(f"  REGRESSION  {line}")
+    for line in cmp["warnings"]:
+        print(f"  warning     {line}")
+    for line in cmp["improvements"]:
+        print(f"  improved    {line}")
+    if cmp["new"]:
+        print(f"  new (not in baseline): {', '.join(cmp['new'])}")
+    if not (cmp["regressions"] or cmp["warnings"] or cmp["improvements"]):
+        print("  no change")

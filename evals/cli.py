@@ -1,9 +1,12 @@
-"""python -m evals run --agent dental --k 3   (see --help)"""
+"""python -m evals run --agent dental --k 3   (see --help)
+
+Exit codes: 0 ok, 1 regression against the baseline, 2 usage error, 3 cost cap hit.
+"""
 
 import argparse
 import sys
 
-from evals import config, report, runner, scenario, spec
+from evals import baseline, config, metrics, report, runner, scenario, spec
 
 
 def main(argv=None) -> int:
@@ -21,6 +24,14 @@ def main(argv=None) -> int:
     run.add_argument("--max-cost", type=float, default=config.MAX_COST_USD, help="hard USD cap for the run")
     run.add_argument("--backend", default="openai-text", choices=["openai-text", "retell", "vapi"])
     run.add_argument("--workers", type=int, default=config.WORKERS)
+    run.add_argument("--baseline", choices=["compare", "save", "off"], default="compare",
+                     help="compare with the saved baseline (default), save this run as the baseline, or skip")
+    run.add_argument("--threshold", type=float, default=baseline.CONTAINMENT_DROP,
+                     help="containment drop that counts as a regression (0.10 = 10 points)")
+    run.add_argument("--strict", action="store_true", help="treat pass -> flaky as a regression")
+    run.add_argument("--confirm", type=int, default=2,
+                     help="re-run a scenario that went pass -> fail this many extra times before calling it a "
+                          "regression (0 = off); missed handoffs are never retried")
     a = ap.parse_args(argv)
 
     model = config.PROD_MODEL if a.prod_parity else a.model
@@ -47,7 +58,61 @@ def main(argv=None) -> int:
               f"{r['end_reason']}  ${r['cost_usd']:.4f}", flush=True)
 
     result = runner.run_suite(jobs, a.k, model, a.max_cost, a.backend, a.workers, on_result=progress)
-    path = runner.save(result)
     report.print_summary(result)
-    print(f"results: {path}")
-    return 3 if result["aborted"] else 0
+
+    code = 3 if result["aborted"] else 0
+    if a.baseline == "save":
+        if result["aborted"] or result["patches"]:
+            print("not saving a baseline from an aborted or patched run", file=sys.stderr)
+            code = code or 2
+        else:
+            for p in baseline.save(result):
+                print(f"baseline saved: {p}")
+    elif a.baseline == "compare":
+        result["comparison"] = {}
+        if a.confirm and not result["aborted"]:
+            _confirm_failures(result, jobs, model, a)
+        for agent, summary in result["summary"].items():
+            base = baseline.load(agent, model)
+            if base is None:
+                print(f"\n{agent}: no baseline for {model} (save one with --baseline save)")
+                continue
+            cmp = baseline.compare(base, summary, a.threshold, a.strict)
+            result["comparison"][agent] = cmp
+            report.print_comparison(agent, cmp)
+            if cmp["regressions"]:
+                code = 1
+        if code == 1:
+            print("\nREGRESSION: exit 1")
+    print(f"results: {runner.save(result)}")
+    return code
+
+
+def _confirm_failures(result: dict, jobs: list, model: str, a) -> None:
+    """A single failed attempt of a scenario that passed every baseline attempt may be a flake.
+    Re-run just those scenarios `a.confirm` more times and fold the attempts into the run,
+    so the comparison sees e.g. 0/3 (regression) or 2/3 (newly flaky, a warning)."""
+    retry = []
+    for spec_, scs in jobs:
+        base = baseline.load(spec_.id, model)
+        if not base:
+            continue
+        broke = set(baseline.compare(base, result["summary"][spec_.id], a.threshold)["broke"])
+        if broke:
+            retry.append((spec_, [s for s in scs if s.id in broke]))
+    if not retry:
+        return
+    names = ", ".join(f"{sp.id}/{s.id}" for sp, scs in retry for s in scs)
+    print(f"\nconfirming {names} with {a.confirm} more attempt(s) each...")
+    extra = runner.run_suite(retry, a.confirm, model, max(a.max_cost - result["cost_usd"], 0.01), a.backend, a.workers)
+    for r in extra["results"]:
+        r["attempt"] += result["k"]
+        r["confirmation"] = True
+    result["results"] = sorted(result["results"] + extra["results"], key=lambda r: (r["agent"], r["scenario"], r["attempt"]))
+    result["cost_usd"] = round(result["cost_usd"] + extra["cost_usd"], 4)
+    result["aborted"] = result["aborted"] or extra["aborted"]
+    result["summary"] = metrics.summarize(result["results"])
+    for sp, scs in retry:
+        for s in scs:
+            st = result["summary"][sp.id]["scenarios"][s.id]
+            print(f"  {sp.id}/{s.id}: {st['passes']}/{st['runs']} -> {st['status']}")

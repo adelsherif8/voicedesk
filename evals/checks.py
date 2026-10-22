@@ -112,7 +112,8 @@ def code_checks(spec, sc, transcript: list, runtime, end_reason: str) -> list[di
         out.append(check("prices_in_data", True, "every amount quoted is in the data"))
 
     # 5. the call ended cleanly: the agent closed it (end_call), after saving, and not by
-    #    hanging up silently right after the caller asked something
+    #    hanging up silently right after the caller asked something. A caller's goodbye
+    #    hang-up is advisory; an abrupt hang-up, running out of turns or an error fails.
     if sc.expect.get("clean_end", True):
         last = len(transcript) - 1
         prev = transcript[-2] if len(transcript) >= 2 else {}
@@ -122,6 +123,10 @@ def code_checks(spec, sc, transcript: list, runtime, end_reason: str) -> list[di
             out.append(check("clean_end", False, f"agent hung up on an unanswered question: {prev['text'][:80]!r}", last))
         elif end_reason == "agent_end":
             out.append(check("clean_end", True, "agent ended the call"))
+        elif end_reason == "caller_goodbye":
+            # a normal ending on a real phone; reported, but it doesn't fail the call
+            out.append(check("clean_end", False, "caller said goodbye and hung up; the agent never called end_call",
+                             last, advisory=True))
         else:
             out.append(check("clean_end", False, {
                 "caller_hangup": "caller hung up; the agent never closed the call",

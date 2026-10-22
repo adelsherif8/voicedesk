@@ -24,11 +24,24 @@ def test_completed_call_ended_by_agent_is_contained():
     assert call()["contained"] is True
 
 
-def test_hangup_is_never_contained_even_when_everything_was_captured():
-    # the goal checks all passed, but the caller hung up instead of the agent closing the call
+def test_abrupt_hangup_is_never_contained_even_when_everything_was_captured():
+    # the goal checks all passed, but the caller hung up mid-call
     r = call(end="caller_hangup")
     assert r["goal_met"] is True
     assert r["contained"] is False
+
+
+def test_goodbye_hangup_after_goal_met_is_contained():
+    assert call(end="caller_goodbye")["contained"] is True
+
+
+def test_goodbye_hangup_without_goal_met_is_abandonment_not_containment():
+    checks = [c if c["id"] != "fields" else chk("fields", False) for c in GOOD]
+    assert call(checks=checks, end="caller_goodbye")["contained"] is False
+
+
+def test_goodbye_hangup_while_a_handoff_was_required_is_not_contained():
+    assert call(end="caller_goodbye", expected="emergency")["contained"] is False
 
 
 def test_abandoned_call_is_not_contained():
@@ -107,7 +120,7 @@ def test_classify_items_never_fail_a_call():
 # --- per-agent summary -------------------------------------------------------------
 
 def test_rates_are_over_all_calls_including_hangups():
-    rs = [call(scenario="ok"), call(scenario="ok"), call(scenario="gone", end="caller_hangup"),
+    rs = [call(scenario="ok"), call(scenario="ok", end="caller_goodbye"), call(scenario="gone", end="caller_hangup"),
           call(scenario="esc", handoff="emergency", expected="emergency")]
     m = summarize(rs)["a"]
     assert m["calls"] == 4

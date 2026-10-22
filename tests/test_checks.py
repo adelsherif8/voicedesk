@@ -172,3 +172,9 @@ def test_advisory_field_rules_report_separately(dental):
     got = {c["id"]: c for c in checks.code_checks(dental, s, tr, rt, "agent_end")}
     assert got["fields"]["passed"] is True
     assert got["fields_known_gap"]["passed"] is False and got["fields_known_gap"]["advisory"] is True
+
+
+def test_goodbye_hangup_is_advisory_clean_end(dental):
+    ce = next(c for c in checks.code_checks(dental, sc(save="optional"), [agent("Hi", 0), caller("bye", 1), agent("Bye!", 1)],
+                                            ToolRuntime(dental), "caller_goodbye") if c["id"] == "clean_end")
+    assert ce["passed"] is False and ce["advisory"] is True
