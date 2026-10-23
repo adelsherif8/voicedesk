@@ -63,6 +63,16 @@ def records(agent: str = "all"):
                         for r in db.list_records(agent)]}
 
 
+@app.get("/api/insights/{agent}")
+def api_insights(agent: str):
+    """Operator brief for one agent's recent calls, generated on Amazon Bedrock (AWS deployment only)."""
+    from app import bedrock
+    if agent not in AGENTS_BY_ID:
+        return JSONResponse({"error": f"unknown agent {agent}"}, status_code=404)
+    out = bedrock.insights(agent_name(agent), db.list_records(agent, limit=20))
+    return JSONResponse(out, status_code=200 if "error" not in out else 503)
+
+
 @app.get("/agent/{aid}", response_class=HTMLResponse)
 def agent_view(aid: str, request: Request):
     if aid not in AGENTS_BY_ID:

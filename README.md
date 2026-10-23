@@ -115,3 +115,20 @@ Text mode only: no audio, latency, barge-in or speech-recognition errors. Simula
 are LLMs and can still be more cooperative than real people. gpt-4o-mini behaves
 differently from the production gpt-4.1, so treat a mini pass as a smoke test and use
 `--prod-parity` before a client deploy.
+
+## AWS deployment (Terraform)
+
+`infra/aws/` deploys VoiceDesk to **AWS Lambda** (Python 3.12, via Mangum) behind a public **Lambda function URL**,
+entirely in **Terraform**: least-privilege IAM role (logs + one Bedrock model), CloudWatch log group with 3-day
+retention, both function-URL permissions, and a 1 USD **AWS Budgets** alert.
+
+- `GET /api/insights/{agent}` — an operator brief generated on **Amazon Bedrock** (Amazon Nova Micro, Converse API)
+  from the agent's most recent calls: top intents, missed opportunities, next actions. Capped per day; Bedrock
+  errors return a clear 503.
+- SQLite lives in `/tmp` (seeded from the bundled snapshot on cold start), like the free Render disk.
+
+```bash
+infra/aws/build.sh                      # Linux wheels + app into infra/aws/build
+cd infra/aws && terraform init && terraform apply
+```
+Live: https://authqszifcagyyl6yhxzjrvufa0nrqvo.lambda-url.us-east-1.on.aws/ (e.g. `/api/insights/receptionist`)

@@ -1,0 +1,5 @@
+build/
+*.zip
+.terraform/
+*.tfstate*
+.terraform.lock.hcl.bak

@@ -3,3 +3,4 @@ fastapi
 uvicorn[standard]
 jinja2
 python-multipart
+mangum>=0.19
