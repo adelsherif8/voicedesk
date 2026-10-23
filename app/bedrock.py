@@ -36,10 +36,15 @@ def insights(agent_name: str, records: list[dict]) -> dict:
               f"records as JSON:\n{json.dumps(rows, default=str)}\n\nWrite a brief for the business owner with three "
               "short sections: Top intents (with counts), Missed opportunities, Next actions. Use only these records; "
               "under 120 words.")
+    from botocore.exceptions import BotoCoreError, ClientError
     client = boto3.client("bedrock-runtime", region_name=os.getenv("AWS_REGION", "us-east-1"))
-    resp = client.converse(modelId=os.environ["BEDROCK_MODEL_ID"],
-                           messages=[{"role": "user", "content": [{"text": prompt}]}],
-                           inferenceConfig={"maxTokens": 300, "temperature": 0.2})
+    try:
+        resp = client.converse(modelId=os.environ["BEDROCK_MODEL_ID"],
+                               messages=[{"role": "user", "content": [{"text": prompt}]}],
+                               inferenceConfig={"maxTokens": 300, "temperature": 0.2})
+    except (ClientError, BotoCoreError) as e:   # throttling, access, verification: a clear 503, never a raw 500
+        code = getattr(e, "response", {}).get("Error", {}).get("Code", type(e).__name__)
+        return {"error": f"Bedrock unavailable ({code}). Try again later.", "agent": agent_name}
     text = resp["output"]["message"]["content"][0]["text"]
     return {"agent": agent_name, "brief": text, "model": os.environ["BEDROCK_MODEL_ID"],
             "usage": resp.get("usage", {}), "records_used": len(rows)}
