@@ -132,3 +132,7 @@ infra/aws/build.sh                      # Linux wheels + app into infra/aws/buil
 cd infra/aws && terraform init && terraform apply
 ```
 Live: https://authqszifcagyyl6yhxzjrvufa0nrqvo.lambda-url.us-east-1.on.aws/ (e.g. `/api/insights/receptionist`)
+
+---
+
+Built by **Adel Atya**, AI engineer: AI voice agents, agentic systems and automation for businesses. [adelatya.com](https://adelatya.com)
