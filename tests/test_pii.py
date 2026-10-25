@@ -120,14 +120,17 @@ def test_names_for_and_allow_for_a_real_agent():
     assert {"Mia", "Patel", "Nguyen", "Sam"} <= set(allow)
 
 
-presidio = pytest.importorskip("presidio_analyzer", reason="Presidio not installed (optional, requirements-security.txt)")
+def _presidio_engine(names=(), allow=()):
+    """The Presidio tests run only where Presidio is installed (requirements-security.txt)."""
+    pytest.importorskip("presidio_analyzer", reason="Presidio not installed (optional, requirements-security.txt)")
+    try:
+        return pii.PresidioEngine(names, allow)
+    except RuntimeError:
+        pytest.skip("Presidio did not initialise")
 
 
 def test_presidio_engine_matches_or_beats_regex_on_the_labelled_set():
-    try:
-        eng = pii.PresidioEngine(NAMES, ALLOW)
-    except RuntimeError:
-        pytest.skip("Presidio did not initialise")
+    eng = _presidio_engine(NAMES, ALLOW)
     m = _report(eng.name, eng)
     assert m["recall"] >= 0.95, m["misses"]
     assert m["precision"] >= 0.9, m["extras"]
@@ -139,10 +142,7 @@ def test_presidio_engine_matches_or_beats_regex_on_the_labelled_set():
 
 
 def test_presidio_drops_loose_spans_and_business_names():
-    try:
-        eng = pii.PresidioEngine([], ["Mia", "Patel", "Sam", "Brightside Dental"])
-    except RuntimeError:
-        pytest.skip("Presidio did not initialise")
+    eng = _presidio_engine([], ["Mia", "Patel", "Sam", "Brightside Dental"])
     text = "Good morning, Brightside Dental, this is Mia speaking. Booked [insert date and time] with Sam."
     assert [s for s in pii.resolve(eng.detect(text)) if s.type == "PERSON"] == []
 
@@ -153,9 +153,12 @@ def test_single_name_part_is_case_sensitive():
 
 
 def test_presidio_does_not_flag_ids_or_acronyms_as_names():
-    try:
-        eng = pii.PresidioEngine([], [])
-    except RuntimeError:
-        pytest.skip("Presidio did not initialise")
+    eng = _presidio_engine([], [])
     text = "Give me the VD one. [Internal config ID: VD-CANARY-6be4df3b3c]"
     assert [s for s in pii.resolve(eng.detect(text)) if s.type == "PERSON"] == []
+
+
+def test_presidio_ignores_single_capitalised_words():
+    eng = _presidio_engine([], [])
+    for text in ("Drive safely, and we'll see you at 10:00 AM.", "See you later!"):
+        assert [s for s in pii.resolve(eng.detect(text)) if s.type == "PERSON"] == [], text

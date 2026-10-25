@@ -251,7 +251,8 @@ class PresidioEngine:
                 words = re.findall(r"[A-Za-z]+", frag)
                 # spaCy spans are loose ("Mia speaking", "[insert date"): keep only capitalised
                 # names that contain no business name and aren't placeholder text
-                if (r.score < 0.7 or not words or not frag[0].isupper() or "<" in frag or "[" in frag
+                # single words ("Drive safely", "See you") are left to the name dictionary
+                if (r.score < 0.7 or len(words) < 2 or not frag[0].isupper() or "<" in frag or "[" in frag
                         or any(ch.isdigit() for ch in frag)
                         or not all(_TITLE_WORD.fullmatch(w) for w in frag.replace("’", "'").split())
                         or any(w.lower() in self.allow_tokens for w in words)):
