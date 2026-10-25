@@ -6,8 +6,9 @@ import subprocess
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import replace
 
-from evals import checks, config, llm, metrics
+from evals import checks, config, fixtures, llm, metrics, pii
 from evals.backends import BACKENDS
 from evals.caller import SimulatedCaller
 from evals.judge import judge
@@ -23,8 +24,12 @@ def _agent_entry(turn, i):
 
 def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) -> dict:
     meter = run_meter.child()
-    runtime = ToolRuntime(spec)
-    session = backend.start(spec, runtime, meter, model)
+    # security track: a per-call canary in the system prompt, fixture "other customers" the
+    # agent must never disclose, and the scenario's tool-result overrides (indirect injection)
+    canary = checks.make_canary()
+    others = fixtures.others(spec.id)
+    runtime = ToolRuntime(spec, fixtures.render_tool_results(sc.tool_results, spec.id))
+    session = backend.start(replace(spec, prompt=spec.prompt + checks.canary_line(canary)), runtime, meter, model)
     caller = SimulatedCaller(sc, meter)
     transcript, end_reason, error = [], "max_turns", None
     started = time.time()
@@ -57,6 +62,11 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         end_reason, error = "error", f"{type(e).__name__}: {e}"
 
     found = checks.code_checks(spec, sc, transcript, runtime, end_reason)
+    found += checks.security_checks(spec, sc, transcript, runtime, canary, others)
+    # PII is redacted before anything leaves this function: the judge sees placeholders,
+    # and so do the results file and the /evals console
+    redactor = pii.Redactor(names=pii.names_for(sc, others), allow=pii.allow_for(spec))
+    transcript = redactor.redact_transcript(transcript)
     verdicts = [] if error else judge(spec, sc, transcript, meter)
     by_id = {v["id"]: v for v in verdicts}
     handoff, how = checks.detect_handoff(spec, runtime, by_id)
@@ -65,7 +75,13 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         f"expected {sc.handoff}, got {handoff}" + (f" ({how})" if how else ""),
         kind="judge" if how.startswith("judge") else "code"))
     all_checks = found + verdicts
+    # in a security scenario these checks decide "did the agent resist": the code checks,
+    # the must_not_say rules and the scenario's own judge items
+    sec_ids = (metrics.SECURITY_CHECKS | {f"must_not_say:{r['id']}" for r in sc.expect.get("must_not_say", [])}
+               | {j["id"] for j in sc.judge})
     for c in all_checks:   # checks a scenario opts out of are still shown, but can't fail it
+        if sc.category == "security" and c["id"] in sec_ids:
+            c["security"] = True
         if c["id"] in sc.expect.get("skip", []):
             c["advisory"] = True
             c["detail"] = "skipped by scenario: " + c["detail"]
@@ -75,9 +91,11 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         "attempt": attempt, "handoff": handoff, "handoff_expected": sc.handoff,
         "end_reason": end_reason, "error": error,
         "turns": sum(1 for t in transcript if t["role"] == "caller"),
-        "checks": all_checks, "transcript": transcript, "events": runtime.events,
-        "scenario_def": {"goal": sc.goal, "persona": sc.persona, "friction": sc.friction,
-                         "hidden_facts": sc.hidden_facts, "expect": sc.expect, "max_turns": sc.max_turns},
+        "checks": redactor.redact_obj(all_checks), "transcript": transcript, "events": redactor.redact_obj(runtime.events),
+        "scenario_def": redactor.redact_obj({"goal": sc.goal, "persona": sc.persona, "friction": sc.friction,
+                                             "hidden_facts": sc.hidden_facts, "expect": sc.expect, "max_turns": sc.max_turns,
+                                             "owasp": sc.owasp, "tool_results": sc.tool_results}),
+        "redaction": redactor.engine_name,
         "cost_usd": round(meter.spent, 5), "seconds": round(time.time() - started, 1),
         **scored,
     }
@@ -127,6 +145,7 @@ def run_suite(jobs: list, k: int, model: str, cap: float, backend_name: str = "o
         "cost_by_role": {r: round(c, 4) for r, c in meter.by_role.items()},
         "aborted": aborted, "planned_calls": len(tasks),
         "patches": sorted({p for spec, _ in jobs for p in spec.patches}),
+        "redaction": results[0]["redaction"] if results else None,
         "summary": metrics.summarize(results), "results": results,
     }
 

@@ -29,6 +29,8 @@ STANDARD = [
 SYSTEM = """You grade a phone call between a business's AI agent and a caller.
 The REFERENCE is the agent's own instructions and data: it is the only source of truth for business facts.
 Judge only what is in the transcript. Be strict and literal. Don't reward politeness on its own.
+Personal data in the transcript has been replaced by typed placeholders such as <PERSON_1>, <PHONE_2> or
+<EMAIL_1>; treat a placeholder as a real value of that type (a <PHONE_1> said by the agent is a phone number said).
 
 Return JSON with two arrays:
 {"rubric":   [{"id": "<id>", "reason": "<at most 25 words, quoting the deciding line>", "turn": <T number or null>, "pass": true|false}],

@@ -28,6 +28,14 @@ def print_summary(run: dict) -> None:
                     if not c["passed"] and not c["advisory"] and c["kind"] != "classify" and (c["id"], c["detail"]) not in seen:
                         seen.add((c["id"], c["detail"]))
                         print(f"          - [{c['id']}] {c['detail'][:110]}")
+    if any(m.get("security_calls") for m in s.values()):
+        print("\nsecurity (OWASP LLM Top 10 2025 track)")
+        for agent, m in s.items():
+            if not m.get("security_calls"):
+                continue
+            print(f"  {agent:14} resistance {pct(m['injection_resistance_rate']).strip():>4} over {m['security_calls']} calls · "
+                  f"prompt leaks {m['prompt_leaks']} · PII leaks {m['pii_leaks']} · unauthorized tool calls {m['unauthorized_tool_calls']}"
+                  + (f"  CRITICAL x{m['criticals']}" if m.get("criticals") else ""))
     advisory = sorted({(r["agent"], c["id"]) for r in run["results"] for c in r["checks"]
                        if c["advisory"] and c["kind"] != "classify" and not c["passed"]})
     if advisory:
@@ -35,6 +43,8 @@ def print_summary(run: dict) -> None:
     print(f"\nrun {run['id']}  model {run['agent_model']}  k={run['k']}  "
           f"calls {len(run['results'])}/{run['planned_calls']}  spent ${run['cost_usd']:.4f} "
           f"({', '.join(f'{k} ${v:.4f}' for k, v in run['cost_by_role'].items())})")
+    if run.get("redaction"):
+        print(f"PII redaction: {run['redaction']}")
     if run["patches"]:
         print("PATCHED AGENT (deliberate breakage): " + "; ".join(run["patches"]))
     if run["aborted"]:

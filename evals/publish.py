@@ -6,6 +6,10 @@
      when its tables are empty (Render's free disk is wiped on every deploy)
 The snapshot keeps the latest full run per model with transcripts, plus summary-only
 history for the trend lines, so it stays small.
+
+Publish guard: both steps first scan the run (transcripts, tool events, check details,
+scenario definitions) with the deterministic PII detector plus the dictionary of every
+persona and fixture name. Any hit raises PIIDetected and nothing is written or sent.
 """
 
 import json
@@ -13,9 +17,21 @@ import os
 import urllib.error
 import urllib.request
 
-from evals import config
+from evals import config, pii
 
 SNAPSHOT = config.RESULTS_DIR / "published.json"
+
+
+class PIIDetected(RuntimeError):
+    pass
+
+
+def guard(run: dict) -> None:
+    """Raise PIIDetected if any result in `run` still holds detectable personal data."""
+    found = pii.scan_run(run, pii.known_names())
+    if found:
+        shown = "; ".join(f"{f['type']} at {f['path']}" for f in found[:5])
+        raise PIIDetected(f"{len(found)} PII value(s) in the run: {shown}" + (" ..." if len(found) > 5 else ""))
 HISTORY = 20
 DEFAULT_URL = os.getenv("EVALS_PUBLISH_URL", "http://127.0.0.1:8000")
 
@@ -25,6 +41,7 @@ def summary_only(run: dict) -> dict:
 
 
 def update_snapshot(run: dict) -> str:
+    guard(run)
     snap = json.loads(SNAPSHOT.read_text()) if SNAPSHOT.exists() else {"history": [], "latest": {}}
     history = [h for h in snap["history"] if h["id"] != run["id"]] + [summary_only(run)]
     snap["history"] = sorted(history, key=lambda h: h["created"])[-HISTORY:]
@@ -35,6 +52,7 @@ def update_snapshot(run: dict) -> str:
 
 
 def post(run: dict, url: str = DEFAULT_URL) -> str:
+    guard(run)
     req = urllib.request.Request(
         url.rstrip("/") + "/evals/ingest", method="POST", data=json.dumps(run).encode(),
         headers={"Content-Type": "application/json",

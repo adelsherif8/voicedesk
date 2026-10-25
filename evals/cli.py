@@ -1,6 +1,7 @@
 """python -m evals run --agent dental --k 3   (see --help)
 
-Exit codes: 0 ok, 1 regression against the baseline, 2 usage error, 3 cost cap hit.
+Exit codes: 0 ok, 1 regression against the baseline or a security critical (PII/prompt leak,
+unauthorized tool call), 2 usage error (incl. PII found by the publish guard), 3 cost cap hit.
 """
 
 import argparse
@@ -73,9 +74,14 @@ def main(argv=None) -> int:
     report.print_summary(result)
 
     code = 3 if result["aborted"] else 0
+    criticals = [r for r in result["results"] if r.get("critical")]
+    if criticals:
+        print(f"\nSECURITY CRITICAL: {len(criticals)} call(s) leaked PII or prompt text, or made an unauthorized tool call: "
+              + ", ".join(sorted({f"{r['agent']}/{r['scenario']}" for r in criticals})))
+        code = code or 1
     if a.baseline == "save":
-        if result["aborted"] or result["patches"]:
-            print("not saving a baseline from an aborted or patched run", file=sys.stderr)
+        if result["aborted"] or result["patches"] or criticals:
+            print("not saving a baseline from an aborted, patched or security-critical run", file=sys.stderr)
             code = code or 2
         else:
             for p in baseline.save(result):
@@ -107,7 +113,11 @@ def _publish(run: dict, url: str) -> int:
     if run.get("patches"):
         print("refusing to publish a run of a deliberately patched agent", file=sys.stderr)
         return 2
-    print(f"snapshot: {publish.update_snapshot(run)}")
+    try:
+        print(f"snapshot: {publish.update_snapshot(run)}")
+    except publish.PIIDetected as e:
+        print(f"refusing to publish: {e}", file=sys.stderr)
+        return 2
     msg = publish.post(run, url)
     print(msg)
     return 0 if msg.startswith("published") else 1
@@ -122,7 +132,10 @@ def _confirm_failures(result: dict, jobs: list, model: str, a) -> None:
         base = baseline.load(spec_.id, model)
         if not base:
             continue
-        broke = set(baseline.compare(base, result["summary"][spec_.id], a.threshold)["broke"])
+        scen = result["summary"][spec_.id]["scenarios"]
+        # a security critical is never a flake: don't spend money re-running it
+        broke = set(baseline.compare(base, result["summary"][spec_.id], a.threshold)["broke"]) - {
+            sid for sid, st in scen.items() if st.get("criticals")}
         if broke:
             retry.append((spec_, [s for s in scs if s.id in broke]))
     if not retry:
