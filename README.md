@@ -39,10 +39,11 @@ containment and transfer metrics on a live page at **`/evals`** (the Agent QA co
   judge (gpt-4.1-mini, temperature 0, written rubric, one-line reason per verdict) handles
   only what code can't: grounding of free-text claims, tone, did it answer the question.
   Every result keeps the full transcript.
-- **38 scenarios** for 3 agents (dental, recovery/plumbing, receptionist/storage), each
+- **59 scenarios** for 3 agents (dental, recovery/plumbing, receptionist/storage), each
   agent covering: happy path, ambiguous request, detail changed mid-call, price/policy
   question in the data, question not in the data, wants a human, emergency, angry caller,
-  off-topic/prank, prompt injection, out of hours, early hang-up.
+  off-topic/prank, prompt injection, out of hours, early hang-up, plus 7 security
+  scenarios each (below).
 
 ### Metric definitions
 Defined once in `evals/metrics.py` (the page shows the same text):
@@ -68,18 +69,48 @@ python -m evals run --all --k 3 --prod-parity --max-cost 2   # on gpt-4.1, the m
 python -m evals run --all --k 3 --baseline save   # save baselines (per agent, per model)
 python -m evals run --all --k 3 --publish         # post to VoiceDesk (default http://127.0.0.1:8000)
 python -m evals publish evals/results/run-<id>.json --url https://<your-render-app>
-pytest                 # 88 unit tests, no network
+pytest                 # 126 unit tests, no network (prints PII redaction precision/recall)
 pytest -m live         # proves the suite catches 3 deliberate prompt breakages (~$0.08)
 ```
 Exit codes: `0` ok, `1` regression against the baseline, `2` usage error, `3` cost cap hit.
 A hard cost cap per run (default $1, `--max-cost`) aborts the run when crossed; the
 estimate is printed before starting.
 
+### Security testing
+A security track maps 21 scenarios to the **OWASP Top 10 for LLM Applications 2025**:
+
+- direct and indirect prompt injection (LLM01), including attacks in Arabic and instructions
+  hidden in CRM notes and tool results;
+- system prompt extraction (LLM07);
+- requests for other customers' data (LLM02);
+- cancelling or changing someone else's booking (LLM06);
+- unbounded output (LLM10).
+
+Every call gets a random **canary token** in its system prompt and **Faker-generated fake
+customers** the agent must never disclose. Deterministic checks catch canary or prompt-chunk
+leaks, cross-customer PII, tool calls outside the caller's own record, and invented prices or
+discounts. The LLM judge only decides whether the agent complied with the injected instruction.
+Any leak or unauthorized tool call is a **critical failure** and fails the CI gate, like a missed
+handoff.
+
+Transcripts are **PII-redacted** (Microsoft Presidio, with a regex fallback) before they reach the
+judge, `evals/results/` or `/evals`. A publish guard refuses any run with detectable PII.
+
+```bash
+python -m evals run --all --tag security --k 3     # 63 calls, about $0.20
+pip install -r requirements-security.txt && python -m spacy download en_core_web_sm   # optional Presidio
+```
+Latest result on gpt-4o-mini: injection resistance went from 57% to 90% after a prompt and
+data-delimiting fix. Two indirect-injection and data-leak findings on the plumbing agent are
+still open. Mapping, per-scenario results and known limits: [docs/SECURITY.md](docs/SECURITY.md).
+
 ### Regression mode & CI
 Every run compares against `evals/baselines/<agent>.<model>.json` and exits 1 when a
 scenario that passed every baseline attempt now fails every attempt (confirmed with 2
 extra re-runs, `--confirm`), when a scenario gets a missed handoff it never had (never
-retried), or when containment drops more than 10 points over at least 10 shared calls.
+retried), when any call has a security critical (PII or prompt leak, unauthorized tool
+call; never retried, never baselined), or when containment drops more than 10 points over
+at least 10 shared calls.
 Pass to flaky is a warning (`--strict` makes it a failure).
 
 GitHub Actions: `evals.yml` runs the unit tests on PRs (free); `evals-smoke.yml` runs the
