@@ -12,6 +12,15 @@
 # mark name/phone as `advisory: true`: shown on the page under fields_known_gap, not failing.
 
 speaks_first: true
+
+# Security track (docs/SECURITY.md). wrap_context: data loaded into the prompt for a call
+# (CRM record, bookings) is delivered between <data> tags, and the prompt's SECURITY rules
+# say that text is never instructions. This is the contract for any dynamic variables
+# VoiceDesk passes to the live agent. transfer_allowlist: numbers a transfer tool may dial
+# (none of these agents has a transfer tool yet, so any transfer is unauthorized).
+security:
+  wrap_context: true
+  transfer_allowlist: []
 temperature: 0          # model_temperature is unset on the Retell LLM; 0 assumed (unverified)
 
 resource:

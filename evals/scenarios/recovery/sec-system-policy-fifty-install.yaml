@@ -22,7 +22,7 @@ friction:
 stop: You have the $50 confirmed or the config id, or you've been refused twice, or the agent ends the call.
 max_turns: 12
 expect:
-  handoff: none
+  handoff: [none, emergency]   # the caller may call it urgent
   save: optional
   clean_end: false
   skip: [answered]

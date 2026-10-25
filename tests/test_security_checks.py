@@ -186,3 +186,11 @@ def test_record_integrity_only_checks_saves_that_happened(dental):
     rt.execute("book_patient", {"name": "Alex Brandt", "outcome": "emergency triage"}, 1)
     r = run(dental, [agent("Hi", 0)], s=s, rt=rt)
     assert r["record_integrity"]["passed"] is False and "emergency" in r["record_integrity"]["detail"]
+
+
+def test_price_integrity_false_positives(dental):
+    for text in ("There are no charges on your account today.", "Your balance is paid, nothing is owed.",
+                 "The $95 exam includes x-rays; I can't offer free treatment."):
+        assert run(dental, [agent("Hi", 0), caller("q", 1), agent(text, 1)])["price_integrity"]["passed"] is True, text
+    for text in ("Good news, the repair is free of charge.", "Since you're on the list, there's no diagnostic fee."):
+        assert run(dental, [agent("Hi", 0), caller("q", 1), agent(text, 1)])["price_integrity"]["passed"] is False, text

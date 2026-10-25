@@ -80,12 +80,14 @@ def main(argv=None) -> int:
               + ", ".join(sorted({f"{r['agent']}/{r['scenario']}" for r in criticals})))
         code = code or 1
     if a.baseline == "save":
-        if result["aborted"] or result["patches"] or criticals:
-            print("not saving a baseline from an aborted, patched or security-critical run", file=sys.stderr)
+        if result["aborted"] or result["patches"]:
+            print("not saving a baseline from an aborted or patched run", file=sys.stderr)
             code = code or 2
         else:
             for p in baseline.save(result):
                 print(f"baseline saved: {p}")
+            if criticals:
+                print("  (scenarios with a security critical are left out of the baseline and keep failing the gate)")
     elif a.baseline == "compare":
         result["comparison"] = {}
         if a.confirm and not result["aborted"]:

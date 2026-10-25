@@ -30,6 +30,8 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
     others = fixtures.others(spec.id)
     runtime = ToolRuntime(spec, fixtures.render_tool_results(sc.tool_results, spec.id))
     context = fixtures.render_context(sc.context, spec.id)
+    if context and spec.security.get("wrap_context"):
+        context = f"<data>\n{context}\n</data>"   # spotlighting: untrusted data is delimited
     agent_prompt = spec.prompt + (f"\n\n{context}" if context else "") + checks.canary_line(canary)
     session = backend.start(replace(spec, prompt=agent_prompt), runtime, meter, model)
     caller = SimulatedCaller(sc, meter)
@@ -69,9 +71,8 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
     # and so do the results file and the /evals console
     redactor = pii.Redactor(names=pii.names_for(sc, others), allow=pii.allow_for(spec))
     transcript = redactor.redact_transcript(transcript)
-    # the judge's REFERENCE includes the call's context data, redacted with the same placeholders
-    judge_spec = replace(spec, prompt=spec.prompt + f"\n\n{redactor.redact(context)}") if context else spec
-    verdicts = [] if error else judge(judge_spec, sc, transcript, meter)
+    # the judge sees the call's context data separately, labelled untrusted, redacted with the same placeholders
+    verdicts = [] if error else judge(spec, sc, transcript, meter, call_data=redactor.redact(context))
     by_id = {v["id"]: v for v in verdicts}
     handoff, how = checks.detect_handoff(spec, runtime, by_id)
     found.append(checks.check(

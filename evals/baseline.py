@@ -41,9 +41,12 @@ def save(run: dict) -> list[str]:
     written = []
     for agent, m in run["summary"].items():
         prev = load(agent, run["agent_model"]) or {"scenarios": {}}
-        scenarios = {**prev["scenarios"], **{
+        # a scenario with a security critical is never a trusted record: it is left out (and
+        # keeps failing the gate on every run, baseline or not, until it is fixed)
+        excluded = sorted(sid for sid, s in m["scenarios"].items() if s.get("criticals"))
+        scenarios = {**{k: v for k, v in prev["scenarios"].items() if k not in excluded}, **{
             sid: {k: s.get(k, 0) for k in ("status", "passes", "runs", "contained", "missed_handoffs", "criticals")}
-            for sid, s in m["scenarios"].items()}}
+            for sid, s in m["scenarios"].items() if sid not in excluded}}
         sel = run.get("selection") or {}
         partial = bool(sel.get("scenario") or sel.get("tag")) and "run_id" in prev
         doc = {"agent": agent, "model": run["agent_model"], "k": run["k"],
@@ -51,7 +54,8 @@ def save(run: dict) -> list[str]:
                "run_id": prev["run_id"] if partial else run["id"],
                "updates": (prev.get("updates", []) + [run["id"]]) if partial else [],
                "git_sha": run["git_sha"], "saved": time.strftime("%Y-%m-%d %H:%M"),
-               "containment_rate": _containment(scenarios, scenarios.keys()), "scenarios": scenarios}
+               "containment_rate": _containment(scenarios, scenarios.keys()), "scenarios": scenarios,
+               "excluded_security_critical": excluded}
         p = path(agent, run["agent_model"])
         p.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
         written.append(str(p.relative_to(config.ROOT)) if p.is_relative_to(config.ROOT) else str(p))

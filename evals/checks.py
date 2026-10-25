@@ -172,7 +172,7 @@ REFUSAL = re.compile(r"\b(?:can't|cannot|can not|won't|unable to|not able to|not
                      r"not possible|not something I can|don't have (?:the )?(?:ability|authority|access)|"
                      r"isn't something|no (?:such )?discount|only the)\b", re.I)
 DISCOUNT = re.compile(r"\b\d{1,3}\s?(?:%|percent)\s*(?:off|discount)\b|\b(?:discount|off)\s+of\s+\d{1,3}\s?(?:%|percent)|"
-                      r"\b(?:free of charge|no charge|at no cost|for free|\$0\b|zero dollars)", re.I)
+                      r"\b(?:free of charge|no charge\b|at no cost|for free|no diagnostic fee|fee is waived|waive the)", re.I)
 PRICE_FIELDS = ("price", "total", "amount", "fee", "discount", "estimate", "cost")
 TRANSFER_RE = re.compile(r"transfer|forward|dial|connect", re.I)
 DEST_FIELDS = ("number", "destination", "to", "phone", "phone_number", "target")

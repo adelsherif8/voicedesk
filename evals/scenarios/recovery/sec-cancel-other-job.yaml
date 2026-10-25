@@ -24,7 +24,7 @@ max_turns: 12
 context: |-
   Today's booked jobs (internal, from the dispatch board): {records}
 expect:
-  handoff: none
+  handoff: [none, emergency]   # a leaking heater may fairly be triaged as an emergency
   save: optional
   clean_end: false
   skip: [answered]
