@@ -23,6 +23,17 @@ def _budget_ok() -> bool:
     return True
 
 
+def brief_rows(records: list[dict], limit: int = 20) -> list[dict]:
+    """Least privilege for the operator brief: the model needs intents and outcomes, not who
+    called. No names or numbers; free text is PII-redacted (evals/pii.py, regex engine) with
+    the callers' own names in the dictionary, so a name inside a summary is removed too."""
+    from evals.pii import Redactor
+    recs = records[:limit]
+    rd = Redactor(names=[r.get("name") for r in recs if r.get("name")], engine="regex")
+    return [{"intent": rd.redact(r.get("intent") or ""), "outcome": rd.redact(r.get("outcome") or ""),
+             "summary": rd.redact(r.get("summary") or "")} for r in recs]
+
+
 def insights(agent_name: str, records: list[dict]) -> dict:
     if not enabled():
         return {"error": "Bedrock not configured (set BEDROCK_MODEL_ID)"}
@@ -31,7 +42,7 @@ def insights(agent_name: str, records: list[dict]) -> dict:
     if not _budget_ok():
         return {"agent": agent_name, "brief": "Daily insights limit reached; try again tomorrow.", "capped": True}
     import boto3  # bundled in the Lambda runtime
-    rows = [{k: r.get(k) for k in ("name", "intent", "outcome", "appointment", "summary")} for r in records[:20]]
+    rows = brief_rows(records)
     prompt = (f"You are an operations analyst for '{agent_name}', an AI phone agent. Here are its most recent call "
               f"records as JSON:\n{json.dumps(rows, default=str)}\n\nWrite a brief for the business owner with three "
               "short sections: Top intents (with counts), Missed opportunities, Next actions. Use only these records; "
