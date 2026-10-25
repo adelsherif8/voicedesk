@@ -67,3 +67,11 @@ def test_partial_save_keeps_the_full_baseline_run(tmp_path, monkeypatch):
     baseline.save(run("part", ["s2"], {"scenario": "s2"}))
     d = baseline.load("a", "m")
     assert d["run_id"] == "full" and d["updates"] == ["part"] and set(d["scenarios"]) == {"s1", "s2"}
+
+
+def test_security_critical_is_always_a_regression_even_for_a_new_scenario():
+    n = now(a={**sc("pass", 3, 3), "criticals": 0}, newsec={**sc("fail", 0, 3), "criticals": 1})
+    r = compare(base(a=sc("pass", 3, 3)), n)
+    assert any("newsec: security critical" in x and "[critical]" in x for x in r["regressions"])
+    clean = compare(base(a=sc("pass", 3, 3)), now(a={**sc("pass", 3, 3), "criticals": 0}))
+    assert clean["regressions"] == []

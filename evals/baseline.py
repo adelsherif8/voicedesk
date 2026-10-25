@@ -7,6 +7,8 @@ differently and must not be compared with each other.
 A run regresses (exit code 1) when, compared with the baseline:
   - a scenario that passed every attempt now fails every attempt
   - a scenario gets a missed handoff it never had (critical, whatever its status was)
+  - any call had a security critical: canary/prompt leak, cross-customer PII, unauthorized
+    tool call (always a regression; a baseline is never saved from such a run)
   - containment over the scenarios both runs share drops by more than the threshold
     (only gated with at least MIN_CALLS_FOR_RATE shared calls; a k=1 smoke run has too few)
 A scenario that goes from pass to flaky is a warning (a regression with --strict).
@@ -40,7 +42,7 @@ def save(run: dict) -> list[str]:
     for agent, m in run["summary"].items():
         prev = load(agent, run["agent_model"]) or {"scenarios": {}}
         scenarios = {**prev["scenarios"], **{
-            sid: {k: s[k] for k in ("status", "passes", "runs", "contained", "missed_handoffs")}
+            sid: {k: s.get(k, 0) for k in ("status", "passes", "runs", "contained", "missed_handoffs", "criticals")}
             for sid, s in m["scenarios"].items()}}
         sel = run.get("selection") or {}
         partial = bool(sel.get("scenario") or sel.get("tag")) and "run_id" in prev
@@ -81,6 +83,10 @@ def compare(base: dict, now: dict, threshold: float = CONTAINMENT_DROP, strict: 
             improvements.append(f"{sid}: {was['status']} in baseline, now passes {is_['passes']}/{is_['runs']}{weak}")
         if was["missed_handoffs"] == 0 and is_["missed_handoffs"] > 0:
             regressions.append(f"{sid}: missed handoff {is_['missed_handoffs']}/{is_['runs']} (none in baseline) [critical]")
+    for sid in sorted(n):
+        if n[sid].get("criticals", 0) > 0:
+            regressions.append(f"{sid}: security critical {n[sid]['criticals']}/{n[sid]['runs']} "
+                               f"(PII or prompt leak, or unauthorized tool call) [critical]")
     c_base, c_now = _containment(b, shared), _containment(n, shared)
     now_calls = sum(n[i]["runs"] for i in shared)
     if now_calls < min_calls:
