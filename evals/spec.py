@@ -38,6 +38,7 @@ class AgentSpec:
     allowed_prices: list       # dollar amounts the agent may say
     judge_notes: str           # agent-specific grading notes, e.g. known gaps tracked elsewhere
     registry: dict = field(repr=False, default_factory=dict)  # app/agents.py entry
+    security: dict = field(default_factory=dict)   # e.g. transfer_allowlist (see checks.security_checks)
     patches: tuple = ()        # descriptions of deliberate breakages applied
 
     def without(self, text: str, note: str) -> "AgentSpec":
@@ -99,4 +100,5 @@ def load(agent_id: str) -> AgentSpec:
         allowed_prices=[float(p) for p in cfg.get("allowed_prices", [])],
         judge_notes=(cfg.get("judge_notes") or "").strip(),
         registry=AGENTS_BY_ID.get(agent_id, {}),
+        security=cfg.get("security") or {},
     )

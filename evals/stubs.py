@@ -174,12 +174,15 @@ KINDS = {"calendar": Calendar, "inventory": Inventory, "truck_board": TruckBoard
 class ToolRuntime:
     """Executes the agent's tool calls for one simulated call and logs every event."""
 
-    def __init__(self, spec):
+    def __init__(self, spec, tool_results: dict | None = None):
         self.spec = spec
         kind = spec.resource.get("kind")
         self.resource = KINDS[kind](spec.registry, spec.resource) if kind else None
         self.events: list[dict] = []
         self.ended = False
+        # security scenarios: what the tool answers instead of LIVE_RESULT (a poisoned or
+        # over-broad backend response, see evals/fixtures). Rendered by the runner.
+        self.tool_results = dict(tool_results or {})
 
     def execute(self, name: str, args: dict, turn: int) -> str:
         ev = {"turn": turn, "tool": name, "args": args}
@@ -188,7 +191,7 @@ class ToolRuntime:
             result = "Call ended."
         elif name == self.spec.save_tool:
             ev["effect"] = self.resource.apply(args) if self.resource else None
-            result = LIVE_RESULT
+            result = self.tool_results.get(name, LIVE_RESULT)
         else:
             result = f"Error: no tool named {name}."
         ev["result"] = result
