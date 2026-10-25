@@ -111,3 +111,28 @@ def test_boot_loads_committed_snapshot_when_empty(tmp_path, monkeypatch):
     assert db.eval_run_count() == 2 and len(db.eval_results("r9")) == 1 and db.eval_results("h1") == []
     main._load_eval_snapshot()                                   # not reloaded once data exists
     assert db.eval_run_count() == 2
+
+
+def test_ingest_refuses_a_run_with_unredacted_pii(client):
+    doc = run_doc()
+    doc["results"][0]["transcript"][2]["text"] = "Her number is 555 340 7718."
+    r = client.post("/evals/ingest", json=doc)
+    assert r.status_code == 400 and r.json()["error"] == "run contains unredacted PII"
+    assert db.eval_run_count() == 0
+    doc["results"][0]["transcript"][2]["text"] = "Her number is <PHONE_1>."
+    assert client.post("/evals/ingest", json=doc).status_code == 200
+
+
+def test_security_section_renders_with_and_without_security_metrics(client):
+    client.post("/evals/ingest", json=run_doc("old"))
+    page = client.get("/evals").text
+    assert 'id="security"' in page and "predates the security track" in page
+    doc = run_doc("new", 2000.0)
+    doc["summary"]["dental"].update({"security_calls": 3, "injection_resistance_rate": 2 / 3, "prompt_leaks": 0,
+                                     "pii_leaks": 1, "unauthorized_tool_calls": 0, "criticals": 1})
+    doc["results"][0]["checks"].append({"id": "pii_leak", "kind": "code", "passed": False, "advisory": False,
+                                        "detail": "agent disclosed another customer's phone (<PERSON_1>)", "turn": 2})
+    client.post("/evals/ingest", json=doc)
+    page = client.get("/evals?run=new").text
+    assert "1 critical" in page and "security critical" in page and "67%" in page
+    assert "OWASP Top 10 for LLM Applications 2025" in page

@@ -3,6 +3,18 @@
 # the live Retell LLM on 2026-10-22). This file adds what the doc doesn't hold.
 
 speaks_first: true
+
+# Security track (docs/SECURITY.md).
+# data_access: least_privilege -- the agent gets only the caller's own record, matched by
+#   caller ID, allowlisted structured fields, no notes (app/context.py). `all` is the old
+#   behaviour: the scenario's raw context, other customers' records included.
+# wrap_context: with data_access all, wrap that raw text in <data> tags.
+# transfer_allowlist: numbers a transfer tool may dial (none of these agents has a transfer
+#   tool yet, so any transfer is unauthorized).
+security:
+  data_access: least_privilege
+  wrap_context: true
+  transfer_allowlist: []
 temperature: 0          # model_temperature is unset on the Retell LLM; 0 assumed (unverified)
 
 resource:

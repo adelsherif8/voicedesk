@@ -9,11 +9,11 @@ from evals import config
 CATEGORIES = {
     "happy_path", "ambiguous", "changes_detail", "in_data_question", "not_in_data",
     "wants_human", "emergency", "angry", "off_topic", "prompt_injection",
-    "out_of_hours", "early_hangup",
+    "out_of_hours", "early_hangup", "security",
 }
 BEHAVIOURS = {
     "cooperative", "rushed", "angry", "confused", "non_native", "silent_first",
-    "interrupts", "changes_mind", "refuses_phone", "suspicious_robot", "prank", "injection",
+    "interrupts", "changes_mind", "refuses_phone", "suspicious_robot", "prank", "injection", "persistent",
 }
 HANDOFFS = {"none", "human", "emergency", "safety"}
 SAVE = {"required", "optional", "forbidden"}
@@ -35,6 +35,10 @@ class Scenario:
     judge: list = field(default_factory=list)
     tags: list = field(default_factory=list)
     hangup_after_turns: int | None = None   # caller hangs up after N of their turns, no matter what
+    tool_results: dict = field(default_factory=dict)   # tool name -> what the stub answers ({records} = fixtures)
+    context: str = ""                                  # data_access: all -- raw text loaded into the prompt ({records} = fixtures)
+    crm_record: dict = field(default_factory=dict)     # data_access: least_privilege -- the caller's own CRM record
+    owasp: list = field(default_factory=list)          # security scenarios: OWASP LLM Top 10 2025 ids, e.g. [LLM01]
 
     @property
     def handoffs(self) -> list[str]:
@@ -51,7 +55,9 @@ class Scenario:
         return self.expect.get("save", "required")
 
 
-_DEFAULTS = {"hidden_facts": {}, "friction": [], "judge": [], "tags": [], "hangup_after_turns": None}
+_DEFAULTS = {"hidden_facts": {}, "friction": [], "judge": [], "tags": [], "hangup_after_turns": None,
+             "tool_results": {}, "owasp": [], "context": "", "crm_record": {}}
+OWASP_IDS = {"LLM01", "LLM02", "LLM03", "LLM04", "LLM05", "LLM06", "LLM07", "LLM08", "LLM09", "LLM10"}
 
 
 def _validate(d: dict, path) -> None:
@@ -71,6 +77,18 @@ def _validate(d: dict, path) -> None:
         raise ValueError(f"{where}: expect.save must be one of {sorted(SAVE)}")
     if path.parent.name != d["agent"]:
         raise ValueError(f"{where}: agent '{d['agent']}' doesn't match its folder")
+    tr = d.get("tool_results") or {}
+    if not isinstance(tr, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in tr.items()):
+        raise ValueError(f"{where}: tool_results must map tool names to strings")
+    if not isinstance(d.get("context", ""), str):
+        raise ValueError(f"{where}: context must be a string")
+    if not isinstance(d.get("crm_record") or {}, dict):
+        raise ValueError(f"{where}: crm_record must be a mapping")
+    bad = set(d.get("owasp") or []) - OWASP_IDS
+    if bad:
+        raise ValueError(f"{where}: unknown OWASP ids {sorted(bad)}")
+    if d["category"] == "security" and not d.get("owasp"):
+        raise ValueError(f"{where}: security scenarios must list the OWASP LLM Top 10 ids they test (owasp: [LLM01])")
 
 
 def load_all(agent: str, only: str | None = None, tag: str | None = None) -> list[Scenario]:

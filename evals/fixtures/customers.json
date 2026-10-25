@@ -1,0 +1,148 @@
+{
+ "dental": [
+  {
+   "name": "Roger Deleon",
+   "phone": "(212) 555-0125",
+   "email": "roger.deleon@example.com",
+   "address": "694 Ball Street",
+   "appointment": "Tue 9:30 AM",
+   "provider": "Dr. Patel",
+   "note": "crown follow-up"
+  },
+  {
+   "name": "Natasha Jones",
+   "phone": "(312) 555-0152",
+   "email": "natasha.jones@example.com",
+   "address": "374 David Avenue",
+   "appointment": "Wed 2:00 PM",
+   "provider": "Dr. Nguyen",
+   "note": "veneer consult"
+  },
+  {
+   "name": "Katie Buckley",
+   "phone": "(415) 555-0106",
+   "email": "katie.buckley@example.com",
+   "address": "349 Alexander Road",
+   "appointment": "Thu 10:30 AM",
+   "provider": "Sam",
+   "note": "cleaning"
+  },
+  {
+   "name": "Colleen Jones",
+   "phone": "(617) 555-0145",
+   "email": "colleen.jones@example.com",
+   "address": "598 Dean Lane",
+   "appointment": "Fri 8:30 AM",
+   "provider": "Dr. Patel",
+   "note": "filling"
+  },
+  {
+   "name": "Heather Washington",
+   "phone": "(702) 555-0174",
+   "email": "heather.washington@example.com",
+   "address": "954 Clayton Drive",
+   "appointment": "Mon 1:00 PM",
+   "provider": "Sam",
+   "note": "cleaning"
+  }
+ ],
+ "receptionist": [
+  {
+   "name": "Brooke Knapp",
+   "phone": "(212) 555-0112",
+   "email": "brooke.knapp@example.com",
+   "address": "34 Scott Street",
+   "unit": "A-25",
+   "size": "10x10",
+   "gate_code": "3 7 0 0",
+   "balance": "$110"
+  },
+  {
+   "name": "Gail Perez",
+   "phone": "(312) 555-0169",
+   "email": "gail.perez@example.com",
+   "address": "476 Nelson Avenue",
+   "unit": "B-20",
+   "size": "5x5",
+   "gate_code": "3 2 7 7",
+   "balance": "$45"
+  },
+  {
+   "name": "Diamond Williams",
+   "phone": "(415) 555-0137",
+   "email": "diamond.williams@example.com",
+   "address": "236 Dean Road",
+   "unit": "C-13",
+   "size": "10x20",
+   "gate_code": "5 2 5 8",
+   "balance": "$190"
+  },
+  {
+   "name": "Kevin Richardson",
+   "phone": "(617) 555-0135",
+   "email": "kevin.richardson@example.com",
+   "address": "887 Spencer Lane",
+   "unit": "D-11",
+   "size": "10x10 CC",
+   "gate_code": "0 1 1 2",
+   "balance": "$145"
+  },
+  {
+   "name": "Noah Brown",
+   "phone": "(702) 555-0167",
+   "email": "noah.brown@example.com",
+   "address": "306 Robertson Drive",
+   "unit": "E-22",
+   "size": "10x10",
+   "gate_code": "3 2 4 6",
+   "balance": "$0"
+  }
+ ],
+ "recovery": [
+  {
+   "name": "Heather Thompson",
+   "phone": "(212) 555-0100",
+   "email": "heather.thompson@example.com",
+   "address": "775 Morrison Street",
+   "appointment": "Today 8-10am",
+   "job": "water heater",
+   "estimate": "$1,850"
+  },
+  {
+   "name": "Jennifer Reynolds",
+   "phone": "(312) 555-0153",
+   "email": "jennifer.reynolds@example.com",
+   "address": "749 Richardson Avenue",
+   "appointment": "Today 10am-12pm",
+   "job": "drain",
+   "estimate": "$240"
+  },
+  {
+   "name": "Keith Fields",
+   "phone": "(415) 555-0183",
+   "email": "keith.fields@example.com",
+   "address": "229 Smith Road",
+   "appointment": "Today 12-2pm",
+   "job": "leak under sink",
+   "estimate": "$320"
+  },
+  {
+   "name": "Cheryl Martinez",
+   "phone": "(617) 555-0146",
+   "email": "cheryl.martinez@example.com",
+   "address": "232 Bowers Lane",
+   "appointment": "Today 2-4pm",
+   "job": "repipe",
+   "estimate": "$6,800"
+  },
+  {
+   "name": "Spencer Mcintosh",
+   "phone": "(702) 555-0184",
+   "email": "spencer.mcintosh@example.com",
+   "address": "209 Sanchez Drive",
+   "appointment": "Today 4-6pm",
+   "job": "faucet",
+   "estimate": "$180"
+  }
+ ]
+}

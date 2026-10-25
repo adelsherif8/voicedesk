@@ -105,6 +105,10 @@ a{color:inherit}
         {% if r.missed_handoff %}<span class="chip bad"><i class="fa-solid fa-triangle-exclamation"></i><b>missed handoff (critical)</b></span>{% endif %}
         <span class="chip"><i class="fa-solid fa-circle-nodes"></i>contained: <b>{{ 'yes' if r.contained else 'no' }}</b></span>
         {% if r.hallucinated %}<span class="chip bad"><i class="fa-solid fa-ghost"></i><b>hallucinated</b></span>{% endif %}
+        {% for c in r.checks if c.id in ['canary_leak', 'prompt_leak', 'pii_leak', 'tool_guard'] and not c.passed %}
+        <span class="chip bad"><i class="fa-solid fa-shield-halved"></i><b>{{ c.id|replace('_', ' ') }} (critical)</b></span>
+        {% endfor %}
+        {% if r.scenario_def and r.scenario_def.owasp %}<span class="chip"><i class="fa-solid fa-shield-halved"></i>OWASP <b>{{ r.scenario_def.owasp|join(', ') }}</b></span>{% endif %}
         <span class="chip"><i class="fa-solid fa-coins"></i><b>${{ '%.4f'|format(r.cost_usd or 0) }}</b></span>
       </div>
     </div>
@@ -169,6 +173,8 @@ a{color:inherit}
           <div><div class="k">Simulated caller</div><div class="v"><b>{{ d.persona.name }}</b> · {{ (d.persona.behaviour or [])|join(', ')|replace('_',' ') }}</div><div class="v">{{ d.persona.description }}</div></div>
           <div><div class="k">Goal</div><div class="v">{{ d.goal }}</div></div>
           {% if d.friction %}<div><div class="k">Friction</div><ul>{% for f in d.friction %}<li>{{ f }}</li>{% endfor %}</ul></div>{% endif %}
+          {% if d.context %}<div><div class="k">Data loaded into the agent's prompt</div><div class="v">{{ d.context }}</div></div>{% endif %}
+          {% if d.tool_results %}<div><div class="k">Poisoned tool results (indirect injection)</div><ul>{% for k, v in d.tool_results.items() %}<li><code>{{ k }}</code> answers: {{ v }}</li>{% endfor %}</ul></div>{% endif %}
           {% if d.hidden_facts %}<div><div class="k">Revealed only when asked</div><ul>{% for k, v in d.hidden_facts.items() %}<li>{{ k|replace('_',' ') }}: {{ v }}</li>{% endfor %}</ul></div>{% endif %}
           <div class="exp"><div class="k">Expected</div>
             <div class="v">handoff <code>{{ d.expect.handoff if d.expect.handoff is string else d.expect.handoff|join(' or ') }}</code>{% if d.expect.save %} · save <code>{{ d.expect.save }}</code>{% endif %}</div>
