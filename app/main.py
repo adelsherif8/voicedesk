@@ -193,7 +193,8 @@ def health():
 import hmac
 import json as _json
 
-from evals.metrics import DEFINITIONS as EVAL_DEFINITIONS
+from evals import pii as _pii
+from evals.metrics import CRITICAL_CHECKS, DEFINITIONS as EVAL_DEFINITIONS
 
 _SNAPSHOT = os.path.join(_HERE, "evals", "results", "published.json")
 _LOCAL = {"127.0.0.1", "::1", "localhost", "testclient"}
@@ -228,6 +229,12 @@ async def evals_ingest(request: Request):
     run = await request.json()
     if not isinstance(run, dict) or not run.get("id") or "summary" not in run:
         return JSONResponse({"ok": False, "error": "not an eval run"}, status_code=400)
+    # publish guard, server side: nothing with detectable personal data is stored or shown.
+    # (The CLI already redacts and scans with the name dictionary; this is the pattern-only floor.)
+    found = _pii.scan_run(run)
+    if found:
+        return JSONResponse({"ok": False, "error": "run contains unredacted PII",
+                             "findings": [{"type": f["type"], "path": f["path"]} for f in found[:10]]}, status_code=400)
     n = db.save_eval_run(run)
     return {"ok": True, "run": run["id"], "results": n}
 
@@ -243,8 +250,16 @@ _STATUS_ORDER = {"fail": 0, "flaky": 1, "pass": 2}
 def _first_failure(checks: list) -> dict | None:
     """The check a reader should look at first: a missed handoff, then any other blocking failure."""
     blocking = [c for c in checks or [] if not c["passed"] and not c["advisory"] and c["kind"] != "classify"]
-    blocking.sort(key=lambda c: (c["id"] != "handoff", c["kind"] != "code"))
+    blocking.sort(key=lambda c: (c["id"] not in CRITICAL_CHECKS, c["id"] != "handoff", c["kind"] != "code"))
     return blocking[0] if blocking else None
+
+
+def _security_view(m: dict) -> dict:
+    """The Security section's row for one agent; older runs predate these fields."""
+    return {"available": "security_calls" in m, "calls": m.get("security_calls", 0),
+            "resistance": m.get("injection_resistance_rate"), "prompt_leaks": m.get("prompt_leaks", 0),
+            "pii_leaks": m.get("pii_leaks", 0), "unauthorized": m.get("unauthorized_tool_calls", 0),
+            "criticals": m.get("criticals", 0)}
 
 
 def _evals_view(model: str | None, run_id: str | None) -> dict:
@@ -280,10 +295,13 @@ def _evals_view(model: str | None, run_id: str | None) -> dict:
                                        "end": r["end_reason"], "handoff": r["handoff"],
                                        "why": (_first_failure(r["checks"]) or {}).get("detail", "")}
                                       for r in attempts]})
-        rows.sort(key=lambda x: (_STATUS_ORDER[x["status"]], -x["missed"], x["id"]))
+        for row in rows:
+            row["critical"] = sum(1 for r in results if r["agent"] == aid and r["scenario"] == row["id"]
+                                  and any(c["id"] in CRITICAL_CHECKS and not c["passed"] for c in r["checks"]))
+        rows.sort(key=lambda x: (_STATUS_ORDER[x["status"]], -x["critical"], -x["missed"], x["id"]))
         agents.append({"id": aid, "name": reg.get("name", aid), "business": reg.get("business", ""),
                        "icon": reg.get("icon", "fa-headset"), "color": reg.get("color", "#4f46e5"),
-                       "m": m, "trend": trend, "rows": rows,
+                       "m": m, "trend": trend, "rows": rows, "security": _security_view(m),
                        "comparison": (run.get("comparison") or {}).get(aid)})
     return {"run": run, "models": models, "definitions": EVAL_DEFINITIONS, "agents": agents,
             "runs": [r for r in published if r["agent_model"] == run["agent_model"]][:15]}

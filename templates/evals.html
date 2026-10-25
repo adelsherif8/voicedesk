@@ -96,6 +96,22 @@ table.grid{width:100%;border-collapse:collapse}
 .why code{font-family:var(--mono);font-size:.68rem;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:0 5px;color:var(--ink);margin-right:5px}
 .crit-b{display:inline-flex;align-items:center;gap:4px;font-size:.66rem;font-weight:700;color:#8f1f1f;background:var(--crit-bg);border:1px solid #f3c9c9;border-radius:5px;padding:0 6px;margin-left:6px;vertical-align:1px}
 .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line)}
+.pane .hd .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500}
+.pane .hd .r a{color:var(--acc);text-decoration:none;font-weight:600}
+table.sec{width:100%;border-collapse:collapse}
+.sec th{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--soft)}
+.sec td{padding:10px 14px;border-bottom:1px solid var(--line);font-size:.82rem;vertical-align:middle}
+.sec tr:last-child td{border-bottom:none}
+.sec .ag{display:flex;align-items:center;gap:9px;font-weight:600}
+.sec .ag .dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.sec .num{font-family:var(--mono);font-size:.8rem}
+.sec .num.zero{color:var(--good)}
+.sec .num.bad{color:#a32626;font-weight:700}
+.sec .big{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.sec .sub{font-size:.7rem;color:var(--muted)}
+.secnote{padding:10px 14px;font-size:.74rem;color:var(--ink2);border-top:1px solid var(--line);background:var(--soft);display:flex;gap:14px;flex-wrap:wrap}
+.secnote span{display:inline-flex;align-items:center;gap:6px}
+.secnote i{color:var(--muted)}
 .def{background:var(--surface);padding:12px 15px}
 .def b{display:block;font-size:.82rem;margin-bottom:3px}
 .def p{font-size:.78rem;color:var(--ink2)}
@@ -200,6 +216,42 @@ table.grid{width:100%;border-collapse:collapse}
   {% endfor %}
   </div>
 
+  <div class="pane" id="security">
+    <div class="hd"><i class="fa-solid fa-shield-halved"></i> Security<span class="r">OWASP Top 10 for LLM Applications 2025 · <a href="https://github.com/adelsherif8/voicedesk/blob/master/docs/SECURITY.md">mapping and limits</a></span></div>
+    <div style="overflow-x:auto">
+    <table class="sec">
+      <thead><tr><th>Agent</th><th>Security calls</th><th>Injection resistance</th><th>Prompt leaks</th><th>Cross-customer PII leaks</th><th>Unauthorized tool calls</th><th>Verdict</th></tr></thead>
+      <tbody>
+      {% for a in agents %}{% set s = a.security %}
+      <tr>
+        <td><div class="ag"><span class="dot" style="background:{{ a.color }}"></span>{{ a.name }}</div></td>
+        {% if not s.available %}
+        <td colspan="6" class="sub">This run predates the security track.</td>
+        {% else %}
+        <td class="num">{{ s.calls }}</td>
+        <td><div class="big">{{ pct(s.resistance) }}</div><div class="sub">security scenarios where every check held</div></td>
+        <td class="num {{ 'zero' if not s.prompt_leaks else 'bad' }}">{{ s.prompt_leaks }}</td>
+        <td class="num {{ 'zero' if not s.pii_leaks else 'bad' }}">{{ s.pii_leaks }}</td>
+        <td class="num {{ 'zero' if not s.unauthorized else 'bad' }}">{{ s.unauthorized }}</td>
+        <td>{% if s.criticals %}<span class="pill fail"><i class="fa-solid fa-triangle-exclamation"></i>{{ s.criticals }} critical</span>
+            {% elif s.resistance is not none and s.resistance < 1 %}<span class="pill flaky"><i class="fa-solid fa-triangle-exclamation"></i>no leak, {{ pct(1 - s.resistance) }} gave way</span>
+            {% elif s.calls %}<span class="pill pass"><i class="fa-solid fa-circle-check"></i>held</span>
+            {% else %}<span class="sub">no security scenarios in this run</span>{% endif %}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <div class="secnote">
+      <span><i class="fa-solid fa-key"></i>canary token planted in every system prompt</span>
+      <span><i class="fa-solid fa-user-secret"></i>fake other customers the agent must never repeat</span>
+      <span><i class="fa-solid fa-hand"></i>tool calls only on the caller's own record</span>
+      <span><i class="fa-solid fa-eraser"></i>transcripts PII-redacted{% if run.redaction %} ({{ run.redaction }}){% endif %} before judging and publishing</span>
+      <span><i class="fa-solid fa-circle-exclamation"></i>any leak or unauthorized call is critical: fails the CI gate</span>
+    </div>
+  </div>
+
   <div class="pane">
     <div class="tabs" role="tablist">
       {% for a in agents %}
@@ -235,7 +287,7 @@ table.grid{width:100%;border-collapse:collapse}
             <td><span class="pill {{ row.status }}">
               <i class="fa-solid {{ {'pass':'fa-circle-check','flaky':'fa-triangle-exclamation','fail':'fa-circle-xmark'}[row.status] }}"></i>
               {{ {'pass':'Pass','flaky':'Flaky','fail':'Fail'}[row.status] }} {{ row.passes }}/{{ row.runs }}</span></td>
-            <td class="sc"><div class="tt">{{ row.title }}{% if row.missed %}<span class="crit-b"><i class="fa-solid fa-triangle-exclamation"></i>missed handoff</span>{% endif %}</div><div class="id">{{ row.id }}</div></td>
+            <td class="sc"><div class="tt">{{ row.title }}{% if row.missed %}<span class="crit-b"><i class="fa-solid fa-triangle-exclamation"></i>missed handoff</span>{% endif %}{% if row.critical %}<span class="crit-b"><i class="fa-solid fa-shield-halved"></i>security critical</span>{% endif %}</div><div class="id">{{ row.id }}</div></td>
             <td class="c-cat"><span class="cat">{{ row.category }}</span></td>
             <td><div class="att">
               {% for t in row.attempts %}
