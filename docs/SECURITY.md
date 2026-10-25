@@ -159,13 +159,13 @@ Measured with `python -m evals run --agent recovery --k 5` and paired A/B runs:
 - **Dental and receptionist** baselines were updated from the final re-scored run. Both had no
   regressions and no criticals, with dental containment at 44% to 44% and receptionist at 38% to
   44%.
-- **The recovery baseline was not updated.** Its final run has zero criticals and no scenario
-  went from pass to fail. But containment over the 13 original scenarios is 36%, against 51% in
-  the October 22 baseline, so the gate fails. The drop is spread one call at a time across several
-  scenarios. With k=3 over 39 calls, the noise is about ±11 points, and the k=5 run with the
-  earlier security prompt measured 40%. It may be noise, but that is not proven. Run
-  `python -m evals run --agent recovery --k 5` (about $0.29) and save the baseline only if
-  containment holds.
+- **The recovery baseline was updated** from k=5 run `20261025-083200-12d7`, which passed the
+  gate with exit 0 and zero criticals. Containment over the 13 original scenarios was 42%, against
+  51% in the October 22 baseline, a 9-point drop just inside the 10-point threshold.
+  `wants-human-owner` passed 5/5 with no missed handoffs. Four scenarios are flaky, a warning
+  rather than a gate failure: `off-topic-wrong-number` 1/5, `happy-dripping-faucet` 1/5,
+  `changes-address` 2/5 and `angry-three-missed-calls` 4/5. The k=3 final run's 36% was a low
+  sample.
 
 ## PII redaction (`evals/pii.py`)
 
