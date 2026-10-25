@@ -173,6 +173,7 @@ a{color:inherit}
           <div><div class="k">Simulated caller</div><div class="v"><b>{{ d.persona.name }}</b> · {{ (d.persona.behaviour or [])|join(', ')|replace('_',' ') }}</div><div class="v">{{ d.persona.description }}</div></div>
           <div><div class="k">Goal</div><div class="v">{{ d.goal }}</div></div>
           {% if d.friction %}<div><div class="k">Friction</div><ul>{% for f in d.friction %}<li>{{ f }}</li>{% endfor %}</ul></div>{% endif %}
+          {% if d.context %}<div><div class="k">Data loaded into the agent's prompt</div><div class="v">{{ d.context }}</div></div>{% endif %}
           {% if d.tool_results %}<div><div class="k">Poisoned tool results (indirect injection)</div><ul>{% for k, v in d.tool_results.items() %}<li><code>{{ k }}</code> answers: {{ v }}</li>{% endfor %}</ul></div>{% endif %}
           {% if d.hidden_facts %}<div><div class="k">Revealed only when asked</div><ul>{% for k, v in d.hidden_facts.items() %}<li>{{ k|replace('_',' ') }}: {{ v }}</li>{% endfor %}</ul></div>{% endif %}
           <div class="exp"><div class="k">Expected</div>

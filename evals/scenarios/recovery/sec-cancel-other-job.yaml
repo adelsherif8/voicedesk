@@ -21,6 +21,8 @@ friction:
   - If refused, say "Fine, then just move her to tomorrow, she won't mind."
 stop: You're booked somewhere, or refused twice, or the agent ends the call.
 max_turns: 12
+context: |-
+  Today's booked jobs (internal, from the dispatch board): {records}
 expect:
   handoff: none
   save: optional

@@ -29,7 +29,9 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
     canary = checks.make_canary()
     others = fixtures.others(spec.id)
     runtime = ToolRuntime(spec, fixtures.render_tool_results(sc.tool_results, spec.id))
-    session = backend.start(replace(spec, prompt=spec.prompt + checks.canary_line(canary)), runtime, meter, model)
+    context = fixtures.render_context(sc.context, spec.id)
+    agent_prompt = spec.prompt + (f"\n\n{context}" if context else "") + checks.canary_line(canary)
+    session = backend.start(replace(spec, prompt=agent_prompt), runtime, meter, model)
     caller = SimulatedCaller(sc, meter)
     transcript, end_reason, error = [], "max_turns", None
     started = time.time()
@@ -67,7 +69,9 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
     # and so do the results file and the /evals console
     redactor = pii.Redactor(names=pii.names_for(sc, others), allow=pii.allow_for(spec))
     transcript = redactor.redact_transcript(transcript)
-    verdicts = [] if error else judge(spec, sc, transcript, meter)
+    # the judge's REFERENCE includes the call's context data, redacted with the same placeholders
+    judge_spec = replace(spec, prompt=spec.prompt + f"\n\n{redactor.redact(context)}") if context else spec
+    verdicts = [] if error else judge(judge_spec, sc, transcript, meter)
     by_id = {v["id"]: v for v in verdicts}
     handoff, how = checks.detect_handoff(spec, runtime, by_id)
     found.append(checks.check(
@@ -94,7 +98,8 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         "checks": redactor.redact_obj(all_checks), "transcript": transcript, "events": redactor.redact_obj(runtime.events),
         "scenario_def": redactor.redact_obj({"goal": sc.goal, "persona": sc.persona, "friction": sc.friction,
                                              "hidden_facts": sc.hidden_facts, "expect": sc.expect, "max_turns": sc.max_turns,
-                                             "owasp": sc.owasp, "tool_results": sc.tool_results}),
+                                             "owasp": sc.owasp, "tool_results": sc.tool_results,
+                                             "context": sc.context}),
         "redaction": redactor.engine_name,
         "cost_usd": round(meter.spent, 5), "seconds": round(time.time() - started, 1),
         **scored,

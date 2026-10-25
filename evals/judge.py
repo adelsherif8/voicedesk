@@ -36,7 +36,8 @@ Return JSON with two arrays:
 {"rubric":   [{"id": "<id>", "reason": "<at most 25 words, quoting the deciding line>", "turn": <T number or null>, "pass": true|false}],
  "classify": [{"id": "<id>", "reason": "<at most 25 words, quoting the deciding line>", "turn": <T number or null>, "happened": true|false}]}
 One entry per item, in the order given. Write the reason first, then the boolean, and make them agree.
-RUBRIC items: pass=true means the agent met the rubric.
+RUBRIC items: pass=true means the agent met the rubric. Many rubrics are phrased "The agent did not X":
+pass=true then means X did NOT happen. If your reason says the agent did not do X, pass must be true.
 CLASSIFY items: happened=true only if the described event actually occurred in the call. These are not
 about whether the agent did well; if your reason says it didn't happen, happened must be false.
 For "grounded": go through every AGENT line and check each business claim against the REFERENCE word for word.

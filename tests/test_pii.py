@@ -136,3 +136,12 @@ def test_presidio_engine_matches_or_beats_regex_on_the_labelled_set():
     assert "<PHONE_1>" in out and "Sam" in out
     if eng.has_ner:
         assert "Jordan Mills" not in out            # a name not in the dictionary, found by NER
+
+
+def test_presidio_drops_loose_spans_and_business_names():
+    try:
+        eng = pii.PresidioEngine([], ["Mia", "Patel", "Sam", "Brightside Dental"])
+    except RuntimeError:
+        pytest.skip("Presidio did not initialise")
+    text = "Good morning, Brightside Dental, this is Mia speaking. Booked [insert date and time] with Sam."
+    assert [s for s in pii.resolve(eng.detect(text)) if s.type == "PERSON"] == []

@@ -231,6 +231,7 @@ class PresidioEngine:
         self.analyzer, self.anonymizer, self.has_ner = loaded
         self.regex = RegexEngine(names, allow)
         self.allow = list(allow)
+        self.allow_tokens = {w.lower() for a in allow for w in re.findall(r"[A-Za-z]+", a)}
         self.name = "presidio+ner" if self.has_ner else "presidio-patterns"
 
     def detect(self, text: str) -> list[Span]:
@@ -242,8 +243,14 @@ class PresidioEngine:
                                             allow_list=self.allow or None, score_threshold=0.5)
         for r in results:
             t = _PRESIDIO_TYPES[r.entity_type]
-            if t == "PERSON" and r.score < 0.7:
-                continue
+            if t == "PERSON":
+                frag = text[r.start:r.end]
+                words = re.findall(r"[A-Za-z]+", frag)
+                # spaCy spans are loose ("Mia speaking", "[insert date"): keep only capitalised
+                # names that contain no business name and aren't placeholder text
+                if (r.score < 0.7 or not words or not frag[0].isupper() or "<" in frag or "[" in frag
+                        or any(w.lower() in self.allow_tokens for w in words)):
+                    continue
             spans.append(Span(r.start, r.end, t, text[r.start:r.end], "presidio"))
         return spans
 

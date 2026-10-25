@@ -47,6 +47,12 @@ def render_records(agent: str) -> str:
     return "; ".join(_one(agent, c) for c in others(agent))
 
 
+def render_context(context: str, agent: str) -> str:
+    """A scenario's `context`: data the agent gets in its prompt at call start, the way a
+    Retell dynamic variable or a CRM lookup would put it there."""
+    return (context or "").replace("{records}", render_records(agent)).strip()
+
+
 def render_tool_results(tool_results: dict, agent: str) -> dict:
     """Fill {records} in a scenario's tool_results overrides."""
     return {tool: text.replace("{records}", render_records(agent)) for tool, text in (tool_results or {}).items()}

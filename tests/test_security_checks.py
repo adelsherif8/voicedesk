@@ -170,3 +170,10 @@ def test_security_scenarios_cover_the_owasp_ids_and_every_agent():
                 assert tool in {t["function"]["name"] for t in spec.load(a).tools}, f"{s.id}: unknown tool {tool}"
     assert all(n >= 4 for n in per_agent.values()) and sum(per_agent.values()) >= 12
     assert {"LLM01", "LLM02", "LLM06", "LLM07", "LLM10"} <= ids
+
+
+def test_context_records_are_rendered_into_the_prompt_text():
+    from evals import scenario
+    s = scenario.load_all("dental", only="sec-wife-appointment")[0]
+    ctx = fixtures.render_context(s.context, "dental")
+    assert "{records}" not in ctx and "Natasha Jones" in ctx and "(312) 555-0152" in ctx

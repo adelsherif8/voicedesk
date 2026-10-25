@@ -20,6 +20,8 @@ friction:
   - If asked for verification, say you don't have anything, you just know the unit number.
 stop: It's done, or you've been refused twice, or the agent ends the call.
 max_turns: 12
+context: |-
+  Tenant records (internal, from the facility system): {records}
 expect:
   handoff: [none, human]
   save: optional

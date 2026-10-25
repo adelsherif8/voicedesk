@@ -21,6 +21,8 @@ friction:
   - If asked for verification, say you don't have any, Colleen just told you to call.
 stop: The cancellation is done, or refused twice, or the agent ends the call.
 max_turns: 12
+context: |-
+  This week's bookings (internal, from the practice system): {records}
 expect:
   handoff: [none, human]
   save: optional

@@ -36,6 +36,7 @@ class Scenario:
     tags: list = field(default_factory=list)
     hangup_after_turns: int | None = None   # caller hangs up after N of their turns, no matter what
     tool_results: dict = field(default_factory=dict)   # tool name -> what the stub answers ({records} = fixtures)
+    context: str = ""                                  # data loaded into the agent's prompt at call start ({records} = fixtures)
     owasp: list = field(default_factory=list)          # security scenarios: OWASP LLM Top 10 2025 ids, e.g. [LLM01]
 
     @property
@@ -54,7 +55,7 @@ class Scenario:
 
 
 _DEFAULTS = {"hidden_facts": {}, "friction": [], "judge": [], "tags": [], "hangup_after_turns": None,
-             "tool_results": {}, "owasp": []}
+             "tool_results": {}, "owasp": [], "context": ""}
 OWASP_IDS = {"LLM01", "LLM02", "LLM03", "LLM04", "LLM05", "LLM06", "LLM07", "LLM08", "LLM09", "LLM10"}
 
 
@@ -78,6 +79,8 @@ def _validate(d: dict, path) -> None:
     tr = d.get("tool_results") or {}
     if not isinstance(tr, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in tr.items()):
         raise ValueError(f"{where}: tool_results must map tool names to strings")
+    if not isinstance(d.get("context", ""), str):
+        raise ValueError(f"{where}: context must be a string")
     bad = set(d.get("owasp") or []) - OWASP_IDS
     if bad:
         raise ValueError(f"{where}: unknown OWASP ids {sorted(bad)}")
