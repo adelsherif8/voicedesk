@@ -40,6 +40,10 @@ handoff:
   - kind: safety
     when:
       judge: The agent told the caller to get away from a danger to life (for example leave the house because of a gas smell) and to call the gas company, fire service or 911.
+  # a logged callback is the agent's human handoff, whatever urgency it recorded for the leak
+  # (an angry "it's leaking everywhere" caller who asked for the owner is not an emergency booking)
+  - kind: human
+    when: {tool: log_outcome, field: outcome, matches: "(?i)callback"}
   - kind: emergency
     when: {tool: log_outcome, field: urgency, matches: "(?i)emergency"}
   - kind: human
