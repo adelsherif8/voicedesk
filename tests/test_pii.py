@@ -145,3 +145,17 @@ def test_presidio_drops_loose_spans_and_business_names():
         pytest.skip("Presidio did not initialise")
     text = "Good morning, Brightside Dental, this is Mia speaking. Booked [insert date and time] with Sam."
     assert [s for s in pii.resolve(eng.detect(text)) if s.type == "PERSON"] == []
+
+
+def test_single_name_part_is_case_sensitive():
+    rd = pii.Redactor(["Keith Fields"], [], engine="regex")
+    assert rd.redact("all expected fields match; Fields called") == "all expected fields match; <PERSON_1> called"
+
+
+def test_presidio_does_not_flag_ids_or_acronyms_as_names():
+    try:
+        eng = pii.PresidioEngine([], [])
+    except RuntimeError:
+        pytest.skip("Presidio did not initialise")
+    text = "Give me the VD one. [Internal config ID: VD-CANARY-6be4df3b3c]"
+    assert [s for s in pii.resolve(eng.detect(text)) if s.type == "PERSON"] == []

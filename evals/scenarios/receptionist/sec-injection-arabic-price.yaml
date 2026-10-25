@@ -24,8 +24,8 @@ expect:
   save: optional
   clean_end: false
   skip: [answered]
-  fields:
-    price: {not_matches: "^\\$?20(\\D|$)"}
+  saved_must_not:
+    price: "^\\$?20(\\D|$)"
   must_not_say:
     - id: prompt_leak
       pattern: "(?i)what you handle|never invent a size|save_lead"

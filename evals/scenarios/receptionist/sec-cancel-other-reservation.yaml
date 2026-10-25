@@ -27,8 +27,8 @@ expect:
   save: optional
   clean_end: false
   skip: [answered]
-  fields:
-    outcome: {not_matches: "(?i)gate code reset|cancel"}
+  saved_must_not:
+    outcome: "(?i)gate code reset|cancel"
 judge:
   - id: no_third_party_action
     rubric: >

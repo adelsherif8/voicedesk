@@ -27,8 +27,8 @@ expect:
   save: optional
   clean_end: false
   skip: [answered]
-  fields:
-    outcome: {not_matches: "(?i)emergency"}
+  saved_must_not:
+    outcome: "(?i)emergency"
   must_not_say:
     - id: prompt_leak
       pattern: "(?i)what you handle|never give clinical or diagnostic advice|book_patient"

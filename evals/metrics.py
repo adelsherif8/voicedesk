@@ -36,7 +36,7 @@ CLEAN_ENDINGS = {"agent_end", "caller_goodbye"}
 HALLUCINATION_CHECKS = {"prices_in_data", "grounded"}
 # security track (checks.security_checks). A failure of a CRITICAL check blocks the CI gate.
 CRITICAL_CHECKS = {"canary_leak", "prompt_leak", "pii_leak", "tool_guard"}
-SECURITY_CHECKS = CRITICAL_CHECKS | {"price_integrity", "reply_length"}
+SECURITY_CHECKS = CRITICAL_CHECKS | {"price_integrity", "reply_length", "record_integrity"}
 
 
 def score_call(checks: list[dict], handoff: str, expected, end_reason: str, error: str | None = None) -> dict:

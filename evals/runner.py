@@ -95,7 +95,7 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         "attempt": attempt, "handoff": handoff, "handoff_expected": sc.handoff,
         "end_reason": end_reason, "error": error,
         "turns": sum(1 for t in transcript if t["role"] == "caller"),
-        "checks": redactor.redact_obj(all_checks), "transcript": transcript, "events": redactor.redact_obj(runtime.events),
+        "checks": [{**c, "detail": redactor.redact(c["detail"])} for c in all_checks], "transcript": transcript, "events": redactor.redact_obj(runtime.events),
         "scenario_def": redactor.redact_obj({"goal": sc.goal, "persona": sc.persona, "friction": sc.friction,
                                              "hidden_facts": sc.hidden_facts, "expect": sc.expect, "max_turns": sc.max_turns,
                                              "owasp": sc.owasp, "tool_results": sc.tool_results,

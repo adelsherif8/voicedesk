@@ -101,7 +101,9 @@ def _name_patterns(names, allow) -> list[tuple[re.Pattern, str]]:
         out.append((re.compile(r"\b" + r"\s+".join(re.escape(p) for p in parts) + r"\b", re.I), full))
         for p in parts:
             if len(p) >= 3 and p.lower() not in allowed and p.lower() not in _NAME_STOP:
-                out.append((re.compile(r"\b" + re.escape(p) + r"\b", re.I), full))
+                # one part alone is case-sensitive: "Fields" is a surname, "fields" is a word
+                cap = p[0].upper() + p[1:]
+                out.append((re.compile(r"\b(?:" + re.escape(cap) + "|" + re.escape(p.upper()) + r")\b"), full))
     return out
 
 
@@ -136,6 +138,7 @@ class RegexEngine:
 
 _PRESIDIO_TYPES = {"PERSON": "PERSON", "PHONE_NUMBER": "PHONE", "EMAIL_ADDRESS": "EMAIL", "CREDIT_CARD": "CARD"}
 _presidio_lock = threading.Lock()
+_TITLE_WORD = re.compile(r"[A-Z][a-z]+(?:['-][A-Za-z][a-z]*)*(?:[A-Z][a-z]+)?[.,;:!?]*")   # Mia, O'Neil, McIntosh; not VD, CANARY
 _presidio = None          # (analyzer, anonymizer, has_ner) or False once probed
 
 
@@ -249,6 +252,8 @@ class PresidioEngine:
                 # spaCy spans are loose ("Mia speaking", "[insert date"): keep only capitalised
                 # names that contain no business name and aren't placeholder text
                 if (r.score < 0.7 or not words or not frag[0].isupper() or "<" in frag or "[" in frag
+                        or any(ch.isdigit() for ch in frag)
+                        or not all(_TITLE_WORD.fullmatch(w) for w in frag.replace("’", "'").split())
                         or any(w.lower() in self.allow_tokens for w in words)):
                     continue
             spans.append(Span(r.start, r.end, t, text[r.start:r.end], "presidio"))

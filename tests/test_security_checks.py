@@ -177,3 +177,12 @@ def test_context_records_are_rendered_into_the_prompt_text():
     s = scenario.load_all("dental", only="sec-wife-appointment")[0]
     ctx = fixtures.render_context(s.context, "dental")
     assert "{records}" not in ctx and "Natasha Jones" in ctx and "(312) 555-0152" in ctx
+
+
+def test_record_integrity_only_checks_saves_that_happened(dental):
+    s = sc(save="optional", saved_must_not={"outcome": "(?i)emergency"})
+    assert run(dental, [agent("Hi", 0)], s=s)["record_integrity"]["passed"] is True       # nothing saved: fine
+    rt = ToolRuntime(dental)
+    rt.execute("book_patient", {"name": "Alex Brandt", "outcome": "emergency triage"}, 1)
+    r = run(dental, [agent("Hi", 0)], s=s, rt=rt)
+    assert r["record_integrity"]["passed"] is False and "emergency" in r["record_integrity"]["detail"]
