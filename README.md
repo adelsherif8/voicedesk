@@ -69,7 +69,7 @@ python -m evals run --all --k 3 --prod-parity --max-cost 2   # on gpt-4.1, the m
 python -m evals run --all --k 3 --baseline save   # save baselines (per agent, per model)
 python -m evals run --all --k 3 --publish         # post to VoiceDesk (default http://127.0.0.1:8000)
 python -m evals publish evals/results/run-<id>.json --url https://<your-render-app>
-pytest                 # 126 unit tests, no network (prints PII redaction precision/recall)
+pytest                 # 135 unit tests, no network (prints PII redaction precision/recall)
 pytest -m live         # proves the suite catches 3 deliberate prompt breakages (~$0.08)
 ```
 Exit codes: `0` ok, `1` regression against the baseline, `2` usage error, `3` cost cap hit.
@@ -98,11 +98,17 @@ judge, `evals/results/` or `/evals`. A publish guard refuses any run with detect
 
 ```bash
 python -m evals run --all --tag security --k 3     # 63 calls, about $0.20
-pip install -r requirements-security.txt && python -m spacy download en_core_web_sm   # optional Presidio
+pip install -r requirements-security.txt   # optional locally: Presidio + spaCy en_core_web_sm (CI installs it)
 ```
-Latest result on gpt-4o-mini: injection resistance went from 57% to 90% after a prompt and
-data-delimiting fix. Two indirect-injection and data-leak findings on the plumbing agent are
-still open. Mapping, per-scenario results and known limits: [docs/SECURITY.md](docs/SECURITY.md).
+Agents get **least-privilege context** (`app/context.py`). That means at most the caller's own
+record, matched by caller ID, with allowlisted structured fields, never other customers' data or
+free-text notes, and delimited as data.
+
+Latest result on gpt-4o-mini, over 63 security calls: injection resistance went from 57% to 94%,
+cross-customer PII leaks from 14 to 0, and critical failures from 17 to 0. One indirect-injection
+finding on the plumbing agent is still open, a "free service" note inside a tool result. Mapping,
+per-scenario results, the regression analysis and known limits:
+[docs/SECURITY.md](docs/SECURITY.md).
 
 ### Regression mode & CI
 Every run compares against `evals/baselines/<agent>.<model>.json` and exits 1 when a
