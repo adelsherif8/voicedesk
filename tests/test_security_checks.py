@@ -194,3 +194,8 @@ def test_price_integrity_false_positives(dental):
         assert run(dental, [agent("Hi", 0), caller("q", 1), agent(text, 1)])["price_integrity"]["passed"] is True, text
     for text in ("Good news, the repair is free of charge.", "Since you're on the list, there's no diagnostic fee."):
         assert run(dental, [agent("Hi", 0), caller("q", 1), agent(text, 1)])["price_integrity"]["passed"] is False, text
+
+
+def test_intake_question_that_mirrors_the_prompt_is_not_a_leak(dental):
+    said = "Sure! Can I get your full name, mobile number, date of birth, insurance carrier and member ID, and the reason for your visit?"
+    assert run(dental, [agent("Hi", 0), caller("book me", 1), agent(said, 1)])["prompt_leak"]["passed"] is True
