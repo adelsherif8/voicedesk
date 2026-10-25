@@ -30,5 +30,13 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -r requirements.txt -r requirements-dev.txt
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+            requirements-security.txt
+      # Presidio + spaCy en_core_web_sm (pinned wheel) so the Presidio redaction tests run too;
+      # REQUIRE_PRESIDIO turns their skip into a failure if the install ever breaks
+      - run: pip install -r requirements.txt -r requirements-dev.txt -r requirements-security.txt
       - run: python -m pytest -q
+        env:
+          REQUIRE_PRESIDIO: "1"

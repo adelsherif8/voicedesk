@@ -121,12 +121,20 @@ def test_names_for_and_allow_for_a_real_agent():
 
 
 def _presidio_engine(names=(), allow=()):
-    """The Presidio tests run only where Presidio is installed (requirements-security.txt)."""
-    pytest.importorskip("presidio_analyzer", reason="Presidio not installed (optional, requirements-security.txt)")
+    """The Presidio tests run where Presidio is installed (requirements-security.txt). In CI,
+    REQUIRE_PRESIDIO=1 makes a missing or broken install a failure instead of a skip."""
+    import os
+    required = os.getenv("REQUIRE_PRESIDIO") == "1"
     try:
-        return pii.PresidioEngine(names, allow)
-    except RuntimeError:
-        pytest.skip("Presidio did not initialise")
+        import presidio_analyzer  # noqa: F401
+        eng = pii.PresidioEngine(names, allow)
+    except (ImportError, RuntimeError) as e:
+        if required:
+            pytest.fail(f"REQUIRE_PRESIDIO=1 but Presidio is unavailable: {e}")
+        pytest.skip("Presidio not installed (optional, requirements-security.txt)")
+    if required and not eng.has_ner:
+        pytest.fail("REQUIRE_PRESIDIO=1 but no spaCy model loaded (en_core_web_sm)")
+    return eng
 
 
 def test_presidio_engine_matches_or_beats_regex_on_the_labelled_set():

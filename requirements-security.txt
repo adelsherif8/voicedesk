@@ -1,6 +1,6 @@
 # Optional: Microsoft Presidio for NER-based PII redaction in the eval suite (evals/pii.py).
 # Without it the regex engine runs (same placeholders, no NER), which is what CI uses.
-# After installing:  python -m spacy download en_core_web_sm
+# The small spaCy model is pinned below as a wheel so pip (and CI's pip cache) installs it.
 presidio-analyzer
 presidio-anonymizer
 # spaCy pins: 3.7.x with the older cymem/preshed/murmurhash wheels; the current wheels
@@ -9,5 +9,6 @@ spacy~=3.7.5
 preshed<3.0.10
 cymem<2.0.11
 murmurhash<1.0.13
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 # fixture generator (evals/fixtures/make_customers.py); the output is committed
 faker
