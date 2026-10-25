@@ -8,6 +8,7 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import replace
 
+from app import context as call_context
 from evals import checks, config, fixtures, llm, metrics, pii
 from evals.backends import BACKENDS
 from evals.caller import SimulatedCaller
@@ -22,16 +23,30 @@ def _agent_entry(turn, i):
             "tool_calls": [{"name": c.name, "args": c.args, "result": c.result} for c in turn.tool_calls]}
 
 
+def call_data(spec, sc) -> tuple[str, dict]:
+    """(context block for the agent's prompt, tool-result overrides) for one call."""
+    if spec.security.get("data_access") == "least_privilege":
+        # app/context.py: at most the caller's own record (matched by caller ID), allowlisted
+        # structured fields, no notes, in <data> tags; the same block stands in for {records}
+        # in a scenario's tool results (a backend may only return what the caller may see)
+        context = call_context.caller_context(spec.id, fixtures.store(spec.id, sc), sc.hidden_facts.get("phone"))
+        scoped = context.removeprefix("<data>\n").removesuffix("\n</data>")
+        return context, {t: v.replace("{records}", scoped) for t, v in sc.tool_results.items()}
+    # data_access: all -- the raw scenario text, other customers' records included
+    context = fixtures.render_context(sc.context, spec.id)
+    if context and spec.security.get("wrap_context"):
+        context = f"<data>\n{context}\n</data>"   # spotlighting: untrusted data is delimited
+    return context, fixtures.render_tool_results(sc.tool_results, spec.id)
+
+
 def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) -> dict:
     meter = run_meter.child()
     # security track: a per-call canary in the system prompt, fixture "other customers" the
     # agent must never disclose, and the scenario's tool-result overrides (indirect injection)
     canary = checks.make_canary()
     others = fixtures.others(spec.id)
-    runtime = ToolRuntime(spec, fixtures.render_tool_results(sc.tool_results, spec.id))
-    context = fixtures.render_context(sc.context, spec.id)
-    if context and spec.security.get("wrap_context"):
-        context = f"<data>\n{context}\n</data>"   # spotlighting: untrusted data is delimited
+    context, tool_results = call_data(spec, sc)
+    runtime = ToolRuntime(spec, tool_results)
     agent_prompt = spec.prompt + (f"\n\n{context}" if context else "") + checks.canary_line(canary)
     session = backend.start(replace(spec, prompt=agent_prompt), runtime, meter, model)
     caller = SimulatedCaller(sc, meter)
@@ -100,7 +115,8 @@ def run_call(spec, sc, attempt: int, backend, model: str, run_meter: llm.Meter) 
         "scenario_def": redactor.redact_obj({"goal": sc.goal, "persona": sc.persona, "friction": sc.friction,
                                              "hidden_facts": sc.hidden_facts, "expect": sc.expect, "max_turns": sc.max_turns,
                                              "owasp": sc.owasp, "tool_results": sc.tool_results,
-                                             "context": sc.context}),
+                                             "context": context if spec.security.get("data_access") == "least_privilege"
+                                             else sc.context, "data_access": spec.security.get("data_access", "all")}),
         "redaction": redactor.engine_name,
         "cost_usd": round(meter.spent, 5), "seconds": round(time.time() - started, 1),
         **scored,

@@ -47,6 +47,15 @@ def render_records(agent: str) -> str:
     return "; ".join(_one(agent, c) for c in others(agent))
 
 
+def store(agent: str, sc) -> list[dict]:
+    """The CRM as the agent's backend sees it for one call: every fixture customer plus the
+    caller's own record (the scenario's crm_record, with the caller's phone)."""
+    recs = others(agent)
+    if sc.crm_record:
+        recs = recs + [{"phone": sc.hidden_facts.get("phone", ""), **sc.crm_record}]
+    return recs
+
+
 def render_context(context: str, agent: str) -> str:
     """A scenario's `context`: data the agent gets in its prompt at call start, the way a
     Retell dynamic variable or a CRM lookup would put it there."""

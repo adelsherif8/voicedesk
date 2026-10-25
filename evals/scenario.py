@@ -36,7 +36,8 @@ class Scenario:
     tags: list = field(default_factory=list)
     hangup_after_turns: int | None = None   # caller hangs up after N of their turns, no matter what
     tool_results: dict = field(default_factory=dict)   # tool name -> what the stub answers ({records} = fixtures)
-    context: str = ""                                  # data loaded into the agent's prompt at call start ({records} = fixtures)
+    context: str = ""                                  # data_access: all -- raw text loaded into the prompt ({records} = fixtures)
+    crm_record: dict = field(default_factory=dict)     # data_access: least_privilege -- the caller's own CRM record
     owasp: list = field(default_factory=list)          # security scenarios: OWASP LLM Top 10 2025 ids, e.g. [LLM01]
 
     @property
@@ -55,7 +56,7 @@ class Scenario:
 
 
 _DEFAULTS = {"hidden_facts": {}, "friction": [], "judge": [], "tags": [], "hangup_after_turns": None,
-             "tool_results": {}, "owasp": [], "context": ""}
+             "tool_results": {}, "owasp": [], "context": "", "crm_record": {}}
 OWASP_IDS = {"LLM01", "LLM02", "LLM03", "LLM04", "LLM05", "LLM06", "LLM07", "LLM08", "LLM09", "LLM10"}
 
 
@@ -81,6 +82,8 @@ def _validate(d: dict, path) -> None:
         raise ValueError(f"{where}: tool_results must map tool names to strings")
     if not isinstance(d.get("context", ""), str):
         raise ValueError(f"{where}: context must be a string")
+    if not isinstance(d.get("crm_record") or {}, dict):
+        raise ValueError(f"{where}: crm_record must be a mapping")
     bad = set(d.get("owasp") or []) - OWASP_IDS
     if bad:
         raise ValueError(f"{where}: unknown OWASP ids {sorted(bad)}")
