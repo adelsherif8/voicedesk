@@ -1,0 +1,47 @@
+{
+ "receptionist": {
+  "title": "StoreRight — AI receptionist for self-storage",
+  "desc": "Answers every call in about a second, quotes live inventory, reserves units, takes keypad payments and resets gate codes. Talk to the live AI agent.",
+  "img": "receptionist"
+ },
+ "recovery": {
+  "title": "Blue Ridge — AI missed-call recovery for plumbers",
+  "desc": "Missed call to text-back in 8 seconds and an AI callback in 52 that books the job into GoHighLevel. Try the live agent.",
+  "img": "recovery"
+ },
+ "sales": {
+  "title": "Summit — AI speed-to-lead for HVAC",
+  "desc": "Calls every new web lead within 60 seconds, qualifies the job and books the estimate. Try the live agent.",
+  "img": "sales"
+ },
+ "dental": {
+  "title": "Brightside — AI front desk for dental practices",
+  "desc": "Books new patients with insurance checked on the call, makes reminder calls and refills cancellations from the waitlist.",
+  "img": "dental"
+ },
+ "restaurant": {
+  "title": "Luca's Trattoria — AI phone host for restaurants",
+  "desc": "Takeout orders to the kitchen printer, the 86 board respected, allergies flagged and reservations on the floor plan.",
+  "img": "restaurant"
+ },
+ "realty": {
+  "title": "Harbor & Vine — AI listing line for real estate",
+  "desc": "Answers listing calls in 4 seconds, qualifies buyers and books showings with tour routes.",
+  "img": "realty"
+ },
+ "support": {
+  "title": "NordFrost — AI support line for appliances",
+  "desc": "Checks the warranty, troubleshoots from the manual, dispatches a technician and warm-transfers frustrated callers.",
+  "img": "support"
+ },
+ "voicemail": {
+  "title": "Lakeside — AI visual voicemail for law firms",
+  "desc": "An AI attendant takes structured messages, summarizes them and puts them on Cisco IP desk phones.",
+  "img": "voicemail"
+ },
+ "evals": {
+  "title": "Agent QA console — AI voice agents tested before launch",
+  "desc": "38 simulated callers and 21 prompt-injection attacks per run, gated in CI. Live results for every agent.",
+  "img": "evals"
+ }
+}
