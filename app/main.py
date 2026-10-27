@@ -10,17 +10,24 @@ import time
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from app import db
 from app.agents import AGENTS, AGENTS_BY_ID, agent_name
 
 _HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 templates = Jinja2Templates(directory=os.path.join(_HERE, "templates"))
+# link-preview (Open Graph) metadata per page, so shared links show a cover image and description
+import json as _json
+templates.env.globals["OG"] = _json.loads(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "og.json")).read())
+templates.env.globals["og_key"] = None
+
 templates.env.globals["pct"] = lambda x: "n/a" if x is None else f"{x * 100:.0f}%"
 templates.env.tests["search"] = lambda value, needle: needle in str(value)
 
 db.init()
 app = FastAPI(title="VoiceDesk")
+app.mount("/static", StaticFiles(directory=os.path.join(_HERE, "static")), name="static")
 
 
 def _valid_agent(aid: str) -> str:
@@ -309,7 +316,7 @@ def _evals_view(model: str | None, run_id: str | None) -> dict:
 
 @app.get("/evals", response_class=HTMLResponse)
 def evals_page(request: Request, model: str | None = None, run: str | None = None):
-    return templates.TemplateResponse(request, "evals.html", _evals_view(model, run))
+    return templates.TemplateResponse(request, "evals.html", {**_evals_view(model, run), "og_key": "evals"})
 
 
 @app.get("/evals/result/{rid}", response_class=HTMLResponse)
