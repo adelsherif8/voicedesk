@@ -46,7 +46,7 @@ AGENTS = [
      "mode": "light", "bg": "#f4f1ea", "accent": "#c9a227", "accent2": "#1f2933"},
     {"id": "recovery", "name": "Blue Ridge Revenue Recovery",
      "business": "Blue Ridge Plumbing", "vertical": "plumbing", "template": "recovery.html",
-     "desc": "Revenue recovery — missed-call text-back + AI callback, unsold-estimate follow-up, customer reactivation (Retell + GoHighLevel).",
+     "desc": "Revenue recovery — missed-call text-back + AI callback, unsold-estimate follow-up, customer reactivation (a Retell demo with its own dashboard).",
      "icon": "fa-wrench", "color": "#b87333",
      "mode": "light", "bg": "#f5f4f0", "accent": "#b87333", "accent2": "#0f4c81",
      # today's truck board: five 2-hour windows per truck; a label after the window = already booked

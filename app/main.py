@@ -12,7 +12,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from app import db
+from app import db, web_call
 from app.agents import AGENTS, AGENTS_BY_ID, agent_name
 
 _HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -87,8 +87,18 @@ def agent_view(aid: str, request: Request):
     tpl = AGENTS_BY_ID[aid].get("template", "agent.html")
     return templates.TemplateResponse(request, tpl, {
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
-        "records": db.list_records(aid),
+        "records": db.list_records(aid), "web_call": web_call.page_config(aid),
     })
+
+
+@app.post("/api/web-call/{slug}")
+def create_web_call(slug: str, request: Request):
+    """Mint a token for one browser voice call. Same-origin only, rate limited, never returns the key."""
+    if not web_call.same_origin(request.headers):
+        return JSONResponse({"ok": False, "reason": "forbidden", "message": "Calls can only start from the demo page."},
+                            status_code=403)
+    status, body = web_call.start(slug, web_call.client_ip(request))
+    return JSONResponse(body, status_code=status, headers={"Cache-Control": "no-store"})
 
 
 @app.post("/vapi/{agent}")

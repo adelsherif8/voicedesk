@@ -1,0 +1,31 @@
+{% if web_call %}
+<style>
+.talk{--talk:{{ web_call.color }};box-sizing:border-box;margin:14px auto;max-width:1200px;width:calc(100% - 28px);background:#fff;color:#1f2933;border:1px solid rgba(0,0,0,.12);border-left:4px solid var(--talk);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;font-size:.92rem;line-height:1.4}
+.app .talk{width:100%}
+.talk *{box-sizing:border-box}
+.talk .talk-acts{display:flex;gap:8px;flex-wrap:wrap}
+.talk button{font:inherit;font-weight:700;min-height:44px;padding:0 18px;border-radius:8px;border:0;color:#fff;background:var(--talk);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.talk button:disabled{opacity:.7;cursor:default}
+.talk button:focus-visible{outline:3px solid #1f2933;outline-offset:2px}
+.talk .talk-hang{background:#b91c1c}
+.talk .talk-sound{background:#fff;color:#1f2933;border:1px solid rgba(0,0,0,.3)}
+.talk .talk-body{flex:1 1 320px;min-width:0}
+.talk .talk-status{font-weight:700;margin:0 0 2px}
+.talk .talk-status:empty{display:none}
+.talk .talk-note{margin:0;color:#4b5563;font-size:.8rem}
+.talk [hidden]{display:none!important}
+@media(max-width:600px){.talk .talk-acts,.talk button{width:100%}}
+</style>
+<section class="talk" id="talk" aria-label="Talk to this agent" data-slug="{{ web_call.slug }}" data-max-seconds="{{ web_call.max_seconds }}">
+  <div class="talk-acts">
+    <button type="button" class="talk-start"><i class="fa-solid fa-microphone" aria-hidden="true"></i> <span>Talk to this agent</span></button>
+    <button type="button" class="talk-hang" hidden><i class="fa-solid fa-phone-slash" aria-hidden="true"></i> Hang up</button>
+    <button type="button" class="talk-sound" hidden><i class="fa-solid fa-volume-high" aria-hidden="true"></i> Tap to hear the agent</button>
+  </div>
+  <div class="talk-body">
+    <p class="talk-status" role="status" aria-live="polite"></p>
+    <p class="talk-note">Uses your microphone. This is a demo: you will talk to an AI agent, not a person.{% if web_call.recorded %} Calls may be recorded and transcribed.{% endif %} Calls end after {{ web_call.minutes }} minutes. What you say can appear on this public dashboard, so please use made-up details.</p>
+  </div>
+</section>
+<script type="module" src="/static/web_call.js?v=1"></script>
+{% endif %}
