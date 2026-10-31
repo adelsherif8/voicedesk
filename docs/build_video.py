@@ -13,7 +13,7 @@ AUDIO = []
 
 def post(rec):
     urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/receptionist", data=json.dumps(rec).encode(),
-        headers={"Content-Type": "application/json"}, method="POST"), timeout=20)
+        headers={"Content-Type":"application/json","Authorization":"Bearer "+os.environ["ADMIN_TOKEN"]}, method="POST"), timeout=20)
 
 JENNA = {"name": "Jenna Marlowe", "phone": "+1 555 412 7788", "email": "jenna@mail.com",
     "intent": "Store apartment items while traveling", "outcome": "Reserved 10x10", "appointment": "Tour Monday 2:00 PM",

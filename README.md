@@ -6,11 +6,36 @@ posts captured calls, leads, and bookings here, shown live and filterable by age
 
 Built to sit behind Vapi / Retell agents:
 - `POST /vapi/{agent}` — handles Vapi tool-calls + end-of-call reports.
-- `POST /ingest/{agent}` — generic JSON ingest (Retell / n8n / manual).
-- `POST /simulate/{agent}` — drop a sample record to demo the live dashboard.
+- `POST /retell/{agent}` — handles Retell custom functions + call-analysis webhooks.
+- `POST /ingest/{agent}` — generic JSON ingest (n8n / manual / demo recording). Needs `ADMIN_TOKEN`.
+- `POST /simulate/{agent}` — drop a sample record to demo the live dashboard. Needs `ADMIN_TOKEN`.
+- `POST /reset` — wipe records back to the seed data. Needs `ADMIN_TOKEN`.
 - `GET /records?agent=` — live feed the dashboard polls.
+- `POST /api/web-call/{slug}` — mints a Retell token for a browser call from the "Talk to this agent" button.
 
-A one-line connector pushes the same records into GoHighLevel or any CRM.
+### Admin endpoints
+
+`/ingest`, `/simulate` and `/reset` need `Authorization: Bearer $ADMIN_TOKEN`. If `ADMIN_TOKEN` is unset they refuse with 403; a wrong token gets 401.
+The dashboard's "Simulate a call" button is rendered only for a request carrying that header, so public visitors never see it and the token is never sent to a browser.
+The `docs/build_video*.py` and `docs/record_agent.py` scripts send the header from their own `ADMIN_TOKEN` env var, so start the local server and the script with the same value.
+
+### Browser voice calls
+
+The seven pages with a Retell agent show a "Talk to this agent" button when these env vars are set:
+
+| Env var | Default | Purpose |
+| --- | --- | --- |
+| `RETELL_API_KEY` | unset, button hidden | Server only, never sent to the browser |
+| `RETELL_AGENT_IDS` | `docs/retell_created.json` locally | JSON map of page slug to Retell agent id |
+| `WEB_CALL_CLIENT_IP_HEADER` | unset | Proxy-set header holding the caller IP (`cf-connecting-ip` on Render) |
+| `WEB_CALL_PER_IP_HOURLY` | 3 | Calls per IP per hour |
+| `WEB_CALL_GLOBAL_DAILY` | 30 | Calls per UTC day, across all agents |
+| `WEB_CALL_MAX_SECONDS` | 180 | Call length limit (minimum 60) |
+| `WEB_CALL_ALLOWED_ORIGINS` | unset | Extra allowed origins, comma separated; the app's own host always works |
+
+The SDK is `static/vendor/retell-client-js-sdk-3.0.3.min.js`, a bundle with its dependencies pinned; rebuild it with `scripts/build_retell_sdk.sh`.
+
+This is a demo with its own dashboard: records stay in this app, and there is no CRM connector.
 
 Stack: Python · FastAPI · SQLite · (OpenAI for agent logic in the voice layer).
 Built by Adel Atya.

@@ -3,7 +3,7 @@ import asyncio, json, os, subprocess, time, urllib.request, glob, shutil
 from playwright.async_api import async_playwright
 ROOT="/Users/adel/Desktop/GHAI/voicedesk"; OUT=f"{ROOT}/docs/vid_out"; FR=f"{ROOT}/docs/vid6/frames"
 L=json.load(open(f"{ROOT}/docs/vid6/lines.json")); AUDIO=[]
-def post(rec): urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/recovery",data=json.dumps(rec).encode(),headers={"Content-Type":"application/json"},method="POST"),timeout=20)
+def post(rec): urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/recovery",data=json.dumps(rec).encode(),headers={"Content-Type":"application/json","Authorization":"Bearer "+os.environ["ADMIN_TOKEN"]},method="POST"),timeout=20)
 MARIA={"name":"Maria Lopez","phone":"+1 555 402 8810","intent":"Kitchen sink backed up","outcome":"Booked · $89 dispatch","appointment":"Today 2–4 PM","summary":"Missed call 10:41 (crew under a sink). Text-back sent in 8s, AI called back in 52s. Sink fully blocked. Booked same-day 2–4 PM, $89 dispatch credited to repair.","flow":"missed","stage":"booked","callback_secs":52,"text_back_secs":8,"value":320,"source":"Google"}
 TOM={"name":"Tom Brennan","phone":"+1 555 771 3302","intent":"Water heater estimate $2,400","outcome":"Estimate closed · $2,400","appointment":"Install Thu 9 AM","summary":"Estimate #2231 sent 3 days ago, no reply. AI follow-up: objection was price → offered 0% / 12 mo ($200/mo). Booked install Thursday 9 AM.","flow":"estimate","stage":"booked","estimate":2400,"value":2400,"days_open":3,"objection":"price","financing":"0% · 12 mo"}
 CARDS=[{"col":"open","a":["kevin","Kevin Osei","Leaking spigot · missed 12:03","$180","missed"]},

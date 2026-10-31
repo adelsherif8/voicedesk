@@ -2,13 +2,12 @@
 """Create every VoiceDesk agent on Retell from docs/RETELL-SETUP.md.
 
 The markdown doc stays the single source of truth — edit a prompt there and
-re-run with --update to push the change.
+push the change with --update. The API key is read from ~/.retell_key only.
 
-  export RETELL_API_KEY=...        (or put the key in ~/.retell_key)
-  python3 scripts/retell_provision.py --dry-run     # parse + show, no API calls
+  python3 scripts/retell_provision.py --dry-run     # compare doc and live prompts; GETs only
   python3 scripts/retell_provision.py               # create everything
   python3 scripts/retell_provision.py --only recovery
-  python3 scripts/retell_provision.py --update      # push prompt edits to existing
+  python3 scripts/retell_provision.py --update --only recovery   # replace that LLM's prompt, nothing else
 """
 import argparse, json, os, re, sys, urllib.error, urllib.request
 
@@ -31,13 +30,10 @@ VOICE_PREF = {
 
 
 def key():
-    k = os.environ.get("RETELL_API_KEY")
-    if k:
-        return k.strip()
     p = os.path.expanduser("~/.retell_key")
     if os.path.exists(p):
         return open(p).read().strip()
-    sys.exit("No API key. Put it in ~/.retell_key or export RETELL_API_KEY.")
+    sys.exit("No API key. Put it in ~/.retell_key.")
 
 
 def call(path, body=None, method="POST"):
@@ -85,31 +81,78 @@ def pick_voice(aid, voices):
     return v["voice_id"], v.get("voice_name", v["voice_id"])
 
 
+def has_security(prompt):
+    return bool(re.search(r"^SECURITY\b", prompt or "", re.M))
+
+
+def live_llm(x, state):
+    """The agent's live LLM, after checking that the saved ids still describe that agent."""
+    prev = state.get(x["id"])
+    if not prev:
+        sys.exit(f"{x['id']}: no saved ids in {STATE}")
+    engine = call(f"get-agent/{prev['agent_id']}", method="GET").get("response_engine") or {}
+    if engine.get("type") != "retell-llm" or engine.get("llm_id") != prev["llm_id"]:
+        sys.exit(f"{x['id']}: the live agent no longer uses the saved LLM. Nothing changed.")
+    return call(f"get-retell-llm/{prev['llm_id']}", method="GET")
+
+
+def yn(flag):
+    return "yes" if flag else "no"
+
+
+def dry_run(agents, state):
+    print(f"{'agent':13} {'doc':>6} {'live':>6} {'diff':>6}  {'SEC doc':7} {'SEC live':8} {'same':4}  {'llm version'}")
+    for x in agents:
+        llm = live_llm(x, state)
+        live = llm.get("general_prompt") or ""
+        status = "published" if llm.get("is_published") else "draft"
+        print(f"{x['id']:13} {len(x['prompt']):>6} {len(live):>6} {len(x['prompt']) - len(live):>+6}  "
+              f"{yn(has_security(x['prompt'])):7} {yn(has_security(live)):8} {yn(x['prompt'] == live):4}  "
+              f"v{llm.get('version')} {status}")
+    print(f"\n{len(agents)} agent(s) compared. GET requests only; nothing was changed.")
+
+
+def update_prompt(x, state):
+    """Replace general_prompt only: omitted fields stay as they are on the live LLM."""
+    llm = live_llm(x, state)
+    if llm.get("is_published"):
+        sys.exit(f"{x['id']}: the LLM's latest version is published, so it is read-only. Nothing changed. "
+                 "Create a new draft in the Retell dashboard, then run this again.")
+    llm_id = state[x["id"]]["llm_id"]
+    call(f"update-retell-llm/{llm_id}", {"general_prompt": x["prompt"]}, method="PATCH")
+    live = call(f"get-retell-llm/{llm_id}", method="GET").get("general_prompt")
+    if live != x["prompt"]:
+        sys.exit(f"{x['id']}: the update returned OK, but the live prompt differs from the doc.")
+    print(f"  updated  {x['id']:13} {len(llm.get('general_prompt') or '')} -> {len(live)} chars, "
+          f"SECURITY {yn(has_security(live))}")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--dry-run", action="store_true", help="compare doc and live prompts; changes nothing")
     ap.add_argument("--only", help="single agent id, e.g. recovery")
-    ap.add_argument("--update", action="store_true", help="update instead of create")
+    ap.add_argument("--update", action="store_true", help="replace the prompt of the existing LLM; needs --only")
     a = ap.parse_args()
+    if a.update and not a.only and not a.dry_run:
+        ap.error("--update needs --only <id>")
 
     agents = parse_doc()
     if a.only:
         agents = [x for x in agents if x["id"] == a.only] or sys.exit(f"no agent '{a.only}'")
 
+    state = json.load(open(STATE)) if os.path.exists(STATE) else {}
+
     if a.dry_run:
+        dry_run(agents, state)
+        return
+
+    if a.update:
         for x in agents:
-            print(f"\n{'='*66}\n{x['id']:14} {x['name']}")
-            print(f"  begin   : {x['begin'][:78]}...")
-            print(f"  prompt  : {len(x['prompt'])} chars")
-            print(f"  function: {x['fn_name']} -> {x['fn_url']}")
-            print(f"  required: {x['fn_params'].get('required')}")
-            print(f"  props   : {len(x['fn_params'].get('properties', {}))}")
-        print(f"\n{len(agents)} agent(s) parsed cleanly. No API calls made.")
+            update_prompt(x, state)
         return
 
     voices = call("list-voices", method="GET")
     print(f"{len(voices)} voices available\n")
-    state = json.load(open(STATE)) if os.path.exists(STATE) else {}
 
     for x in agents:
         vid, vname = pick_voice(x["id"], voices)
@@ -130,12 +173,6 @@ def main():
             }, {"type": "end_call", "name": "end_call",
                 "description": "End the call once everything is saved and the caller has no further questions."}],
         }
-        prev = state.get(x["id"])
-        if a.update and prev:
-            call(f"update-retell-llm/{prev['llm_id']}", llm_body, method="PATCH")
-            print(f"  updated  {x['id']:13} {x['name']}")
-            continue
-
         llm = call("create-retell-llm", llm_body)
         agent = call("create-agent", {
             "response_engine": {"type": "retell-llm", "llm_id": llm["llm_id"]},

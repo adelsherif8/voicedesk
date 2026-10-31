@@ -6,7 +6,7 @@
  },
  "recovery": {
   "title": "Blue Ridge — AI missed-call recovery for plumbers",
-  "desc": "Missed call to text-back in 8 seconds and an AI callback in 52 that books the job into GoHighLevel. Try the live agent.",
+  "desc": "A demo of missed-call recovery: text-back, AI callback and the booked job on its own dashboard. Try the live agent.",
   "img": "recovery"
  },
  "sales": {

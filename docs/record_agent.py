@@ -1,4 +1,4 @@
-import asyncio, json, urllib.request
+import asyncio, json, os, urllib.request
 from playwright.async_api import async_playwright
 URL="http://localhost:8099/agent/receptionist"
 OUT="/Users/adel/Desktop/GHAI/voicedesk/docs/vid_out"
@@ -10,7 +10,7 @@ def post_reservation():
         "appointment":"Tour Monday 2:00 PM","summary":"Couch, bed, and ~15 boxes. Reserved a 10x10 unit, move-in Monday, tour booked.",
         "unit_size":"10x10","move_in":"Monday","monthly_price":110}).encode()
     urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/receptionist",data=body,
-        headers={"Content-Type":"application/json"},method="POST"),timeout=20)
+        headers={"Content-Type":"application/json","Authorization":"Bearer "+os.environ["ADMIN_TOKEN"]},method="POST"),timeout=20)
 
 async def main():
     async with async_playwright() as p:

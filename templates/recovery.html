@@ -93,9 +93,10 @@ body{font-family:Barlow,system-ui,sans-serif;background:var(--bg) repeating-line
 <body>
 <div class="sign"><div class="in">
   <div class="lg"><i class="fa-solid {{ agent.icon }}"></i></div>
-  <div><b>{{ agent.business }}</b><small>Dispatch &amp; Revenue Recovery Desk · GoHighLevel + Retell AI</small></div>
+  <div><b>{{ agent.business }}</b><small>Revenue recovery demo · Retell AI agent + its own dashboard</small></div>
   <div class="r"><span><i class="fa-solid fa-truck"></i> 3 trucks out</span><span><i class="fa-solid fa-calendar-day"></i> <span id="today"></span></span><span class="on"><i class="fa-solid fa-circle"></i> Recovery agent ON</span></div>
 </div></div>
+{% include '_talk.html' %}
 <div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
 
 <div class="wrap">
@@ -112,7 +113,7 @@ body{font-family:Barlow,system-ui,sans-serif;background:var(--bg) repeating-line
       <div class="gauge" style="left:62%"><div class="dial" id="g-called">0</div><div class="lb">AI called<small>avg <span id="g-cs">52</span>s</small></div></div>
       <div class="gauge booked" style="left:88%"><div class="dial" id="g-booked">0</div><div class="lb">Booked<small>this month</small></div></div>
     </div>
-    <div class="leak"><i class="fa-solid fa-droplet"></i> without it: 85% of missed callers leak to a competitor</div>
+    <div class="leak"><i class="fa-solid fa-droplet"></i> demo: every missed call gets a text-back and an AI callback</div>
     <div class="speed" style="margin-top:14px"><div><b id="s-miss">0%</b><span>missed calls recovered</span></div><div><b id="s-est">$0</b><span>estimates closed</span></div><div><b id="s-re">0</b><span>customers reactivated</span></div></div>
   </div>
   <div class="clip">

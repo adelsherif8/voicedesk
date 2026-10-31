@@ -82,6 +82,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
 <body>
 <div class="top"><div class="lg"><i class="fa-solid {{ agent.icon }}"></i></div><div><b>{{ agent.business }}</b><small>Front desk · AI coordinator "Mia" · books · confirms · refills</small></div>
   <div class="r"><span><i class="fa-solid fa-plug"></i> Open Dental · Dentrix</span><span><i class="fa-solid fa-shield-heart"></i> Insurance eligibility</span><span class="on"><i class="fa-solid fa-circle"></i> Mia answering</span></div></div>
+{% include '_talk.html' %}
 <div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
 
 <div class="wrap">

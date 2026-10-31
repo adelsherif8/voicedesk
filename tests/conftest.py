@@ -5,6 +5,7 @@ import tempfile
 # so tests never write to data/voicedesk.db.
 os.environ.setdefault("VOICEDESK_DB", os.path.join(tempfile.mkdtemp(prefix="voicedesk-test-"), "test.db"))
 os.environ.pop("EVALS_INGEST_TOKEN", None)
+os.environ.pop("ADMIN_TOKEN", None)
 
 
 def pytest_terminal_summary(terminalreporter):

@@ -10,7 +10,7 @@ L = json.load(open(f"{ROOT}/docs/vid5/lines.json")); AUDIO = []
 
 def post(rec):
     urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/support", data=json.dumps(rec).encode(),
-        headers={"Content-Type": "application/json"}, method="POST"), timeout=20)
+        headers={"Content-Type":"application/json","Authorization":"Bearer "+os.environ["ADMIN_TOKEN"]}, method="POST"), timeout=20)
 
 HANNAH = {"name": "Hannah Brooks", "phone": "+1 555 204 1180", "email": "hannah.b@mail.com", "intent": "Fridge not cooling", "outcome": "Technician booked", "appointment": "Thu 9–11 AM",
     "summary": "Serial NF-RF28-4471 verified, in warranty (14 mo). Freezer OK, fridge warm → evaporator fan. Booked authorized tech Thu 9–11 AM, part pre-ordered, SMS sent.",

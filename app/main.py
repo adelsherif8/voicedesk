@@ -4,6 +4,7 @@ Any voice agent (Vapi, Retell, or a manual/n8n flow) posts captured data here; t
 dashboard shows every lead, call, and booking live, filterable by agent.
 """
 
+import hmac
 import os
 import time
 
@@ -12,7 +13,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from app import db
+from app import db, web_call
 from app.agents import AGENTS, AGENTS_BY_ID, agent_name
 
 _HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,6 +33,28 @@ app.mount("/static", StaticFiles(directory=os.path.join(_HERE, "static")), name=
 
 def _valid_agent(aid: str) -> str:
     return aid if aid in AGENTS_BY_ID else "receptionist"
+
+
+def _admin_token() -> str:
+    return os.getenv("ADMIN_TOKEN", "").strip()
+
+
+def _is_admin(request: Request) -> bool:
+    """True only for `Authorization: Bearer $ADMIN_TOKEN`, compared in constant time."""
+    token = _admin_token()
+    scheme, _, sent = request.headers.get("authorization", "").partition(" ")
+    if not token or scheme.lower() != "bearer":
+        return False
+    return hmac.compare_digest(sent.strip().encode(), token.encode())
+
+
+def _admin_denied(request: Request) -> JSONResponse | None:
+    """The refusal for a demo write, or None if it may proceed. Without ADMIN_TOKEN nobody may."""
+    if not _admin_token():
+        return JSONResponse({"ok": False, "error": "admin endpoints are disabled"}, status_code=403)
+    if not _is_admin(request):
+        return JSONResponse({"ok": False, "error": "bad token"}, status_code=401)
+    return None
 
 
 _STD = {"name", "customer_name", "phone", "phone_number", "email", "intent", "reason",
@@ -57,9 +80,11 @@ def _store(agent: str, args: dict) -> int:
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
+    admin = _is_admin(request)
+    # the simulate button exists only in the page an authorised request gets, so that page is never cached
     return templates.TemplateResponse(request, "index.html", {
-        "agents": AGENTS, "stats": db.stats(),
-    })
+        "agents": AGENTS, "stats": db.stats(), "can_simulate": admin,
+    }, headers={"Cache-Control": "no-store"} if admin else None)
 
 
 @app.get("/records")
@@ -87,8 +112,18 @@ def agent_view(aid: str, request: Request):
     tpl = AGENTS_BY_ID[aid].get("template", "agent.html")
     return templates.TemplateResponse(request, tpl, {
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
-        "records": db.list_records(aid),
+        "records": db.list_records(aid), "web_call": web_call.page_config(aid),
     })
+
+
+@app.post("/api/web-call/{slug}")
+def create_web_call(slug: str, request: Request):
+    """Mint a token for one browser voice call. Same-origin only, rate limited, never returns the key."""
+    if not web_call.same_origin(request.headers):
+        return JSONResponse({"ok": False, "reason": "forbidden", "message": "Calls can only start from the demo page."},
+                            status_code=403)
+    status, body = web_call.start(slug, web_call.client_ip(request))
+    return JSONResponse(body, status_code=status, headers={"Cache-Control": "no-store"})
 
 
 @app.post("/vapi/{agent}")
@@ -166,7 +201,9 @@ async def retell_webhook(agent: str, request: Request):
 
 @app.post("/ingest/{agent}")
 async def ingest(agent: str, request: Request):
-    """Generic ingest for Retell / n8n / manual — accepts a flat JSON record."""
+    """Generic ingest for n8n / manual / demo recording — a flat JSON record. Needs ADMIN_TOKEN."""
+    if (denied := _admin_denied(request)):
+        return denied
     agent = _valid_agent(agent)
     args = await request.json()
     rid = _store(agent, args)
@@ -175,7 +212,9 @@ async def ingest(agent: str, request: Request):
 
 @app.post("/simulate/{agent}")
 async def simulate(agent: str, request: Request):
-    """Drop a sample record (to demo the live dashboard without a real call)."""
+    """Drop a sample record (to demo the live dashboard without a real call). Needs ADMIN_TOKEN."""
+    if (denied := _admin_denied(request)):
+        return denied
     agent = _valid_agent(agent)
     body = await request.json() if await request.body() else {}
     rid = _store(agent, body or {
@@ -186,7 +225,10 @@ async def simulate(agent: str, request: Request):
 
 
 @app.post("/reset")
-def reset():
+def reset(request: Request):
+    """Wipe the records back to the seed data. Needs ADMIN_TOKEN."""
+    if (denied := _admin_denied(request)):
+        return denied
     db.reset()
     return {"ok": True, "records": db.count()}
 
@@ -197,7 +239,6 @@ def health():
 
 
 # ---- Agent QA console: regression + simulation results from `python -m evals` ----
-import hmac
 import json as _json
 
 from evals import pii as _pii
