@@ -8,6 +8,8 @@ services:
     envVars:
       - key: EVALS_INGEST_TOKEN   # lets `python -m evals ... --publish <render url>` post runs; set in the Render dashboard
         sync: false
+      - key: ADMIN_TOKEN          # required by /reset, /simulate and /ingest; without it they refuse with 403
+        sync: false
       - key: RETELL_API_KEY       # server only; without it the "Talk to this agent" button is hidden
         sync: false
       - key: RETELL_AGENT_IDS     # JSON map of page slug to Retell agent id

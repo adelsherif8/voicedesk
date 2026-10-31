@@ -222,7 +222,7 @@ Measured with `python -m evals run --agent recovery --k 5` and paired A/B runs:
 - **Results are on gpt-4o-mini.** Only one scenario was re-run on the production model gpt-4.1.
   Run `--prod-parity --tag security` before a client deploy. The estimate is about $1.
 - **The prompt changes in `docs/RETELL-SETUP.md` are not pushed to the live Retell agents.** Push
-  them with `scripts/retell_provision.py --update` after review.
+  them with `scripts/retell_provision.py --update --only <id>` after review.
 - **OWASP coverage.** LLM01, LLM02, LLM06, LLM07 and LLM10 are tested. LLM03 (supply chain),
   LLM04 (data and model poisoning), LLM05 (improper output handling), LLM08 (vector and embedding
   weaknesses) and LLM09 (misinformation, partly covered by the grounding judge) are out of scope

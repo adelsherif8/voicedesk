@@ -6,10 +6,18 @@ posts captured calls, leads, and bookings here, shown live and filterable by age
 
 Built to sit behind Vapi / Retell agents:
 - `POST /vapi/{agent}` — handles Vapi tool-calls + end-of-call reports.
-- `POST /ingest/{agent}` — generic JSON ingest (Retell / n8n / manual).
-- `POST /simulate/{agent}` — drop a sample record to demo the live dashboard.
+- `POST /retell/{agent}` — handles Retell custom functions + call-analysis webhooks.
+- `POST /ingest/{agent}` — generic JSON ingest (n8n / manual / demo recording). Needs `ADMIN_TOKEN`.
+- `POST /simulate/{agent}` — drop a sample record to demo the live dashboard. Needs `ADMIN_TOKEN`.
+- `POST /reset` — wipe records back to the seed data. Needs `ADMIN_TOKEN`.
 - `GET /records?agent=` — live feed the dashboard polls.
 - `POST /api/web-call/{slug}` — mints a Retell token for a browser call from the "Talk to this agent" button.
+
+### Admin endpoints
+
+`/ingest`, `/simulate` and `/reset` need `Authorization: Bearer $ADMIN_TOKEN`. If `ADMIN_TOKEN` is unset they refuse with 403; a wrong token gets 401.
+The dashboard's "Simulate a call" button is rendered only for a request carrying that header, so public visitors never see it and the token is never sent to a browser.
+The `docs/build_video*.py` and `docs/record_agent.py` scripts send the header from their own `ADMIN_TOKEN` env var, so start the local server and the script with the same value.
 
 ### Browser voice calls
 

@@ -10,7 +10,7 @@ L = json.load(open(f"{ROOT}/docs/vid4/lines.json")); AUDIO = []
 
 def post(rec):
     urllib.request.urlopen(urllib.request.Request("http://localhost:8099/ingest/sales", data=json.dumps(rec).encode(),
-        headers={"Content-Type": "application/json"}, method="POST"), timeout=20)
+        headers={"Content-Type":"application/json","Authorization":"Bearer "+os.environ["ADMIN_TOKEN"]}, method="POST"), timeout=20)
 
 DANA = {"name": "Dana Kowalski", "phone": "+1 555 640 2277", "email": "dana.k@mail.com", "intent": "AC blowing warm upstairs",
     "outcome": "Estimate booked", "appointment": "Tomorrow 10:00 AM",

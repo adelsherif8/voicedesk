@@ -82,7 +82,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink
         <span class="t" id="paneTitle">All agents</span>
         <div style="display:flex;align-items:center;gap:12px">
           <span class="hint">Records appear here the moment a call ends.</span>
-          <button class="simbtn" onclick="simulate()"><i class="fa-solid fa-phone"></i> Simulate a call</button>
+          {% if can_simulate %}<button class="simbtn" onclick="simulate()"><i class="fa-solid fa-phone"></i> Simulate a call</button>{% endif %}
         </div>
       </div>
       <div class="list" id="list"></div>
@@ -116,7 +116,7 @@ function renderAgents(stats){
 }
 
 function renderList(records){
-  if(!records.length){ $('list').innerHTML='<div class="empty">No records yet. Click “Simulate a call” to see one land live.</div>'; return; }
+  if(!records.length){ $('list').innerHTML='<div class="empty">No records yet. They land here live when a call ends.</div>'; return; }
   $('list').innerHTML = records.map(r=>{
     const a=agentById(r.agent);
     const oc=(r.outcome||'captured').toLowerCase();
@@ -145,7 +145,7 @@ async function load(){
   $('paneTitle').textContent = current==='all' ? 'All agents' : agentById(current).name;
 }
 function pick(id){ current=id; load(); }
-async function simulate(){ await fetch('/simulate/'+(current==='all'?'receptionist':current),{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); load(); }
+{% if can_simulate %}async function simulate(){ await fetch('/simulate/'+(current==='all'?'receptionist':current),{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); load(); }{% endif %}
 
 load();
 setInterval(load, 4000);
