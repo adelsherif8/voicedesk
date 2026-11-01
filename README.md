@@ -5,8 +5,8 @@ agent style — receptionist, sales follow-up, booking, FAQ, restaurant, reactiv
 posts captured calls, leads, and bookings here, shown live and filterable by agent.
 
 Built to sit behind Vapi / Retell agents:
-- `POST /vapi/{agent}` — handles Vapi tool-calls + end-of-call reports.
-- `POST /retell/{agent}` — handles Retell custom functions + call-analysis webhooks.
+- `POST /vapi/{agent}` — handles Vapi tool-calls + end-of-call reports. Needs `X-Vapi-Secret` matching `VAPI_WEBHOOK_SECRET`.
+- `POST /retell/{agent}` — handles Retell custom functions + call-analysis webhooks. Needs a valid `X-Retell-Signature`.
 - `POST /ingest/{agent}` — generic JSON ingest (n8n / manual / demo recording). Needs `ADMIN_TOKEN`.
 - `POST /simulate/{agent}` — drop a sample record to demo the live dashboard. Needs `ADMIN_TOKEN`.
 - `POST /reset` — wipe records back to the seed data. Needs `ADMIN_TOKEN`.

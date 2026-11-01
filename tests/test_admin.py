@@ -1,11 +1,17 @@
 """ADMIN_TOKEN on the demo write endpoints and the dashboard button (temp database)."""
 
+import hashlib
+import hmac
+import json
+import time
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app import db, main
 
 TOKEN = "s3cret-admin"
+RETELL_KEY = "retell-test-key"
 GOOD = {"Authorization": f"Bearer {TOKEN}"}
 WRITES = [("/reset", None), ("/simulate/dental", {}), ("/ingest/dental", {"name": "Test Caller"})]
 
@@ -14,6 +20,8 @@ WRITES = [("/reset", None), ("/simulate/dental", {}), ("/ingest/dental", {"name"
 def client(tmp_path, monkeypatch):
     monkeypatch.setattr(db, "DB_PATH", str(tmp_path / "admin.db"))
     monkeypatch.delenv("ADMIN_TOKEN", raising=False)
+    monkeypatch.delenv("VAPI_WEBHOOK_SECRET", raising=False)
+    monkeypatch.setenv("RETELL_API_KEY", RETELL_KEY)
     db.init()
     return TestClient(main.app)
 
@@ -57,10 +65,37 @@ def test_token_is_compared_in_constant_time(client, monkeypatch):
     assert seen == [(TOKEN.encode(), TOKEN.encode())]
 
 
-def test_agent_webhooks_stay_open(client):
+def retell_post(client, path, payload, key=RETELL_KEY, age_ms=0):
+    raw = json.dumps(payload).encode()
+    ts = str(int(time.time() * 1000) - age_ms)
+    digest = hmac.new(key.encode(), raw + ts.encode(), hashlib.sha256).hexdigest()
+    return client.post(path, content=raw, headers={"Content-Type": "application/json",
+                                                   "X-Retell-Signature": f"v={ts},d={digest}"})
+
+
+def test_retell_webhook_needs_a_valid_fresh_signature(client):
     args = {"name": "save_lead", "args": {"name": "Test Caller"}, "call": {}}
-    assert client.post("/retell/dental", json=args).status_code == 200
-    assert client.post("/vapi/dental", json={"message": {"type": "status-update"}}).status_code == 200
+    before = db.count("dental")
+    assert client.post("/retell/dental", json=args).status_code == 401
+    assert retell_post(client, "/retell/dental", args, key="wrong").status_code == 401
+    assert retell_post(client, "/retell/dental", args, age_ms=6 * 60 * 1000).status_code == 401
+    assert db.count("dental") == before
+    assert retell_post(client, "/retell/dental", args).status_code == 200
+    assert db.count("dental") == before + 1
+
+
+def test_retell_webhook_refused_without_a_key(client, monkeypatch):
+    monkeypatch.delenv("RETELL_API_KEY")
+    assert retell_post(client, "/retell/dental", {"name": "x", "args": {}}).status_code == 401
+
+
+def test_vapi_webhook_needs_the_secret(client, monkeypatch):
+    body = {"message": {"type": "status-update"}}
+    assert client.post("/vapi/dental", json=body, headers={"X-Vapi-Secret": ""}).status_code == 401
+    monkeypatch.setenv("VAPI_WEBHOOK_SECRET", "vapi-secret")
+    assert client.post("/vapi/dental", json=body).status_code == 401
+    assert client.post("/vapi/dental", json=body, headers={"X-Vapi-Secret": "wrong"}).status_code == 401
+    assert client.post("/vapi/dental", json=body, headers={"X-Vapi-Secret": "vapi-secret"}).status_code == 200
 
 
 @pytest.mark.parametrize("value", [None, TOKEN])
@@ -83,10 +118,10 @@ def test_authorised_page_has_button_without_the_token(client, monkeypatch):
 
 def test_real_callers_are_hidden_from_the_public_but_not_the_admin(client, monkeypatch):
     monkeypatch.setenv("ADMIN_TOKEN", TOKEN)
-    client.post("/retell/sales", json={"name": "save_lead", "call": {"from_number": "+15125550199"},
+    retell_post(client, "/retell/sales", {"name": "save_lead", "call": {"from_number": "+15125550199"},
                                        "args": {"name": "Jane Roe", "email": "jane@example.com", "notes": "12 Oak St",
                                                 "address": "12 Oak St", "kind": "order", "total": 40}})
-    client.post("/retell/sales", json={"event": "call_analyzed",
+    retell_post(client, "/retell/sales", {"event": "call_analyzed",
                                        "call": {"transcript": "my card is 4242", "from_number": "+15125550199",
                                                 "call_analysis": {"call_summary": "Jane at 12 Oak St"}}})
     for path in ("/records?agent=sales", "/records"):

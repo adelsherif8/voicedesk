@@ -4,8 +4,10 @@ Any voice agent (Vapi, Retell, or a manual/n8n flow) posts captured data here; t
 dashboard shows every lead, call, and booking live, filterable by agent.
 """
 
+import hashlib
 import hmac
 import os
+import re
 import time
 
 from fastapi import FastAPI, Request
@@ -149,9 +151,32 @@ def create_web_call(slug: str, request: Request):
     return JSONResponse(body, status_code=status, headers={"Cache-Control": "no-store"})
 
 
+_RETELL_SIG = re.compile(r"v=(\d+),d=([0-9a-fA-F]+)")
+_RETELL_MAX_AGE_MS = 5 * 60 * 1000
+
+
+def _retell_signed(raw: bytes, signature: str) -> bool:
+    """X-Retell-Signature: v=<ms>,d=<HMAC-SHA256 of body + timestamp, keyed by the API key>."""
+    key = os.getenv("RETELL_API_KEY", "").strip()
+    m = _RETELL_SIG.fullmatch(signature.strip())
+    if not key or not m or abs(time.time() * 1000 - int(m[1])) > _RETELL_MAX_AGE_MS:
+        return False
+    digest = hmac.new(key.encode(), raw + m[1].encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(digest, m[2].lower())
+
+
+def _vapi_signed(request: Request) -> bool:
+    """X-Vapi-Secret must equal VAPI_WEBHOOK_SECRET. Without that env var nobody may post."""
+    secret = os.getenv("VAPI_WEBHOOK_SECRET", "").strip()
+    sent = request.headers.get("x-vapi-secret", "")
+    return bool(secret) and hmac.compare_digest(sent.encode(), secret.encode())
+
+
 @app.post("/vapi/{agent}")
 async def vapi_webhook(agent: str, request: Request):
-    """Handles Vapi tool-calls and end-of-call reports."""
+    """Handles Vapi tool-calls and end-of-call reports. Needs the shared secret."""
+    if not _vapi_signed(request):
+        return JSONResponse({"ok": False, "error": "bad secret"}, status_code=401)
     agent = _valid_agent(agent)
     body = await request.json()
     msg = body.get("message", body)
@@ -191,7 +216,10 @@ async def retell_webhook(agent: str, request: Request):
     Call analysed   -> {"event": "call_analyzed", "call": {"call_analysis": {...}}}
     Whatever we return is handed back to the agent's LLM as the tool result,
     so it must be a short sentence the agent can say out loud.
+    Every request must carry Retell's signature.
     """
+    if not _retell_signed(await request.body(), request.headers.get("x-retell-signature", "")):
+        return JSONResponse({"ok": False, "error": "bad signature"}, status_code=401)
     agent = _valid_agent(agent)
     body = await request.json()
 
