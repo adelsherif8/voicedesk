@@ -81,7 +81,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
 </head>
 <body>
 <div class="top"><div class="lg"><i class="fa-solid {{ agent.icon }}"></i></div><div><b>{{ agent.business }}</b><small>Front desk · AI coordinator "Mia" · books · confirms · refills</small></div>
-  <div class="r"><span><i class="fa-solid fa-plug"></i> Open Dental · Dentrix</span><span><i class="fa-solid fa-shield-heart"></i> Insurance eligibility</span><span class="on"><i class="fa-solid fa-circle"></i> Mia answering</span></div></div>
+  <div class="r"><span>Demo data</span><span class="on"><i class="fa-solid fa-circle"></i> Mia answering</span></div></div>
 {% include '_talk.html' %}
 <div class="calling" id="calling" style="display:none"><span id="callFrom"></span><span id="callTxt"></span></div>
 
@@ -101,7 +101,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--in
   <div class="two">
     <div class="card"><h3><i class="fa-solid fa-phone-volume"></i> Latest calls <span class="n" id="n-calls">0</span></h3><div id="calls"></div></div>
     <div class="card"><h3><i class="fa-solid fa-bell"></i> Tomorrow's confirmations <span class="n" id="n-conf">0</span></h3><div id="conf"></div>
-      <div class="ring" style="margin-top:12px"><div class="d" id="ringd" style="--pct:0"><i id="ringv">0%</i></div><div class="t"><b>Confirmed for tomorrow</b><br>reminder calls cut no-shows up to 40%</div></div></div>
+      <div class="ring" style="margin-top:12px"><div class="d" id="ringd" style="--pct:0"><i id="ringv">0%</i></div><div class="t"><b>Confirmed for tomorrow</b><br>from reminder calls</div></div></div>
     <div class="card"><h3><i class="fa-solid fa-list-check"></i> Waitlist &amp; recall <span class="n" id="n-wl">0</span></h3><div id="wl"></div></div>
   </div>
 </div>

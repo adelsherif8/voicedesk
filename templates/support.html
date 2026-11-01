@@ -101,7 +101,7 @@ h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;
     <div class="logo"><i class="fa-solid {{ agent.icon }}"></i></div>
     <div class="brand"><b>{{ agent.business }}</b><span>Support Line · AI agent "Nora" · tier-1 calls handled end to end</span></div>
     <div class="right">
-      <div class="pms">Connected to <span>Zendesk</span><span>ServicePower</span><span>SAP Warranty</span></div>
+      <div class="pms">Can connect to <span>Zendesk</span><span>ServicePower</span><span>SAP Warranty</span></div>
       <span class="live"><span class="d"></span> Nora is on</span>
     </div>
   </div>
@@ -116,7 +116,7 @@ h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;
   <div class="kpis">
     <div class="tile" id="t-cont"><i class="ic fa-solid fa-robot"></i><div class="v g">0%</div><div class="l">Contained by AI</div><div class="sub" id="k-cont">demo data</div></div>
     <div class="tile" id="t-wait"><i class="ic fa-solid fa-hourglass-half"></i><div class="v g">0s</div><div class="l">Avg hold time</div><div class="sub">demo data</div></div>
-    <div class="tile" id="t-cost"><i class="ic fa-solid fa-coins"></i><div class="v">$1.18</div><div class="l">Cost per call</div><div class="sub">vs $7.16 human-handled</div></div>
+    <div class="tile" id="t-cost"><i class="ic fa-solid fa-clock"></i><div class="v">24/7</div><div class="l">Support line</div><div class="sub">demo data</div></div>
     <div class="tile" id="t-tech"><i class="ic fa-solid fa-screwdriver-wrench"></i><div class="v k">0</div><div class="l">Technicians dispatched</div><div class="sub" id="k-tech">parts pre-ordered</div></div>
     <div class="tile" id="t-parts"><i class="ic fa-solid fa-box"></i><div class="v k">$0</div><div class="l">Parts sold by phone</div><div class="sub" id="k-parts">0 orders</div></div>
     <div class="tile" id="t-xfer"><i class="ic fa-solid fa-user-headset fa-people-arrows"></i><div class="v r">0</div><div class="l">Warm transfers</div><div class="sub m">frustration / repeat issue</div></div>
@@ -134,7 +134,7 @@ h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;
     <div class="two">
       <div class="box"><h3 class="sec"><i class="fa-solid fa-chart-pie"></i> Where today's calls ended <span class="r" id="csat"></span></h3>
         <div class="split" id="split"></div><div class="leg" id="leg"></div>
-        <div class="cost"><div class="me"><b id="cost-me">$0</b><span>spent on AI-handled calls</span></div><div class="them"><b id="cost-them">$0</b><span>same calls with human agents</span></div><div><b id="cost-save" style="color:var(--blue)">$0</b><span>saved today</span></div></div>
+        
       </div>
       <div class="box"><h3 class="sec"><i class="fa-solid fa-snowflake"></i> Products calling in</h3><div class="prod" id="prod"></div></div>
     </div>
@@ -175,7 +175,7 @@ function render(d){
   $('csat').textContent=csats.length?`CSAT ${(csats.reduce((a,b)=>a+b,0)/csats.length).toFixed(1)} / 5`:'';
   $('split').innerHTML=Object.keys(RES).map(k=>`<i style="width:${by[k].length/n*100}%;background:${RES[k][1]}"></i>`).join('');
   $('leg').innerHTML=Object.keys(RES).map(k=>`<div><i style="background:${RES[k][1]}"></i>${RES[k][0]}<b>${by[k].length}</b></div>`).join('');
-  $('cost-me').textContent='$'+(contained*1.18).toFixed(2); $('cost-them').textContent='$'+(contained*7.16).toFixed(2); $('cost-save').textContent='$'+(contained*(7.16-1.18)).toFixed(2);
+  
   const pc={}; R.forEach(r=>{const p=((r.meta||{}).product||'Other').split(' ')[0];pc[p]=(pc[p]||0)+1;});
   $('prod').innerHTML=Object.entries(pc).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="p"><div class="pi"><i class="fa-solid ${PICON[k]||'fa-plug'}"></i></div><span>${esc(k)}</span><i class="bar" style="width:${v/n*55}%"></i><b>${v}</b></div>`).join('');
   $('c-t').textContent=R.length;$('c-d').textContent=by.dispatch.length;$('c-p').textContent=by.parts.length;$('c-e').textContent=by.transfer.length;
