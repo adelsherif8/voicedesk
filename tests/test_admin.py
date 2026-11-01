@@ -79,3 +79,22 @@ def test_authorised_page_has_button_without_the_token(client, monkeypatch):
     assert "Simulate a call" in r.text and "async function simulate" in r.text
     assert TOKEN not in r.text
     assert r.headers["cache-control"] == "no-store"
+
+
+def test_real_callers_are_hidden_from_the_public_but_not_the_admin(client, monkeypatch):
+    monkeypatch.setenv("ADMIN_TOKEN", TOKEN)
+    client.post("/retell/sales", json={"name": "save_lead", "call": {"from_number": "+15125550199"},
+                                       "args": {"name": "Jane Roe", "email": "jane@example.com", "notes": "12 Oak St",
+                                                "address": "12 Oak St", "kind": "order", "total": 40}})
+    client.post("/retell/sales", json={"event": "call_analyzed",
+                                       "call": {"transcript": "my card is 4242", "from_number": "+15125550199",
+                                                "call_analysis": {"call_summary": "Jane at 12 Oak St"}}})
+    for path in ("/records?agent=sales", "/records"):
+        public = client.get(path).text
+        for secret in ("Roe", "5550199", "jane@example.com", "Oak St", "4242"):
+            assert secret not in public
+    row = next(r for r in client.get("/records?agent=sales").json()["records"] if r["name"] == "Jane")
+    assert row["meta"]["kind"] == "order" and row["meta"]["total"] == 40
+    assert "Jane Roe" in client.get("/records?agent=sales", headers=GOOD).text
+    assert "Sarah Johnson" in client.get("/records?agent=receptionist").text    # seed data stays whole
+    assert "5550199" not in client.get("/agent/sales").text

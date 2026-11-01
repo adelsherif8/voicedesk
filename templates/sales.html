@@ -120,8 +120,8 @@ h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;
   </div>
 
   <div class="kpis">
-    <div class="tile" id="t-speed"><i class="ic fa-solid fa-stopwatch"></i><div class="v g">0s</div><div class="l">Avg speed to lead</div><div class="sub" id="k-speed">industry avg 42 min</div></div>
-    <div class="tile" id="t-contact"><i class="ic fa-solid fa-phone"></i><div class="v">100%</div><div class="l">Leads contacted</div><div class="sub" id="k-contact">0 of 0 · industry 77%</div></div>
+    <div class="tile" id="t-speed"><i class="ic fa-solid fa-stopwatch"></i><div class="v g">0s</div><div class="l">Avg speed to lead</div><div class="sub" id="k-speed">demo data</div></div>
+    <div class="tile" id="t-contact"><i class="ic fa-solid fa-phone"></i><div class="v">100%</div><div class="l">Leads contacted</div><div class="sub" id="k-contact">0 of 0</div></div>
     <div class="tile" id="t-booked"><i class="ic fa-solid fa-calendar-check"></i><div class="v g">0</div><div class="l">Estimates booked</div><div class="sub" id="k-booked">0% of leads</div></div>
     <div class="tile" id="t-hot"><i class="ic fa-solid fa-fire"></i><div class="v r">0</div><div class="l">Hot → closer</div><div class="sub m">financing / replacements</div></div>
     <div class="tile" id="t-retry"><i class="ic fa-solid fa-rotate"></i><div class="v a">0</div><div class="l">In retry cadence</div><div class="sub m">6 attempts · call + SMS</div></div>
@@ -139,7 +139,7 @@ h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;
   <div class="panel on" id="p-overview">
     <div class="two">
       <div class="box"><h3 class="sec"><i class="fa-solid fa-stopwatch"></i> Speed to lead <span class="r">5-min response = 21× more likely to qualify</span></h3>
-        <div class="gauge"><div class="big" id="g-big">—<small>avg</small></div><div class="vs">Industry average: <b>42 min</b><br/>23% of leads never called back</div></div>
+        <div class="gauge"><div class="big" id="g-big">—<small>avg</small></div></div>
         <div class="bars">
           <div class="b"><span>Riley (today)</span><i class="me" id="g-me" style="width:4%"></i><b id="g-me-v">—</b></div>
           <div class="b"><span>Typical office</span><i style="width:70%"></i><b>42 min</b></div>
@@ -183,8 +183,8 @@ function render(d){
   const secs=R.map(r=>+(r.meta&&r.meta.response_secs)||0).filter(Boolean);
   const avg=secs.length?Math.round(secs.reduce((a,b)=>a+b,0)/secs.length):0;
   const pipe=booked.reduce((a,r)=>a+low(r.meta.quote_range),0)+hot.reduce((a,r)=>a+low(r.meta.quote_range),0);
-  set('t-speed',avg+'s'); $('k-speed').textContent='industry avg 42 min';
-  $('k-contact').textContent=`${R.length} of ${R.length} · industry 77%`;
+  set('t-speed',avg+'s'); $('k-speed').textContent='demo data';
+  $('k-contact').textContent=`${R.length} of ${R.length}`;
   set('t-booked',booked.length); $('k-booked').textContent=Math.round(booked.length/Math.max(R.length,1)*100)+'% of leads';
   set('t-hot',hot.length); set('t-retry',retry.length);
   set('t-pipe','$'+(pipe/1000).toFixed(1)+'k'); $('k-pipe').textContent='est. low end · '+(booked.length+hot.length)+' jobs';

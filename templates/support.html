@@ -114,8 +114,8 @@ h3.sec .r{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;
   </div>
 
   <div class="kpis">
-    <div class="tile" id="t-cont"><i class="ic fa-solid fa-robot"></i><div class="v g">0%</div><div class="l">Contained by AI</div><div class="sub" id="k-cont">industry avg 41%</div></div>
-    <div class="tile" id="t-wait"><i class="ic fa-solid fa-hourglass-half"></i><div class="v g">0s</div><div class="l">Avg hold time</div><div class="sub">industry 4+ min</div></div>
+    <div class="tile" id="t-cont"><i class="ic fa-solid fa-robot"></i><div class="v g">0%</div><div class="l">Contained by AI</div><div class="sub" id="k-cont">demo data</div></div>
+    <div class="tile" id="t-wait"><i class="ic fa-solid fa-hourglass-half"></i><div class="v g">0s</div><div class="l">Avg hold time</div><div class="sub">demo data</div></div>
     <div class="tile" id="t-cost"><i class="ic fa-solid fa-coins"></i><div class="v">$1.18</div><div class="l">Cost per call</div><div class="sub">vs $7.16 human-handled</div></div>
     <div class="tile" id="t-tech"><i class="ic fa-solid fa-screwdriver-wrench"></i><div class="v k">0</div><div class="l">Technicians dispatched</div><div class="sub" id="k-tech">parts pre-ordered</div></div>
     <div class="tile" id="t-parts"><i class="ic fa-solid fa-box"></i><div class="v k">$0</div><div class="l">Parts sold by phone</div><div class="sub" id="k-parts">0 orders</div></div>
@@ -169,7 +169,7 @@ function render(d){
   const contained=R.length-by.transfer.length;
   const partsUsd=by.parts.reduce((a,r)=>a+(+r.meta.amount||0),0);
   const csats=R.map(r=>+(r.meta||{}).csat).filter(Boolean);
-  set('t-cont',Math.round(contained/n*100)+'%'); $('k-cont').textContent=`${contained} of ${R.length} · industry avg 41%`;
+  set('t-cont',Math.round(contained/n*100)+'%'); $('k-cont').textContent=`${contained} of ${R.length}`;
   set('t-wait','0s'); set('t-tech',by.dispatch.length); $('k-tech').textContent=by.dispatch.filter(r=>r.meta.part).length+' parts pre-ordered';
   set('t-parts','$'+partsUsd); $('k-parts').textContent=by.parts.length+' orders'; set('t-xfer',by.transfer.length);
   $('csat').textContent=csats.length?`CSAT ${(csats.reduce((a,b)=>a+b,0)/csats.length).toFixed(1)} / 5`:'';

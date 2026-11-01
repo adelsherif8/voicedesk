@@ -145,7 +145,7 @@ function render(d){
   $('k-covers').textContent=covers; $('k-covers-s').textContent=res.length+' reservations';
   $('k-avg').textContent=orders.length?money(sales/orders.length):'$0'; $('k-avg-s').textContent=orders.filter(r=>m(r).upsell).length+' upsells accepted';
   $('k-all').textContent=orders.filter(r=>m(r).allergy).length;
-  $('k-rec').textContent=`${Math.round(R.length*0.43)} calls a typical night would have missed`;
+  $('k-rec').textContent=`${R.length} calls answered`;
   $('eb').innerHTML=EB.map(e=>`<div class="it"><b>${esc(e.item)}</b><span class="since">86'd ${esc(e.since)}</span><span class="alt">offers ${esc(e.alt)} instead</span></div>`).join('');
   const addC={}; res.forEach(r=>{const h=(m(r).time||'').match(/(\d+):/);if(h){const k=h[1]+' PM';addC[k]=(addC[k]||0)+(+m(r).party||0);}});
   const mx=Math.max(...HOURS.map(h=>h[1]+(addC[h[0]]||0)),1); $('wave-peak').textContent='peak '+HOURS.reduce((a,b)=>(b[1]+(addC[b[0]]||0))>(a[1]+(addC[a[0]]||0))?b:a)[0];

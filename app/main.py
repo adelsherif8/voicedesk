@@ -57,12 +57,35 @@ def _admin_denied(request: Request) -> JSONResponse | None:
     return None
 
 
+# Fields of a real caller's record that public dashboards can show. Seed data stays whole.
+_PUBLIC_META = {"kind", "flow", "stage", "priority", "status", "call_type"}
+
+
+def _public(rec: dict) -> dict:
+    """A webhook record as anonymous visitors see it: first name and shape, no contact details or words."""
+    meta = rec.get("meta") or {}
+    if not meta.get("_live"):
+        return rec
+    first = (rec.get("name") or "").split()
+    return {**rec, "name": first[0] if first else "", "phone": "", "email": "", "summary": "", "transcript": "",
+            "appointment": "", "intent": "",
+            "meta": {k: v for k, v in meta.items()
+                     if k in _PUBLIC_META or (isinstance(v, (int, float)) and not isinstance(v, bool))}}
+
+
+def _visible(request: Request, agent: str | None) -> list[dict]:
+    rows = db.list_records(agent)
+    return rows if _is_admin(request) else [_public(r) for r in rows]
+
+
 _STD = {"name", "customer_name", "phone", "phone_number", "email", "intent", "reason",
         "outcome", "appointment", "time", "slot", "summary", "notes", "transcript", "agent"}
 
 
-def _store(agent: str, args: dict) -> int:
+def _store(agent: str, args: dict, live: bool = False) -> int:
     meta = {k: v for k, v in args.items() if k not in _STD and v not in (None, "")}
+    if live:
+        meta["_live"] = True
     return db.add({
         "agent": agent,
         "name": args.get("name") or args.get("customer_name") or "",
@@ -88,11 +111,11 @@ def index(request: Request):
 
 
 @app.get("/records")
-def records(agent: str = "all"):
+def records(request: Request, agent: str = "all"):
     stats = db.stats(agent) if agent != "all" else db.stats()
     return {"agents": AGENTS, "stats": stats,
             "records": [{**r, "agent_name": agent_name(r["agent"])}
-                        for r in db.list_records(agent)]}
+                        for r in _visible(request, agent)]}
 
 
 @app.get("/api/insights/{agent}")
@@ -112,7 +135,7 @@ def agent_view(aid: str, request: Request):
     tpl = AGENTS_BY_ID[aid].get("template", "agent.html")
     return templates.TemplateResponse(request, tpl, {
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
-        "records": db.list_records(aid), "web_call": web_call.page_config(aid),
+        "records": _visible(request, aid), "web_call": web_call.page_config(aid),
     })
 
 
@@ -145,7 +168,7 @@ async def vapi_webhook(agent: str, request: Request):
                     args = json.loads(args)
                 except Exception:
                     args = {}
-            _store(agent, args)
+            _store(agent, args, live=True)
             results.append({"toolCallId": tc.get("id"),
                             "result": "Saved. The details are recorded in the system."})
         return {"results": results}
@@ -156,7 +179,7 @@ async def vapi_webhook(agent: str, request: Request):
             "summary": analysis.get("summary") or msg.get("summary") or "Call completed.",
             "outcome": "call logged",
             "transcript": (msg.get("artifact", {}) or {}).get("transcript", ""),
-        })
+        }, live=True)
     return {"ok": True}
 
 
@@ -183,7 +206,7 @@ async def retell_webhook(agent: str, request: Request):
                 args = {}
         call = body.get("call") or {}
         args.setdefault("phone", call.get("from_number", ""))
-        _store(agent, args)
+        _store(agent, args, live=True)
         return {"result": "Saved. The details are recorded in the system."}
 
     # --- post-call analysis ---
@@ -195,7 +218,7 @@ async def retell_webhook(agent: str, request: Request):
             "outcome": "call logged",
             "phone": call.get("from_number", ""),
             "transcript": call.get("transcript", ""),
-        })
+        }, live=True)
     return {"ok": True}
 
 
@@ -397,7 +420,7 @@ def xml_voicemail_menu(agent: str, request: Request):
     agent = _valid_agent(agent)
     base = str(request.base_url).rstrip("/")
     items = ""
-    for r in db.list_records(agent)[:8]:
+    for r in _visible(request, agent)[:8]:
         m = r.get("meta") or {}
         tag = {"urgent": "!! ", "high": "! ", "medium": "", "low": ""}.get(m.get("priority", ""), "")
         items += f"<MenuItem><Name>{_xml_esc(tag + r['name'] + ' — ' + r['intent'])}</Name><URL>{base}/xml/voicemail/{agent}/{r['id']}</URL></MenuItem>"
@@ -410,7 +433,7 @@ def xml_voicemail_menu(agent: str, request: Request):
 def xml_voicemail_item(agent: str, rid: int, request: Request):
     """CiscoIPPhoneText: AI summary + callback softkey for one message."""
     agent = _valid_agent(agent)
-    rec = next((r for r in db.list_records(agent) if r["id"] == rid), None)
+    rec = next((r for r in _visible(request, agent) if r["id"] == rid), None)
     if not rec:
         return Response(content="<CiscoIPPhoneText><Title>Not found</Title></CiscoIPPhoneText>", media_type="text/xml")
     m = rec.get("meta") or {}
