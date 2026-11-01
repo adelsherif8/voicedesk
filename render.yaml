@@ -12,6 +12,8 @@ services:
         sync: false
       - key: RETELL_API_KEY       # server only; without it the "Talk to this agent" button is hidden
         sync: false
+      - key: VAPI_WEBHOOK_SECRET  # /vapi/* refuses every request until this is set and sent as X-Vapi-Secret
+        sync: false
       - key: RETELL_AGENT_IDS     # JSON map of page slug to Retell agent id
         sync: false
       - key: WEB_CALL_CLIENT_IP_HEADER   # Render sits behind Cloudflare, which overwrites this header

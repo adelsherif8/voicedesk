@@ -38,8 +38,8 @@ Seven live demos you can open right now, one per vertical:
   payments by keypad, resets gate codes → voicedesk-h31g.onrender.com/agent/receptionist
 • Appliance-brand support line — serial + warranty lookup, KB troubleshooting, technician
   dispatch, frustration-triggered warm transfer → /agent/support
-• Plumbing revenue recovery (GoHighLevel + Retell) — missed-call text-back in 8s, AI
-  callback in 52s, unsold-estimate follow-up, reactivation → /agent/recovery
+• Plumbing revenue recovery (Retell, own dashboard) — missed-call text-back and AI
+  callback with booking (8s and 52s are demo figures) → /agent/recovery
 • Law-firm visual voicemail — AI attendant + transcription/summary/urgency pushed to Cisco
   desk phones via CiscoIPPhone XML → /agent/voicemail
 • Real-estate listing line — qualifies budget/pre-approval/timeline, books showings and
@@ -97,8 +97,7 @@ POST PACK — one per project, post 2×/week, 15s vertical or the 60s video
 Format every time: pain number → what the agent does → the live link → one question.
 
   POST 1 (storage)
-  Storage facilities miss about 40% of their calls. That's ~$58,000 a year walking to the
-  next facility on the list.
+  A renter calling at 9pm rents from whoever picks up.
   I built an AI receptionist that answers in 1 second: quotes from live unit inventory,
   reserves the unit, books the tour, takes tenant payments, even resets gate codes for
   someone locked out at 11pm.
@@ -114,10 +113,9 @@ Format every time: pain number → what the agent does → the live link → one
   Live: voicedesk-h31g.onrender.com/agent/dental
 
   POST 3 (plumbing / home services)
-  Plumbers miss up to 40% of calls — and 85% of those callers never call back.
-  Text-back in 8 seconds. AI callback in 52 seconds. Job booked. Then it chases the unsold
-  estimates nobody had time to chase.
-  Built on GoHighLevel + Retell: voicedesk-h31g.onrender.com/agent/recovery
+  Only 52% of home-service calls reach a person (Invoca, 2026).
+  In this demo: text-back, AI callback, job booked (8 and 52 seconds are demo figures).
+  Built on Retell with its own dashboard: voicedesk-h31g.onrender.com/agent/recovery
 
   POST 4 (restaurant)
   Restaurants miss up to 43% of calls — during the dinner rush, when everyone's carrying
@@ -165,8 +163,8 @@ Facebook — search these exact names and request to join (agency owners, not en
 HOW TO PLAY IT (do NOT post an ad on day one):
   Week 1: answer 5 questions about GHL workflows/webhooks with real help, no link.
   Week 2: post the Blue Ridge plumbing video framed as a build breakdown —
-    "Wired a Retell voice agent into GHL so missed calls get a text-back in 8s and an AI
-     callback in 52s. Pipeline moves Missed → Texted → Called → Booked automatically.
-     Here's the flow — happy to share how the webhook is set up."
+    "Built a demo Retell voice agent: missed calls get a text-back and an AI callback. Its own
+     dashboard moves Missed → Texted → Called → Booked. It isn't in GHL yet.
+     Here's the flow — happy to talk through how I'd wire it into GHL by webhook."
   Then let DMs come. Agencies want a white-label builder, which is recurring work.
   Offer them agency pricing (you build, they resell under their brand).

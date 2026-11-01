@@ -15,3 +15,7 @@ docs/retell_created.json
 
 # eval run outputs (the published snapshot is evals/results/latest.json)
 evals/results/run-*.json
+
+# Terraform plans can hold secrets; proposals name client jobs and this repo is public
+infra/aws/tf.plan
+docs/UPWORK/proposals/
