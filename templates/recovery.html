@@ -64,6 +64,7 @@ body{font-family:Barlow,system-ui,sans-serif;background:var(--bg) repeating-line
 .chips{display:flex;gap:8px;margin:4px 0 12px;flex-wrap:wrap;align-items:center}
 .chip{font-family:'Barlow Condensed';font-size:1rem;text-transform:uppercase;letter-spacing:.05em;padding:7px 14px;border-radius:999px;background:#fff;border:1.5px solid var(--line);cursor:pointer;font-weight:800;color:var(--muted);display:flex;gap:8px;align-items:center}
 .chip .n{font-family:Barlow;font-size:.7rem;background:#eeeae1;border-radius:4px;padding:1px 6px}
+.dtabs{display:inline-flex;gap:6px;margin-left:auto}.dtabs .chip{padding:3px 10px;font-size:.8rem}
 .chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}.chip.on .n{background:rgba(255,255,255,.2)}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .ticket{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:14px 16px 12px;position:relative;box-shadow:0 6px 16px rgba(28,26,23,.08);font-family:'Courier Prime',monospace;font-size:.82rem}
@@ -101,7 +102,7 @@ body{font-family:Barlow,system-ui,sans-serif;background:var(--bg) repeating-line
 
 <div class="wrap">
   <div class="clip">
-    <h3><i class="fa-solid fa-truck"></i> Today's trucks</h3>
+    <h3><i class="fa-solid fa-truck"></i> Trucks <span class="r dtabs"><span class="chip on" data-d="today">Today</span> <span class="chip" data-d="tomorrow">Tomorrow</span></span></h3>
     <div id="trucks"></div>
     <div class="legend"><span><i style="background:#e3ecf5;border:1px solid #b9cde3"></i>scheduled</span><span><i style="background:#fbe9d6;border:1px solid var(--copper)"></i>booked by AI</span></div>
   </div>
@@ -147,10 +148,10 @@ $('today').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',mo
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function money(v){return '$'+(+v||0).toLocaleString();}
 const FL={missed:'Missed-call text-back + callback',estimate:'Unsold-estimate follow-up',reactivation:'Past-customer reactivation'};
-const TRUCKS={{ agent.trucks | tojson }};
-let filter='all', lastTopId=null;
+let filter='all', lastTopId=null, day='today', BOARD=null;
+const WIN=['8–10','10–12','12–2','2–4','4–6'];
 // live calls may only report an outcome, so read the stage from it when the record has none
-function stageOf(r){const m=r.meta||{};if(m.stage)return m.stage;const o=(r.outcome||'').toLowerCase();if(/book|schedul|confirm/.test(o))return 'booked';if(/text/.test(o))return 'texted';if(/call/.test(o))return 'called';return 'open';}
+function stageOf(r){const m=r.meta||{};if(m.stage)return m.stage;const o=(r.outcome||'').toLowerCase();if(/book|schedul|confirm/.test(o))return 'booked';if(/text/.test(o))return 'texted';if(/call|transfer/.test(o))return 'called';return 'open';}
 function render(d){
   const R=d.records; const fl=r=>(r.meta||{}).flow||'missed'; const st=r=>stageOf(r);
   const booked=R.filter(r=>st(r)==='booked'); const rev=booked.reduce((a,r)=>a+(+r.meta.value||0),0);
@@ -166,10 +167,6 @@ function render(d){
   $('rev').textContent=money(rev);
   const byF={}; booked.forEach(r=>byF[fl(r)]=(byF[fl(r)]||0)+(+r.meta.value||0));
   $('flows').innerHTML=Object.keys(FL).map(k=>`<div class="flow ${k}"><div class="h"><span>${FL[k]}</span><b>${money(byF[k]||0)}</b></div><div class="bar"><i style="width:${(byF[k]||0)/Math.max(rev,1)*100}%"></i></div></div>`).join('');
-  // trucks: place AI-booked jobs into slots
-  const aiJobs=booked.filter(r=>r.appointment); const tr=JSON.parse(JSON.stringify(TRUCKS));
-  aiJobs.forEach((r,i)=>{const t=tr[i%tr.length];const m=(r.appointment||'').match(/(\d{1,2})(?::\d{2})?\s*(AM|PM)?/i);let idx=3; if(m){let h=+m[1]; if(m[2]&&/pm/i.test(m[2])&&h<12)h+=12; if(!m[2]&&h<8)h+=12; idx=h<10?0:h<12?1:h<14?2:h<16?3:4;} if(!/today|tomorrow|\b(mon|tue|wed|thu|fri)\b/i.test(r.appointment)||/today/i.test(r.appointment)) t.slots[idx]={ai:1,txt:r.name.split(' ')[0]+' · '+r.intent.split(' ').slice(0,2).join(' ')};});
-  $('trucks').innerHTML=tr.map(t=>`<div class="truck"><div class="t"><i class="fa-solid fa-truck-pickup"></i> ${t.n}<span>8 AM – 6 PM</span></div><div class="slots">${t.slots.map(s=>typeof s==='string'?(s.match(/[A-Za-z]/)?`<div class="slot job"><b>${s.split(' ')[0]}</b>${s.split(' ').slice(1).join(' ')}</div>`:`<div class="slot">${s}<br>open</div>`):`<div class="slot ai"><b>AI</b>${esc(s.txt)}</div>`).join('')}</div></div>`).join('');
   // tickets
   $('n-all').textContent=R.length;$('n-missed').textContent=missed.length;$('n-estimate').textContent=est.length;$('n-reactivation').textContent=rea.length;
   const list=filter==='all'?R:filter==='booked'?booked:R.filter(r=>fl(r)===filter);
@@ -196,8 +193,12 @@ function ticket(r){const m=r.meta||{};const f=m.flow||'missed';const s=stageOf(r
     ${m.next_attempt?`<div class="row"><span>Next attempt</span><b>${esc(m.next_attempt)}</b></div>`:''}
     <div class="row"><span>${s==='booked'?'Recovered':'Potential'}</span><b class="${s==='booked'?'g':''}">${money(m.value)}</b></div>
     <div class="note">${esc(r.summary)}</div></div>`;}
-document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');filter=c.dataset.f;load();});
-async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());}
+// the truck board comes from the server: the seed jobs plus every booking the agent made, per truck and window
+function trucks(){if(!BOARD)return;const b=BOARD[day];
+  $('trucks').innerHTML=b.trucks.map(t=>`<div class="truck"><div class="t"><i class="fa-solid fa-truck-pickup"></i> ${esc(t.n)}<span>8 AM – 6 PM</span></div><div class="slots">${t.slots.map((s,i)=>!s?`<div class="slot">${WIN[i]}<br>open</div>`:s.ai?`<div class="slot ai"><b>AI · ${WIN[i]}</b>${esc(s.name)} · ${esc(s.job.split(' ').slice(0,3).join(' '))}</div>`:`<div class="slot job"><b>${WIN[i]}</b>${esc(s.job)}</div>`).join('')}</div></div>`).join('');}
+document.querySelectorAll('[data-d]').forEach(c=>c.onclick=()=>{document.querySelectorAll('[data-d]').forEach(x=>x.classList.remove('on'));c.classList.add('on');day=c.dataset.d;trucks();});
+document.querySelectorAll('.chip[data-f]').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip[data-f]').forEach(x=>x.classList.remove('on'));c.classList.add('on');filter=c.dataset.f;load();});
+async function load(){const r=await fetch('/records?agent='+AGENT);render(await r.json());try{const b=await fetch('/api/board/'+AGENT);if(b.ok){BOARD=await b.json();trucks();}}catch(e){}}
 load();setInterval(load,3000);
 </script>
 </body>

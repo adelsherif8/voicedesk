@@ -17,7 +17,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from app import db, web_call
+from app import db, scheduling, web_call
 
 log = logging.getLogger("voicedesk")
 from app.agents import AGENTS, AGENTS_BY_ID, agent_name
@@ -109,7 +109,34 @@ def _store(agent: str, args: dict, live: bool = False, call_id: str = "", create
 
 # Render's free plan keeps no disk, so every restart or deploy starts from the seed data. Retell keeps each
 # call's function-call arguments, so on boot the saved actions of recent real calls are written back.
-_SAVE_TOOLS = {"save_lead", "log_outcome", "book_patient", "save_order", "log_ticket", "take_message"}
+_SAVE_TOOLS = {"save_lead", "log_outcome", "book_patient", "save_order", "log_ticket", "take_message",
+               "book_appointment", "transfer_to_human"}
+
+
+def handle_tool(agent: str, name: str, args: dict, call: dict | None = None, created: float | None = None) -> str:
+    """Run one agent function and return the sentence its LLM gets back. Bookings are checked against the board."""
+    call = call or {}
+    cid = call.get("call_id") or ""
+    if name == "check_availability":
+        return scheduling.availability_text(agent, created)
+    if name == "book_appointment":
+        ok, why = scheduling.check_booking(agent, args, created)
+        if not ok:
+            return why
+        day, window = args["day"].strip().lower(), args["window"].strip()
+        label, iso = scheduling.slot_label(day, window, created)
+        _store(agent, {**args, "outcome": "booked", "appointment": label, "date": iso},
+               live=True, call_id=cid, created=created)
+        return (f"Booked: {day} {window}. Read the window and the street name back to the caller, "
+                "and tell them the technician calls ahead. Do not call log_outcome for this booking.")
+    if name == "transfer_to_human":
+        _store(agent, {**args, "outcome": "transfer requested"}, live=True, call_id=cid, created=created)
+        if call.get("call_type") == "web_call":
+            return ("Handoff logged. This is a browser call, so it cannot be put through to a phone. Tell the caller "
+                    "the on-call technician has their details and will call them back within 10 minutes.")
+        return "Handoff logged. Tell the caller you're connecting them to the on-call technician now."
+    _store(agent, args, live=True, call_id=cid, created=created)
+    return "Saved. The details are recorded in the system."
 
 
 def replay_from_retell(limit: int = 50) -> int:
@@ -117,6 +144,7 @@ def replay_from_retell(limit: int = 50) -> int:
     for slug, aid in web_call.agent_ids().items():
         known = {(r.get("meta") or {}).get("_call") for r in db.list_records(slug, limit=2000)}
         out = web_call.retell("v3/list-calls", {"filter_criteria": {"agent": [{"agent_id": aid}]}, "limit": limit})
+        todo = []
         for c in out.get("items") or []:
             cid = c.get("call_id")
             if not cid or cid in known or not any(t.get("name") in _SAVE_TOOLS for t in c.get("tool_calls") or []):
@@ -130,9 +158,14 @@ def replay_from_retell(limit: int = 50) -> int:
                     args = _json.loads(x.get("arguments") or "{}")
                 except ValueError:
                     continue
-                _store(slug, args, live=True, call_id=cid, created=start + float(x.get("time_sec") or 0))
-                restored += 1
+                todo.append((start + float(x.get("time_sec") or 0), x["name"], args,
+                             {"call_id": cid, "call_type": full.get("call_type")}))
             known.add(cid)
+        # oldest first, so each booking is checked against the board as it stood when it was made
+        for created, name, args, call in sorted(todo, key=lambda t: t[0]):
+            before = db.count()
+            handle_tool(slug, name, args, call, created)
+            restored += db.count() - before
     return restored
 
 
@@ -228,6 +261,15 @@ def agent_view(aid: str, request: Request):
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
         "records": _visible(request, aid), "web_call": web_call.page_config(aid),
     })
+
+
+@app.get("/api/board/{agent}")
+def truck_board(agent: str):
+    """Today's and tomorrow's trucks with the agent's live bookings. First names only for anonymous visitors."""
+    if agent not in AGENTS_BY_ID or not AGENTS_BY_ID[agent].get("trucks"):
+        return JSONResponse({"error": "no board"}, status_code=404)
+    return {day: {"date": scheduling.date_for(day), "trucks": scheduling.board(agent, scheduling.date_for(day)),
+                  "open": scheduling.open_windows(agent, day)} for day in scheduling.DAYS}
 
 
 @app.get("/api/calls/{slug}")
@@ -336,8 +378,7 @@ async def retell_webhook(agent: str, request: Request):
                 args = {}
         call = body.get("call") or {}
         args.setdefault("phone", call.get("from_number", ""))
-        _store(agent, args, live=True, call_id=call.get("call_id") or "")
-        return {"result": "Saved. The details are recorded in the system."}
+        return {"result": handle_tool(agent, body.get("name") or "", args, call)}
 
     # --- post-call analysis ---
     call = body.get("call") or {}
