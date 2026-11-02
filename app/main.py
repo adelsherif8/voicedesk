@@ -9,6 +9,7 @@ import logging
 import hmac
 import os
 import re
+import threading
 import time
 
 from fastapi import FastAPI, Request
@@ -82,13 +83,15 @@ def _visible(request: Request, agent: str | None) -> list[dict]:
 
 
 _STD = {"name", "customer_name", "phone", "phone_number", "email", "intent", "reason",
-        "outcome", "appointment", "time", "slot", "summary", "notes", "transcript", "agent"}
+        "outcome", "appointment", "time", "slot", "summary", "notes", "transcript", "agent", "execution_message"}
 
 
-def _store(agent: str, args: dict, live: bool = False) -> int:
+def _store(agent: str, args: dict, live: bool = False, call_id: str = "", created: float | None = None) -> int:
     meta = {k: v for k, v in args.items() if k not in _STD and v not in (None, "")}
     if live:
         meta["_live"] = True
+    if call_id:
+        meta["_call"] = call_id
     return db.add({
         "agent": agent,
         "name": args.get("name") or args.get("customer_name") or "",
@@ -100,8 +103,51 @@ def _store(agent: str, args: dict, live: bool = False) -> int:
         "summary": args.get("summary") or args.get("notes") or "",
         "transcript": args.get("transcript") or "",
         "meta": meta,
-        "created": time.time(),
+        "created": created or time.time(),
     })
+
+
+# Render's free plan keeps no disk, so every restart or deploy starts from the seed data. Retell keeps each
+# call's function-call arguments, so on boot the saved actions of recent real calls are written back.
+_SAVE_TOOLS = {"save_lead", "log_outcome", "book_patient", "save_order", "log_ticket", "take_message"}
+
+
+def replay_from_retell(limit: int = 50) -> int:
+    restored = 0
+    for slug, aid in web_call.agent_ids().items():
+        known = {(r.get("meta") or {}).get("_call") for r in db.list_records(slug, limit=2000)}
+        out = web_call.retell("v3/list-calls", {"filter_criteria": {"agent": [{"agent_id": aid}]}, "limit": limit})
+        for c in out.get("items") or []:
+            cid = c.get("call_id")
+            if not cid or cid in known or not any(t.get("name") in _SAVE_TOOLS for t in c.get("tool_calls") or []):
+                continue
+            full = web_call.retell(f"v2/get-call/{cid}")
+            start = (full.get("start_timestamp") or 0) / 1000
+            for x in full.get("transcript_with_tool_calls") or []:
+                if x.get("role") != "tool_call_invocation" or x.get("name") not in _SAVE_TOOLS:
+                    continue
+                try:
+                    args = _json.loads(x.get("arguments") or "{}")
+                except ValueError:
+                    continue
+                _store(slug, args, live=True, call_id=cid, created=start + float(x.get("time_sec") or 0))
+                restored += 1
+            known.add(cid)
+    return restored
+
+
+def _replay_in_background() -> None:
+    if not web_call.api_key():
+        return
+    def run():
+        try:
+            log.info("restored %d saved call actions from Retell", replay_from_retell())
+        except Exception as e:
+            log.warning("could not restore calls from Retell: %s", type(e).__name__)
+    threading.Thread(target=run, daemon=True).start()
+
+
+_replay_in_background()
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -248,7 +294,7 @@ async def retell_webhook(agent: str, request: Request):
                 args = {}
         call = body.get("call") or {}
         args.setdefault("phone", call.get("from_number", ""))
-        _store(agent, args, live=True)
+        _store(agent, args, live=True, call_id=call.get("call_id") or "")
         return {"result": "Saved. The details are recorded in the system."}
 
     # --- post-call analysis ---
