@@ -59,20 +59,18 @@ def _admin_denied(request: Request) -> JSONResponse | None:
     return None
 
 
-# Fields of a real caller's record that public dashboards can show. Seed data stays whole.
-_PUBLIC_META = {"kind", "flow", "stage", "priority", "status", "call_type"}
+# Contact details kept out of a real caller's public record. Seed data stays whole.
+_PRIVATE_META = {"address", "email", "phone", "phone_number", "dob", "date_of_birth", "card", "card_number", "ssn"}
 
 
 def _public(rec: dict) -> dict:
-    """A webhook record as anonymous visitors see it: first name and shape, no contact details or words."""
+    """A webhook record as anonymous visitors see it: what the call was about, minus contact details and the transcript."""
     meta = rec.get("meta") or {}
     if not meta.get("_live"):
         return rec
     first = (rec.get("name") or "").split()
-    return {**rec, "name": first[0] if first else "", "phone": "", "email": "", "summary": "", "transcript": "",
-            "appointment": "", "intent": "",
-            "meta": {k: v for k, v in meta.items()
-                     if k in _PUBLIC_META or (isinstance(v, (int, float)) and not isinstance(v, bool))}}
+    return {**rec, "name": first[0] if first else "", "phone": "", "email": "", "transcript": "",
+            "meta": {k: v for k, v in meta.items() if k not in _PRIVATE_META}}
 
 
 def _visible(request: Request, agent: str | None) -> list[dict]:
