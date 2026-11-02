@@ -240,9 +240,12 @@ def recent_calls(slug: str, limit: int = 10, ttl: float = 20.0) -> list | None:
     hit = _calls_cache.get(slug)
     if hit and now - hit[0] < ttl:
         return hit[1]
-    out = retell("v3/list-calls", {"filter_criteria": {"agent": [{"agent_id": aid}]}, "limit": limit})
+    out = retell("v3/list-calls", {"filter_criteria": {"agent": [{"agent_id": aid}]}, "limit": limit + 10})
     rows = []
     for c in out.get("items") or []:
+        # a token that was created but never joined shows up as a 0-second "error" call: not a real call
+        if not c.get("duration_ms") and c.get("call_status") in ("error", "not_connected", "registered"):
+            continue
         a = c.get("call_analysis") or {}
         saved = sorted({_ACTIONS[t["name"]] for t in (c.get("tool_calls") or []) if t.get("name") in _ACTIONS})
         lat = ((c.get("latency") or {}).get("e2e") or {}).get("p50")
@@ -257,5 +260,6 @@ def recent_calls(slug: str, limit: int = 10, ttl: float = 20.0) -> list | None:
             "response_ms": round(lat) if lat else None,
         })
     rows.sort(key=lambda r: r["started"] or 0, reverse=True)
+    rows = rows[:limit]
     _calls_cache[slug] = (now, rows)
     return rows
