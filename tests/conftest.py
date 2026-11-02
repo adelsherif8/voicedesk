@@ -1,3 +1,4 @@
+import pytest
 import os
 import tempfile
 
@@ -17,3 +18,10 @@ def pytest_terminal_summary(terminalreporter):
     for name, m in METRICS.items():
         terminalreporter.write_line(f"PII redaction [{name}]: precision {m['precision']:.2f}, recall {m['recall']:.2f} "
                                     f"(tp {m['tp']}, fp {m['fp']}, fn {m['fn']})")
+
+
+@pytest.fixture(autouse=True)
+def _fresh_replay_memory():
+    """main remembers which finished calls it already wrote back; each test starts without that memory."""
+    from app import main
+    main._replayed.clear()

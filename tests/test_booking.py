@@ -78,3 +78,38 @@ def test_replay_rebuilds_bookings_oldest_first_with_the_same_checks(client, monk
     assert main.replay_from_retell() == 1
     booked = [r["name"] for r in db.list_records("recovery") if (r["meta"] or {}).get("window") == "12-2pm"]
     assert booked == ["P1"]
+
+
+def _fake_retell(monkeypatch, listing, calls):
+    monkeypatch.setattr(web_call, "agent_ids", lambda: {"recovery": "agent_x"})
+    monkeypatch.setattr(main, "_replayed", set())
+    seen = []
+    def retell(path, body=None, timeout=10.0):
+        seen.append(path)
+        return listing if "list-calls" in path else calls[path.rsplit("/", 1)[1]]
+    monkeypatch.setattr(web_call, "retell", retell)
+    return seen
+
+
+def test_a_call_cut_in_half_by_a_restart_gets_its_missing_booking_back(client, monkeypatch):
+    # the booking was saved before the restart and lost; the handoff came in after it and is here
+    main.handle_tool("recovery", "transfer_to_human", {"name": "Mark", "intent": "Price"}, {"call_id": "cm"}, NINE_AM + 90)
+    full = {"start_timestamp": int(NINE_AM * 1000), "call_type": "web_call", "transcript_with_tool_calls": [
+        {"role": "tool_call_invocation", "name": "book_appointment", "time_sec": 60,
+         "arguments": '{"name":"Mark","intent":"Running toilet","day":"today","window":"2-4pm"}'},
+        {"role": "tool_call_invocation", "name": "transfer_to_human", "time_sec": 90,
+         "arguments": '{"name":"Mark","intent":"Price"}'}]}
+    listing = {"items": [{"call_id": "cm", "call_status": "ended",
+                          "tool_calls": [{"name": "book_appointment"}, {"name": "transfer_to_human"}]}]}
+    seen = _fake_retell(monkeypatch, listing, {"cm": full})
+    assert main.replay_from_retell() == 1
+    mine = sorted(r["outcome"] for r in db.list_records("recovery") if (r["meta"] or {}).get("_call") == "cm")
+    assert mine == ["booked", "transfer requested"]
+    fetched = len(seen)
+    assert main.replay_from_retell() == 0 and len(seen) == fetched + 1    # only the listing, the call is not fetched again
+
+
+def test_a_call_still_in_progress_is_left_for_the_next_pass(client, monkeypatch):
+    listing = {"items": [{"call_id": "live", "call_status": "ongoing", "tool_calls": [{"name": "book_appointment"}]}]}
+    seen = _fake_retell(monkeypatch, listing, {})
+    assert main.replay_from_retell() == 0 and not any("get-call" in p for p in seen)

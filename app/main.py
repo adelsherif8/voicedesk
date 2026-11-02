@@ -125,34 +125,44 @@ def handle_tool(agent: str, name: str, args: dict, call: dict | None = None, cre
             return why
         day, window = args["day"].strip().lower(), args["window"].strip()
         label, iso = scheduling.slot_label(day, window, created)
-        _store(agent, {**args, "outcome": "booked", "appointment": label, "date": iso},
+        _store(agent, {**args, "outcome": "booked", "appointment": label, "date": iso, "_tool": name},
                live=True, call_id=cid, created=created)
         return (f"Booked: {day} {window}. Read the window and the street name back to the caller, "
                 "and tell them the technician calls ahead. Do not call log_outcome for this booking.")
     if name == "transfer_to_human":
-        _store(agent, {**args, "outcome": "transfer requested"}, live=True, call_id=cid, created=created)
+        _store(agent, {**args, "outcome": "transfer requested", "_tool": name}, live=True, call_id=cid, created=created)
         if call.get("call_type") == "web_call":
             return ("Handoff logged. This is a browser call, so it cannot be put through to a phone. Tell the caller "
                     "the on-call technician has their details and will call them back within 10 minutes.")
         return "Handoff logged. Tell the caller you're connecting them to the on-call technician now."
-    _store(agent, args, live=True, call_id=cid, created=created)
+    _store(agent, {**args, "_tool": name} if name else args, live=True, call_id=cid, created=created)
     return "Saved. The details are recorded in the system."
 
 
+_replayed: set[str] = set()   # finished calls already written back by this process
+
+
 def replay_from_retell(limit: int = 50) -> int:
+    """Write back saved actions this server is missing, per call and tool: a deploy in the middle of a call
+    keeps what was saved after it and loses what was saved before, so a call can be half here."""
     restored = 0
     for slug, aid in web_call.agent_ids().items():
-        known = {(r.get("meta") or {}).get("_call") for r in db.list_records(slug, limit=2000)}
+        rows = [r.get("meta") or {} for r in db.list_records(slug, limit=2000)]
+        have = {(m.get("_call"), m.get("_tool")) for m in rows if m.get("_call")}
+        whole = {m["_call"] for m in rows if m.get("_call") and not m.get("_tool")}   # saved before tools were tracked
         out = web_call.retell("v3/list-calls", {"filter_criteria": {"agent": [{"agent_id": aid}]}, "limit": limit})
         todo = []
         for c in out.get("items") or []:
             cid = c.get("call_id")
-            if not cid or cid in known or not any(t.get("name") in _SAVE_TOOLS for t in c.get("tool_calls") or []):
+            names = {t.get("name") for t in c.get("tool_calls") or []} & _SAVE_TOOLS
+            if not cid or cid in whole or cid in _replayed or c.get("call_status") in ("ongoing", "registered") \
+                    or all((cid, n) in have for n in names):
                 continue
             full = web_call.retell(f"v2/get-call/{cid}")
             start = (full.get("start_timestamp") or 0) / 1000
             for x in full.get("transcript_with_tool_calls") or []:
-                if x.get("role") != "tool_call_invocation" or x.get("name") not in _SAVE_TOOLS:
+                if x.get("role") != "tool_call_invocation" or x.get("name") not in _SAVE_TOOLS \
+                        or (cid, x.get("name")) in have:
                     continue
                 try:
                     args = _json.loads(x.get("arguments") or "{}")
@@ -160,7 +170,7 @@ def replay_from_retell(limit: int = 50) -> int:
                     continue
                 todo.append((start + float(x.get("time_sec") or 0), x["name"], args,
                              {"call_id": cid, "call_type": full.get("call_type")}))
-            known.add(cid)
+            _replayed.add(cid)
         # oldest first, so each booking is checked against the board as it stood when it was made
         for created, name, args, call in sorted(todo, key=lambda t: t[0]):
             before = db.count()
@@ -213,6 +223,7 @@ def _replay_in_background() -> None:
             log.info("restored %d saved call actions from Retell", replay_from_retell())
             while True:
                 try:
+                    replay_from_retell()       # also catches a call that was live during the restart
                     enrich_from_retell()
                 except Exception as e:
                     log.warning("could not fill call details from Retell: %s", type(e).__name__)
