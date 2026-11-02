@@ -177,7 +177,8 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','
 function ago(t){const s=Math.floor(Date.now()/1000-t);if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
 function initials(n){return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();}
 function ocClass(o){o=(o||'').toLowerCase();if(/reserv|book|collect|restored|answered/.test(o))return'';if(/follow|pending|waitl/.test(o))return' warn';return' mut';}
-function ctype(r){const m=r.meta||{};if(m.call_type)return m.call_type;if(m.amount)return'payment';if(m.gate_code)return'access';if(m.unit_size)return'rental';return'general';}
+// a live agent may send any wording for call_type, so map it onto the four known types
+function ctype(r){const m=r.meta||{};if(m.call_type){const c=String(m.call_type).toLowerCase();if(TYPES[c])return c;if(/pay|bill|autopay/.test(c))return'payment';if(/gate|access|lock|code/.test(c))return'access';if(/rent|reserv|new|quote|unit/.test(c))return'rental';return'general';}if(m.amount)return'payment';if(m.gate_code)return'access';if(m.unit_size)return'rental';return'general';}
 function unitBox(size){const m=(size||'').match(/(\d+)\s*[x×]\s*(\d+)/);if(!m)return'';const w=+m[1],h=+m[2];const W=Math.min(w*2.2,52),H=Math.min(h*2.2,52);
   return `<div class="unitbox" style="width:${W}px;height:${H}px"><i class="fa-solid fa-box" style="font-size:${Math.max(9,Math.min(W,H)/2)}px"></i></div>`;}
 function highlight(sum,meta){let s=esc(sum||'');

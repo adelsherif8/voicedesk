@@ -5,6 +5,7 @@ dashboard shows every lead, call, and booking live, filterable by agent.
 """
 
 import hashlib
+import logging
 import hmac
 import os
 import re
@@ -16,6 +17,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
 from app import db, web_call
+
+log = logging.getLogger("voicedesk")
 from app.agents import AGENTS, AGENTS_BY_ID, agent_name
 
 _HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -137,6 +140,19 @@ def agent_view(aid: str, request: Request):
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
         "records": _visible(request, aid), "web_call": web_call.page_config(aid),
     })
+
+
+@app.get("/api/calls/{slug}")
+def call_history(slug: str):
+    """Recent calls to this page's agent, straight from Retell (no numbers, transcripts or recordings)."""
+    try:
+        rows = web_call.recent_calls(slug)
+    except Exception as e:
+        log.warning("call history unavailable: %s", type(e).__name__)
+        return JSONResponse({"ok": False, "calls": []}, status_code=503)
+    if rows is None:
+        return JSONResponse({"ok": False, "calls": []}, status_code=404)
+    return {"ok": True, "calls": rows}
 
 
 @app.post("/api/web-call/{slug}")

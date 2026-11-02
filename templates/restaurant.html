@@ -137,6 +137,9 @@ const $=id=>document.getElementById(id);
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function money(v){return '$'+(+v||0).toFixed(2);}
 let lastTopId=null;
+// seed orders store items as [name, qty, price]; a live agent sends them as text, e.g. "2x Margherita, 1 Tiramisu"
+function itemsOf(x){const v=x.items;if(Array.isArray(v))return v.map(it=>Array.isArray(it)?it:[String(it),1,0]);if(!v)return[];
+  return String(v).split(/[,;\n]+/).map(t=>t.trim()).filter(Boolean).map(t=>{const q=t.match(/^(\d+)\s*[x×]?\s*(.+)$/i);return q?[q[2],+q[1],0]:[t,1,0];});}
 function render(d){
   const R=d.records; const m=r=>r.meta||{};
   const orders=R.filter(r=>m(r).kind==='order'), res=R.filter(r=>m(r).kind==='reservation'), faq=R.filter(r=>m(r).kind==='faq');
@@ -157,7 +160,7 @@ function render(d){
   $('reslist').innerHTML=res.map(r=>`<div class="resrow"><span class="t">${esc(m(r).time)}</span><span class="n">${esc(r.name)}</span><span class="p">· party of ${m(r).party} · ${esc(m(r).table)}</span>${m(r).occasion?`<span class="tag gold">${esc(m(r).occasion)}</span>`:''}${m(r).deposit?`<span class="tag">$${m(r).deposit} deposit</span>`:''}</div>`).join('');
   $('faq').innerHTML=faq.length?`<b>${faq.length} question call${faq.length>1?'s':''}</b> answered from the restaurant info (hours, parking, menu) — no staff needed.`:'';
   $('tickets').innerHTML=orders.map(r=>{const x=m(r);const mins=x.minutes!=null?x.minutes:Math.floor((Date.now()/1000-r.created)/60);const tcls=mins<8?'':mins<12?'warn':'late';return `<div class="ticket"><div class="tk-top"><span class="timer ${tcls}"><i class="fa-regular fa-clock"></i> ${mins} min</span>${x.ready?'<span class="ready">READY · customer texted</span>':'<span style="color:#888">in kitchen</span>'}</div><div class="hd">Takeout · ${esc(r.name)}<small>${esc(r.phone)} · pickup ${esc(x.pickup)}</small></div>${x.eighty_six?`<div class="eb86">86: ${esc(x.eighty_six)}</div>`:''}
-    ${(x.items||[]).map(it=>`<div class="li"><span><span class="q">${it[1]}×</span>${esc(it[0])}</span><span>${money(it[2])}</span></div>${x.upsell&&it[0].startsWith(x.upsell)?'<div class="up">↳ upsold by Gia</div>':''}`).join('')}
+    ${itemsOf(x).map(it=>`<div class="li"><span><span class="q">${it[1]}×</span>${esc(it[0])}</span><span>${it[2]?money(it[2]):''}</span></div>${x.upsell&&it[0].startsWith(x.upsell)?'<div class="up">↳ upsold by Gia</div>':''}`).join('')}
     ${x.allergy?`<div class="al">!! ALLERGY: ${esc(x.allergy.toUpperCase())}</div>`:''}
     <div class="tot"><span>TOTAL ${x.paid?'· PAID':''}</span><span>${money(x.total)}</span></div><div class="ft">read back to caller ✓ · receipt texted</div></div>`}).join('')||'<div class="ticket"><div class="hd">No orders yet</div></div>';
   if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){const top=R[0];if(m(top).kind==='order'){const f=document.querySelector('.ticket');if(f)f.classList.add('new');}if(m(top).kind==='reservation'){const t=document.querySelector(`.tbl[data-t="${m(top).table}"]`);if(t)t.classList.add('new');}}

@@ -149,8 +149,10 @@ function money(v){return '$'+(+v||0).toLocaleString();}
 const FL={missed:'Missed-call text-back + callback',estimate:'Unsold-estimate follow-up',reactivation:'Past-customer reactivation'};
 const TRUCKS={{ agent.trucks | tojson }};
 let filter='all', lastTopId=null;
+// live calls may only report an outcome, so read the stage from it when the record has none
+function stageOf(r){const m=r.meta||{};if(m.stage)return m.stage;const o=(r.outcome||'').toLowerCase();if(/book|schedul|confirm/.test(o))return 'booked';if(/text/.test(o))return 'texted';if(/call/.test(o))return 'called';return 'open';}
 function render(d){
-  const R=d.records; const fl=r=>(r.meta||{}).flow||'missed'; const st=r=>(r.meta||{}).stage||'open';
+  const R=d.records; const fl=r=>(r.meta||{}).flow||'missed'; const st=r=>stageOf(r);
   const booked=R.filter(r=>st(r)==='booked'); const rev=booked.reduce((a,r)=>a+(+r.meta.value||0),0);
   const cnt={open:0,texted:0,called:0,booked:0}; R.forEach(r=>cnt[st(r)]=(cnt[st(r)]||0)+1);
   ['open','texted','called','booked'].forEach(k=>$('g-'+k).textContent=cnt[k]||0);
@@ -179,7 +181,7 @@ function render(d){
   if(R.length&&lastTopId!==null&&R[0].id!==lastTopId){const f=document.querySelector('#tgrid .ticket');if(f)f.classList.add('new');}
   if(R.length)lastTopId=R[0].id;
 }
-function ticket(r){const m=r.meta||{};const f=m.flow||'missed';const s=m.stage||'open';
+function ticket(r){const m=r.meta||{};const f=m.flow||'missed';const s=stageOf(r);
   const stamp=s==='booked'?'<div class="stamp">Booked</div>':s==='open'?'<div class="stamp open">Missed</div>':'<div class="stamp wait">In progress</div>';
   return `<div class="ticket ${f}"><div class="flowtag"></div>${stamp}
     <div class="hd">Ticket <span>${esc(r.phone)}</span></div>

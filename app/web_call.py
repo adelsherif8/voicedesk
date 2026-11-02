@@ -219,3 +219,43 @@ def start(slug: str, ip: str) -> tuple[int, dict]:
         limits.release(ip, now)
         log.error("create-web-call failed for %s: %s", slug, type(e).__name__)
     return 503, {"ok": False, "reason": "unavailable", "message": MSG_UNAVAILABLE}
+
+
+# ---- call history ----
+_ENDED_BY = {"agent_hangup": "agent ended", "user_hangup": "caller hung up", "max_duration_reached": "time limit",
+             "inactivity": "silence", "error_llm_websocket_open": "error", "dial_no_answer": "no answer"}
+_ACTIONS = {"save_lead": "lead saved", "log_outcome": "outcome saved", "book_patient": "booking saved",
+            "save_order": "order saved", "log_ticket": "ticket saved", "take_message": "message saved"}
+_calls_cache: dict[str, tuple[float, list]] = {}
+
+
+def recent_calls(slug: str, limit: int = 10, ttl: float = 20.0) -> list | None:
+    """The page's latest calls from Retell: when, how long, how it ended, what was saved, the summary.
+
+    No phone numbers, transcripts or recordings leave the server. None when the page has no agent."""
+    aid = agent_ids().get(slug) if api_key() else None
+    if not aid:
+        return None
+    now = time.time()
+    hit = _calls_cache.get(slug)
+    if hit and now - hit[0] < ttl:
+        return hit[1]
+    out = retell("v3/list-calls", {"filter_criteria": {"agent": [{"agent_id": aid}]}, "limit": limit})
+    rows = []
+    for c in out.get("items") or []:
+        a = c.get("call_analysis") or {}
+        saved = sorted({_ACTIONS[t["name"]] for t in (c.get("tool_calls") or []) if t.get("name") in _ACTIONS})
+        lat = ((c.get("latency") or {}).get("e2e") or {}).get("p50")
+        rows.append({
+            "started": c.get("start_timestamp"),
+            "duration_s": round((c.get("duration_ms") or 0) / 1000),
+            "status": c.get("call_status") or "",
+            "ended_by": _ENDED_BY.get(c.get("disconnection_reason") or "", (c.get("disconnection_reason") or "").replace("_", " ")),
+            "saved": saved,
+            "summary": a.get("call_summary") or "",
+            "sentiment": a.get("user_sentiment") or "",
+            "response_ms": round(lat) if lat else None,
+        })
+    rows.sort(key=lambda r: r["started"] or 0, reverse=True)
+    _calls_cache[slug] = (now, rows)
+    return rows
