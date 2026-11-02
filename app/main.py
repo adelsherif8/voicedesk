@@ -139,6 +139,11 @@ def replay_from_retell(limit: int = 50) -> int:
 _NAME_RE = re.compile(r"\b(?:my name is|my name's|this is|i'm|i am|it's)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)")
 
 
+def _placeholder(name) -> bool:
+    """Agents sometimes save a stand-in like "Unknown" instead of leaving the name empty."""
+    return (name or "").strip().lower() in {"", "unknown", "n/a", "na", "none", "not provided", "caller", "customer", "anonymous"}
+
+
 def enrich_from_retell() -> int:
     """Fill a live record's missing name, issue or summary from Retell's finished call (summary and transcript)."""
     fixed = 0
@@ -146,7 +151,8 @@ def enrich_from_retell() -> int:
         for r in db.list_records(slug, limit=200):
             meta = r.get("meta") or {}
             cid = meta.get("_call")
-            if not cid or meta.get("_enriched") or (r.get("name") and r.get("intent") and r.get("summary")):
+            name_missing = _placeholder(r.get("name"))
+            if not cid or meta.get("_enriched") or (not name_missing and r.get("intent") and r.get("summary")):
                 continue
             c = web_call.retell(f"v2/get-call/{cid}")
             if c.get("call_status") != "ended" or not c.get("call_analysis"):
@@ -157,7 +163,7 @@ def enrich_from_retell() -> int:
                 fields["summary"] = summary
             if not r.get("intent") and summary:
                 fields["intent"] = re.split(r"(?<=[.!?])\s", summary)[0][:120]
-            if not r.get("name"):
+            if name_missing:
                 said = " ".join(t.get("content", "") for t in c.get("transcript_object") or [] if t.get("role") == "user")
                 hit = _NAME_RE.search(said)
                 fields["name"] = hit.group(1) if hit else "Caller"
