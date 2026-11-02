@@ -68,8 +68,26 @@ def parse_doc():
             "fn_desc":  " ".join(g(r"Description:\s*(.*?)\n\s*URL:").split()),
             "fn_url":   g(r"URL:\s*(\S+)"),
             "fn_params": json.loads(params_raw),
+            # more custom tools (booking, handoff), as Retell tool objects
+            "extra":    json.loads(re.search(r"EXTRA TOOLS\n(\[.*?\n\])", chunk, re.S).group(1))
+                        if "EXTRA TOOLS" in chunk else [],
         })
     return agents
+
+
+def tools_for(x):
+    """The save function from the doc, any extra tools, then end_call."""
+    return [{
+        "type": "custom",
+        "name": x["fn_name"],
+        "description": x["fn_desc"],
+        "url": x["fn_url"],
+        "method": "POST",
+        "parameters": x["fn_params"],
+        "speak_during_execution": True,
+        "execution_message_description": "One moment while I save that.",
+    }, *x.get("extra", []), {"type": "end_call", "name": "end_call",
+        "description": "End the call once everything is saved and the caller has no further questions."}]
 
 
 def pick_voice(aid, voices):
@@ -113,13 +131,16 @@ def dry_run(agents, state):
 
 
 def update_prompt(x, state):
-    """Replace general_prompt only: omitted fields stay as they are on the live LLM."""
+    """Replace general_prompt (and the tools, when the doc lists extra ones): omitted fields stay as they are."""
     llm = live_llm(x, state)
     if llm.get("is_published"):
         sys.exit(f"{x['id']}: the LLM's latest version is published, so it is read-only. Nothing changed. "
                  "Create a new draft in the Retell dashboard, then run this again.")
     llm_id = state[x["id"]]["llm_id"]
-    call(f"update-retell-llm/{llm_id}", {"general_prompt": x["prompt"]}, method="PATCH")
+    body = {"general_prompt": x["prompt"]}
+    if x.get("extra"):
+        body["general_tools"] = tools_for(x)
+    call(f"update-retell-llm/{llm_id}", body, method="PATCH")
     live = call(f"get-retell-llm/{llm_id}", method="GET").get("general_prompt")
     if live != x["prompt"]:
         sys.exit(f"{x['id']}: the update returned OK, but the live prompt differs from the doc.")
@@ -161,17 +182,7 @@ def main():
             "general_prompt": x["prompt"],
             "begin_message": x["begin"],
             "start_speaker": "agent",
-            "general_tools": [{
-                "type": "custom",
-                "name": x["fn_name"],
-                "description": x["fn_desc"],
-                "url": x["fn_url"],
-                "method": "POST",
-                "parameters": x["fn_params"],
-                "speak_during_execution": True,
-                "execution_message_description": "One moment while I save that.",
-            }, {"type": "end_call", "name": "end_call",
-                "description": "End the call once everything is saved and the caller has no further questions."}],
+            "general_tools": tools_for(x),
         }
         llm = call("create-retell-llm", llm_body)
         agent = call("create-agent", {

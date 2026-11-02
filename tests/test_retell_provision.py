@@ -90,3 +90,18 @@ def test_all_seven_doc_prompts_have_security():
     assert len(agents) == 7
     assert all(prov.has_security(a["prompt"]) for a in agents)
     assert all(a["fn_name"] in a["prompt"] for a in agents)
+
+
+def test_update_also_replaces_the_tools_when_the_doc_lists_extra_ones(api):
+    extra = [{"type": "custom", "name": "book_appointment", "url": "https://x/retell/recovery"}]
+    agent = {**AGENT, "fn_name": "log_outcome", "fn_desc": "d", "fn_url": "https://x/retell/recovery",
+             "fn_params": {"type": "object"}, "extra": extra}
+    prov.update_prompt(agent, STATE)
+    (method, path, body), = api.writes()
+    assert [t["name"] for t in body["general_tools"]] == ["log_outcome", "book_appointment", "end_call"]
+
+
+def test_the_plumbing_agent_in_the_doc_has_booking_and_handoff_tools():
+    agents = {x["id"]: x for x in prov.parse_doc()}
+    assert [t["name"] for t in agents["recovery"]["extra"]] == ["check_availability", "book_appointment", "transfer_to_human"]
+    assert all(not x["extra"] for k, x in agents.items() if k != "recovery")
