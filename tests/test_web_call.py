@@ -253,3 +253,12 @@ def test_call_history_lists_safe_fields_only(fake, monkeypatch):
 
 def test_call_history_404_for_page_without_agent(fake):
     assert client_from().get("/api/calls/sales").status_code == 404
+
+
+def test_call_history_hides_tokens_that_were_never_joined(fake, monkeypatch):
+    items = [{"start_timestamp": 3000, "duration_ms": 0, "call_status": "error"},
+             {"start_timestamp": 2000, "duration_ms": 86000, "call_status": "ended", "disconnection_reason": "agent_hangup"}]
+    monkeypatch.setattr(web_call, "retell", lambda path, body=None, timeout=10.0: {"items": items})
+    web_call._calls_cache.clear()
+    calls = client_from().get("/api/calls/recovery").json()["calls"]
+    assert len(calls) == 1 and calls[0]["duration_s"] == 86
