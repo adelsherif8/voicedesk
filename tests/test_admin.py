@@ -165,3 +165,14 @@ def test_missing_name_and_issue_are_filled_from_the_finished_call(client, monkey
     assert main.enrich_from_retell() == 0
     row = next(r for r in client.get("/records?agent=recovery").json()["records"] if r["intent"].startswith("Caller reported"))
     assert row["name"] == "Maria" and row["summary"].endswith("tomorrow.")
+
+
+def test_placeholder_name_is_replaced_from_the_call(client, monkeypatch):
+    from app import web_call
+    monkeypatch.setattr(web_call, "agent_ids", lambda: {"recovery": "agent_x"})
+    main._store("recovery", {"name": "Unknown", "intent": "Leak", "summary": "Booked"}, live=True, call_id="call_p")
+    call = {"call_status": "ended", "call_analysis": {"call_summary": "Booked."},
+            "transcript_object": [{"role": "user", "content": "yeah my name is Omar"}]}
+    monkeypatch.setattr(web_call, "retell", lambda path, body=None, timeout=10.0: call)
+    assert main.enrich_from_retell() == 1
+    assert any(r["name"] == "Omar" for r in client.get("/records?agent=recovery").json()["records"])
