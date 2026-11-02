@@ -225,7 +225,8 @@ def start(slug: str, ip: str) -> tuple[int, dict]:
 _ENDED_BY = {"agent_hangup": "agent ended", "user_hangup": "caller hung up", "max_duration_reached": "time limit",
              "inactivity": "silence", "error_llm_websocket_open": "error", "dial_no_answer": "no answer"}
 _ACTIONS = {"save_lead": "lead saved", "log_outcome": "outcome saved", "book_patient": "booking saved",
-            "save_order": "order saved", "log_ticket": "ticket saved", "take_message": "message saved"}
+            "save_order": "order saved", "log_ticket": "ticket saved", "take_message": "message saved",
+            "book_appointment": "booking saved", "transfer_to_human": "handoff logged"}
 _calls_cache: dict[str, tuple[float, list]] = {}
 
 
