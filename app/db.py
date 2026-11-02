@@ -59,6 +59,17 @@ def _row(r) -> dict:
     return d
 
 
+def update_fields(rid: int, fields: dict) -> None:
+    """Fill in name, intent, summary or meta on an existing record."""
+    cols = {k: v for k, v in fields.items() if k in ("name", "intent", "summary", "outcome", "appointment")}
+    if "meta" in fields:
+        cols["meta"] = json.dumps(fields["meta"])
+    if not cols:
+        return
+    with _conn() as c:
+        c.execute(f"UPDATE records SET {', '.join(k + '=?' for k in cols)} WHERE id=?", (*cols.values(), rid))
+
+
 def list_records(agent: str | None = None, limit: int = 200) -> list[dict]:
     q, args = "SELECT * FROM records", []
     if agent and agent != "all":
