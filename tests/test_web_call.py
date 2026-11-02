@@ -233,3 +233,23 @@ def test_untrue_claims_are_gone(fake):
     assert "GoHighLevel" not in html and "85%" not in html
     assert "GoHighLevel" not in agents.AGENTS_BY_ID["recovery"]["desc"]
     assert "own dashboard" in html
+
+
+def test_call_history_lists_safe_fields_only(fake, monkeypatch):
+    item = {"start_timestamp": 2000, "duration_ms": 35500, "call_status": "ended", "disconnection_reason": "agent_hangup",
+            "from_number": "+15125550199", "transcript": "my card is 4242", "recording_url": "https://rec",
+            "tool_calls": [{"name": "log_outcome"}], "latency": {"e2e": {"p50": 1773}},
+            "call_analysis": {"call_summary": "Sink backed up, booked tomorrow", "user_sentiment": "Positive"}}
+    monkeypatch.setattr(web_call, "retell", lambda path, body=None, timeout=10.0: {"items": [item]})
+    web_call._calls_cache.clear()
+    r = client_from().get("/api/calls/recovery")
+    assert r.status_code == 200
+    row = r.json()["calls"][0]
+    assert row["duration_s"] == 36 and row["ended_by"] == "agent ended" and row["saved"] == ["outcome saved"]
+    assert row["summary"] == "Sink backed up, booked tomorrow" and row["response_ms"] == 1773
+    for secret in ("5550199", "4242", "https://rec"):
+        assert secret not in r.text
+
+
+def test_call_history_404_for_page_without_agent(fake):
+    assert client_from().get("/api/calls/sales").status_code == 404
