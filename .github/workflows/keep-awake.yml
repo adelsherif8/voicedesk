@@ -1,0 +1,14 @@
+# Render's free plan sleeps after 15 minutes idle, so a visitor waits ~50s on a cold start.
+# Pinging /health every 10 minutes keeps the demo awake (one free service fits Render's 750 h/month).
+name: keep-awake
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: curl -fsS --max-time 90 --retry 2 https://voicedesk-h31g.onrender.com/health
