@@ -151,3 +151,17 @@ def test_saved_calls_come_back_from_retell_after_a_restart(client, monkeypatch):
     assert db.count("recovery") == before + 1
     row = next(r for r in client.get("/records?agent=recovery").json()["records"] if r["name"] == "Sam")
     assert row["intent"] == "Sink backed up" and row["outcome"] == "booked" and "execution_message" not in row["meta"]
+
+
+def test_missing_name_and_issue_are_filled_from_the_finished_call(client, monkeypatch):
+    from app import web_call
+    monkeypatch.setattr(web_call, "agent_ids", lambda: {"recovery": "agent_x"})
+    main._store("recovery", {"outcome": "booked", "appointment": "Tomorrow 10am"}, live=True, call_id="call_9")
+    call = {"call_status": "ended", "call_analysis": {"call_summary": "Caller reported a major water leak. Booked for tomorrow."},
+            "transcript_object": [{"role": "agent", "content": "Blue Ridge, this is Riley."},
+                                  {"role": "user", "content": "Hi, this is Maria Lopez, water everywhere"}]}
+    monkeypatch.setattr(web_call, "retell", lambda path, body=None, timeout=10.0: call)
+    assert main.enrich_from_retell() == 1
+    assert main.enrich_from_retell() == 0
+    row = next(r for r in client.get("/records?agent=recovery").json()["records"] if r["intent"].startswith("Caller reported"))
+    assert row["name"] == "Maria" and row["summary"].endswith("tomorrow.")

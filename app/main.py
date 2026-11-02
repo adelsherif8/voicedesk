@@ -136,12 +136,48 @@ def replay_from_retell(limit: int = 50) -> int:
     return restored
 
 
+_NAME_RE = re.compile(r"\b(?:my name is|my name's|this is|i'm|i am|it's)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)")
+
+
+def enrich_from_retell() -> int:
+    """Fill a live record's missing name, issue or summary from Retell's finished call (summary and transcript)."""
+    fixed = 0
+    for slug in web_call.agent_ids():
+        for r in db.list_records(slug, limit=200):
+            meta = r.get("meta") or {}
+            cid = meta.get("_call")
+            if not cid or meta.get("_enriched") or (r.get("name") and r.get("intent") and r.get("summary")):
+                continue
+            c = web_call.retell(f"v2/get-call/{cid}")
+            if c.get("call_status") != "ended" or not c.get("call_analysis"):
+                continue
+            summary = (c["call_analysis"].get("call_summary") or "").strip()
+            fields = {"meta": {**meta, "_enriched": True}}
+            if not r.get("summary") and summary:
+                fields["summary"] = summary
+            if not r.get("intent") and summary:
+                fields["intent"] = re.split(r"(?<=[.!?])\s", summary)[0][:120]
+            if not r.get("name"):
+                said = " ".join(t.get("content", "") for t in c.get("transcript_object") or [] if t.get("role") == "user")
+                hit = _NAME_RE.search(said)
+                fields["name"] = hit.group(1) if hit else "Caller"
+            db.update_fields(r["id"], fields)
+            fixed += 1
+    return fixed
+
+
 def _replay_in_background() -> None:
     if not web_call.api_key():
         return
     def run():
         try:
             log.info("restored %d saved call actions from Retell", replay_from_retell())
+            while True:
+                try:
+                    enrich_from_retell()
+                except Exception as e:
+                    log.warning("could not fill call details from Retell: %s", type(e).__name__)
+                time.sleep(60)
         except Exception as e:
             log.warning("could not restore calls from Retell: %s", type(e).__name__)
     threading.Thread(target=run, daemon=True).start()
