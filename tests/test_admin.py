@@ -133,3 +133,21 @@ def test_real_callers_are_hidden_from_the_public_but_not_the_admin(client, monke
     assert "Jane Roe" in client.get("/records?agent=sales", headers=GOOD).text
     assert "Sarah Johnson" in client.get("/records?agent=receptionist").text    # seed data stays whole
     assert "5550199" not in client.get("/agent/sales").text
+
+
+def test_saved_calls_come_back_from_retell_after_a_restart(client, monkeypatch):
+    from app import web_call
+    monkeypatch.setattr(web_call, "agent_ids", lambda: {"recovery": "agent_x"})
+    listing = {"items": [{"call_id": "call_1", "tool_calls": [{"name": "log_outcome"}, {"name": "end_call"}]},
+                         {"call_id": "call_2", "tool_calls": [{"name": "end_call"}]}]}
+    full = {"start_timestamp": 1_700_000_000_000, "transcript_with_tool_calls": [
+        {"role": "tool_call_invocation", "name": "log_outcome", "time_sec": 30.4,
+         "arguments": '{"name":"Sam Tester","intent":"Sink backed up","outcome":"booked","appointment":"Tomorrow 10am","execution_message":"Bye"}'},
+        {"role": "tool_call_invocation", "name": "end_call", "arguments": "{}"}]}
+    monkeypatch.setattr(web_call, "retell", lambda path, body=None, timeout=10.0: listing if "list-calls" in path else full)
+    before = db.count("recovery")
+    assert main.replay_from_retell() == 1
+    assert main.replay_from_retell() == 0          # no duplicates on the next boot
+    assert db.count("recovery") == before + 1
+    row = next(r for r in client.get("/records?agent=recovery").json()["records"] if r["name"] == "Sam")
+    assert row["intent"] == "Sink backed up" and row["outcome"] == "booked" and "execution_message" not in row["meta"]
