@@ -1,0 +1,47 @@
+PROJECT CATALOG DRAFT (Upwork > Project Catalog > Create a project)
+Prices are a proposal for you to decide (your rate $35/hr; hours in brackets).
+
+TITLE (73 incl. prefix): You will get a custom AI phone agent on your Twilio number, booking + CRM
+
+CATEGORY: Development & IT > AI Apps & Integration (pick the closest AI/voice agent subcategory shown)
+SEARCH TAGS (5): Pipecat, Twilio, Voice AI, AI receptionist, Vapi alternative
+
+TIERS
+- Answer + book (13) | $900 | 7 days | (about 26 h)
+  Inbound agent on your Twilio number, live schedule booking, FAQs, callbacks (75)
+- Book + CRM + transfer (21) | $1,500 | 10 days | (about 43 h)
+  Adds CRM sync (HubSpot or GHL) and live transfer with a spoken summary (70)
+- Full production build (21) | $2,400 | 14 days | (about 69 h)
+  Adds call console, PII redaction, test suite, latency report, deployment (72)
+
+PROJECT SUMMARY (944):
+I build AI phone agents on an open-source real-time pipeline (Pipecat) that you own, instead of renting Vapi or Retell by the minute. Your agent answers on your Twilio number, checks your real schedule before booking, writes the caller and the job into your CRM, and hands the call to a person on request or in an emergency, with a spoken summary for whoever picks up.
+
+What makes it reliable: business rules live in code, not just the prompt (no booking before checking availability, no double-booking, no transfer without a reason). Names, numbers and addresses are redacted before any call is saved. Every turn is timed (speech-to-text, LLM, voice), and I test with simulated callers before a single real call.
+
+My demo build for a plumbing company: median reply 1.74 s over 20 simulated calls, HubSpot contact + linked meeting on every booking, live transfer, and 98 unit tests in CI. I report measured numbers only, including the bad ones.
+
+STEPS
+1. Call flow, your rules, and access to Twilio, your calendar and CRM (66)
+2. Build the pipeline, tools and guardrails; connect your number (61)
+3. Test with simulated callers; share transcripts and latency report (65)
+4. Go live, tune on real calls, hand over code and docs (52)
+
+FAQ
+Q: Why not Vapi or Retell?
+A: They are great for fast pilots. A Pipecat build has no per-minute platform fee, you own the code, and any vendor (voice, LLM, telephony, CRM) can be swapped. For a quick pilot I can also build on Vapi or Retell.
+
+Q: How fast does it reply?
+A: My demo measured a 1.74 s median from the caller stopping to the bot speaking, over 20 simulated calls (p95 4.61 s). Real phone calls add network time; I measure yours before go-live.
+
+Q: What happens in an emergency?
+A: The agent gives safety advice first (for example, shut off the main valve), then transfers the call to your on-call number. The person who answers hears a short summary before the caller is connected.
+
+Q: Is caller data safe?
+A: Twilio webhook signatures are verified, logs show only the last four digits of a phone number, and names, numbers and addresses are redacted before a call is saved.
+
+Q: What do I need to provide?
+A: A Twilio account and number, accounts for the AI providers (or I set them up with you), your schedule or calendar, and your CRM. Usage costs are billed to your accounts directly.
+
+MEDIA: same files as the portfolio (all 4:3, 2000x1500, under 10 MB; video 59.8 s under 90 s).
+REQUIREMENTS FROM BUYER: Twilio account + number, schedule/calendar access, CRM access, the call rules and FAQs.
