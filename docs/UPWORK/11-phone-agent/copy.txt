@@ -1,0 +1,18 @@
+PORTFOLIO ITEM (paste into Upwork > Profile > Portfolio)
+
+TITLE (70): AI Phone Receptionist on Twilio + Pipecat: Booking, CRM, Live Transfer
+
+SKILLS (5): AI Agent Development · Conversational AI · Python · API Development · Automation
+
+DESCRIPTION (571):
+An AI receptionist on a real Twilio number, built on my own real-time voice pipeline (Pipecat, Deepgram, GPT-4.1 mini) instead of a rented platform:
+• Checks the live schedule, offers open windows, reads the address back, books
+• Syncs every booking to HubSpot: contact + linked meeting, no data entry
+• Live hand-off: emergency or "talk to a person" rings the on-call tech, who hears a summary first
+• Guardrails in code, PII redacted, every turn timed
+Median reply 1.74 s over 20 simulated calls. 98 unit tests in CI.
+Code: github.com/adelsherif8/blue-ridge-phone-agent
+
+UPLOAD ORDER: 0-cover.png (thumbnail), 1-video.mp4, 2-live-call.png, 3-booked.png, 4-handoff.png, 5-console.png
+NOTE: the last line links the GitHub repo. It is private until you say yes in Step 7; do not paste the
+description before the repo is public, or swap the last line for: "Video walkthrough above."
