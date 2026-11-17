@@ -314,8 +314,24 @@ def recent_calls(slug: str, limit: int = 10, ttl: float = 20.0) -> list | None:
             "summary": a.get("call_summary") or "",
             "sentiment": a.get("user_sentiment") or "",
             "response_ms": round(lat) if lat else None,
+            "_biz": (c.get("metadata") or {}).get("biz"),  # server-side only, stripped before it leaves
         })
     rows.sort(key=lambda r: r["started"] or 0, reverse=True)
     rows = rows[:limit]
     _calls_cache[slug] = (now, rows)
     return rows
+
+
+def calls_for_page(slug: str, biz: str | None) -> list | None:
+    """Public list: personalised calls are hidden (they name a prospect). With ?biz=: only that business's calls."""
+    rows = recent_calls(slug)
+    if rows is None:
+        return None
+    keep = [r for r in rows if (r.get("_biz") == biz if biz else not r.get("_biz"))]
+    return [{k: v for k, v in r.items() if k != "_biz"} for r in keep]
+
+
+def swap_names(slug: str, text: str, biz: str) -> str:
+    for n in BIZ_ALIASES.get(slug, []):
+        text = text.replace(n, biz)
+    return text

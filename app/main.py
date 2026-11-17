@@ -268,11 +268,16 @@ def agent_view(aid: str, request: Request):
     if aid not in AGENTS_BY_ID:
         return RedirectResponse("/")
     tpl = AGENTS_BY_ID[aid].get("template", "agent.html")
-    return templates.TemplateResponse(request, tpl, {
+    biz = web_call.clean_biz(request.query_params.get("biz")) if aid in web_call.BIZ_ALIASES else None
+    resp = templates.TemplateResponse(request, tpl, {
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
         "records": _visible(request, aid), "web_call": web_call.page_config(aid),
-        "biz": web_call.clean_biz(request.query_params.get("biz")) if aid in web_call.BIZ_ALIASES else None,
+        "biz": biz,
     })
+    if not biz:
+        return resp
+    # personalised demo: show their name everywhere the made-up business appears on the page
+    return HTMLResponse(web_call.swap_names(aid, resp.body.decode(), biz))
 
 
 @app.get("/api/board/{agent}")
@@ -285,10 +290,10 @@ def truck_board(agent: str):
 
 
 @app.get("/api/calls/{slug}")
-def call_history(slug: str):
+def call_history(slug: str, request: Request):
     """Recent calls to this page's agent, straight from Retell (no numbers, transcripts or recordings)."""
     try:
-        rows = web_call.recent_calls(slug)
+        rows = web_call.calls_for_page(slug, web_call.clean_biz(request.query_params.get("biz")))
     except Exception as e:
         log.warning("call history unavailable: %s", type(e).__name__)
         return JSONResponse({"ok": False, "calls": []}, status_code=503)
