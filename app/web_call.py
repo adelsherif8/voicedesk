@@ -9,6 +9,7 @@ list on the first request after boot; if that lookup fails, no call is started.
 import json
 import logging
 import os
+import re
 import threading
 import time
 import urllib.error
@@ -188,8 +189,57 @@ def page_config(slug: str) -> dict | None:
             "minutes": max_seconds() // 60, "recorded": _records_calls(aid)}
 
 
+# ---- personalised demos: ?biz=Plumb Works makes the agent answer as that business for one call ----
+# Names each stored agent uses for its made-up business, longest first.
+BIZ_ALIASES = {
+    "receptionist": ["StoreRight Self-Storage", "StoreRight"],
+    "recovery": ["Blue Ridge Plumbing", "Blue Ridge"],
+    "dental": ["Brightside Dental", "Brightside"],
+    "realty": ["Harbor & Vine Realty", "Harbor and Vine Realty", "Harbor & Vine", "Harbor and Vine"],
+    "restaurant": ["Luca's Trattoria", "Luca's"],
+    "support": ["NordFrost Appliance Support", "NordFrost Appliances", "NordFrost"],
+    "voicemail": ["Lakeside Family Law", "Lakeside"],
+}
+# Plain business names only: no quotes, brackets, colons or newlines that could carry instructions.
+_BIZ_OK = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 &'.,-]{1,39}$")
+_llm_cache: dict[str, tuple[float, dict]] = {}
+
+
+def clean_biz(raw) -> str | None:
+    s = " ".join(str(raw or "").split())
+    return s if _BIZ_OK.fullmatch(s) else None  # over 40 chars fails the pattern, so nothing is cut short
+
+
+def _stored_llm(slug: str, ttl: float = 3600.0) -> dict:
+    hit = _llm_cache.get(slug)
+    if hit and time.time() - hit[0] < ttl:
+        return hit[1]
+    agent = retell(f"get-agent/{agent_ids()[slug]}", timeout=5.0)
+    llm = retell(f"get-retell-llm/{agent['response_engine']['llm_id']}", timeout=5.0)
+    _llm_cache[slug] = (time.time(), llm)
+    return llm
+
+
+def personalise(slug: str, biz: str) -> dict | None:
+    """Per-call retell_llm override: the stored prompt and greeting with the business name swapped."""
+    names = BIZ_ALIASES.get(slug)
+    if not names:
+        return None
+    llm = _stored_llm(slug)
+    prompt, begin = llm.get("general_prompt") or "", llm.get("begin_message") or ""
+    for n in names:
+        prompt, begin = prompt.replace(n, biz), begin.replace(n, biz)
+    note = (f"This call is a personalised demo for {biz}. Prices, staff names, slots and policies below are "
+            f"sample data. If the caller asks whether they are real, say they are examples and the real setup "
+            f"would use {biz}'s own details.\n\n")
+    out = {"general_prompt": note + prompt}
+    if begin:
+        out["begin_message"] = begin
+    return out
+
+
 # ---- token ----
-def start(slug: str, ip: str) -> tuple[int, dict]:
+def start(slug: str, ip: str, biz: str | None = None) -> tuple[int, dict]:
     """Returns (status, JSON body). The success body is what the browser SDK needs for one call."""
     aid = agent_ids().get(slug)
     if not api_key() or not aid:
@@ -205,12 +255,17 @@ def start(slug: str, ip: str) -> tuple[int, dict]:
         return 429, {"ok": False, "reason": "limit", "scope": hit,
                      "message": MSG_IP_LIMIT if hit == "ip" else MSG_DAY_LIMIT}
     try:
-        call = retell("v3/create-web-call", {
-            "agent_id": aid,
-            # per-call override: the stored agents allow 10 minutes
-            "agent_override": {"agent": {"max_call_duration_ms": max_seconds() * 1000}},
-            "metadata": {"source": "voicedesk-web-demo", "slug": slug},
-        })
+        override = {"agent": {"max_call_duration_ms": max_seconds() * 1000}}  # stored agents allow 10 minutes
+        meta = {"source": "voicedesk-web-demo", "slug": slug}
+        if biz:
+            try:
+                llm = personalise(slug, biz)
+                if llm:
+                    override["retell_llm"] = llm
+                    meta["biz"] = biz
+            except Exception as e:  # fall back to the normal demo agent
+                log.warning("personalise failed for %s: %s", slug, type(e).__name__)
+        call = retell("v3/create-web-call", {"agent_id": aid, "agent_override": override, "metadata": meta})
         return 201, {k: call[k] for k in ("call_id", "access_token", "transport", "ice_servers", "expires_at")}
     except urllib.error.HTTPError as e:
         limits.release(ip, now)

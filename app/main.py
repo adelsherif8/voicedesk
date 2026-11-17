@@ -271,6 +271,7 @@ def agent_view(aid: str, request: Request):
     return templates.TemplateResponse(request, tpl, {
         "agent": AGENTS_BY_ID[aid], "stats": db.stats(aid),
         "records": _visible(request, aid), "web_call": web_call.page_config(aid),
+        "biz": web_call.clean_biz(request.query_params.get("biz")) if aid in web_call.BIZ_ALIASES else None,
     })
 
 
@@ -302,7 +303,8 @@ def create_web_call(slug: str, request: Request):
     if not web_call.same_origin(request.headers):
         return JSONResponse({"ok": False, "reason": "forbidden", "message": "Calls can only start from the demo page."},
                             status_code=403)
-    status, body = web_call.start(slug, web_call.client_ip(request))
+    biz = web_call.clean_biz(request.query_params.get("biz"))
+    status, body = web_call.start(slug, web_call.client_ip(request), biz)
     return JSONResponse(body, status_code=status, headers={"Cache-Control": "no-store"})
 
 

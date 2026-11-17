@@ -23,11 +23,12 @@
     <button type="button" class="talk-sound" hidden><i class="fa-solid fa-volume-high" aria-hidden="true"></i> Tap to hear the agent</button>
   </div>
   <div class="talk-body">
+    {% if biz %}<p class="talk-biz" style="margin:0 0 4px;font-weight:700"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Personalised demo: the agent answers as {{ biz }}. Prices and slots are sample data.</p>{% endif %}
     <p class="talk-status" role="status" aria-live="polite"></p>
     <p class="talk-note">Uses your microphone. This is a demo: you will talk to an AI agent, not a person.{% if web_call.recorded %} Calls may be recorded and transcribed.{% endif %} Calls end after {{ web_call.minutes }} minutes. What you say can appear on this public dashboard, so please use made-up details.</p>
   </div>
 </section>
-<script type="module" src="/static/web_call.js?v=1"></script>
+<script type="module" src="/static/web_call.js?v=2"></script>
 <section class="talk calls" id="calls-history" aria-label="Recent calls" data-slug="{{ web_call.slug }}" style="display:block">
   <p class="talk-status" style="margin-bottom:8px"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Recent calls to this agent <span class="calls-note" style="font-weight:400;color:#4b5563;font-size:.8rem">live from Retell · no numbers or recordings shown</span></p>
   <div class="calls-list"><p class="talk-note">Loading…</p></div>
