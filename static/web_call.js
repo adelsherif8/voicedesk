@@ -93,7 +93,7 @@ async function start() {
     if (cancelled) return;
     const client = new RetellClient({
       key: "unused", // our endpoint holds the real key and ignores this
-      fetch: () => fetch(`/api/web-call/${encodeURIComponent(slug)}`, { method: "POST" }),
+      fetch: () => { const biz = new URLSearchParams(location.search).get("biz"); return fetch(`/api/web-call/${encodeURIComponent(slug)}` + (biz ? `?biz=${encodeURIComponent(biz)}` : ""), { method: "POST" }); },
     });
     session = client.createWebCall({
       agent_id: slug, // the server maps the page slug to the agent
